@@ -1,0 +1,39 @@
+.center-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.add-btn {
+  display: flex;
+  justify-content: flex-end;  // Aligner à droite
+  margin-bottom: 16px;         // Espacement sous le bouton
+
+  button {
+    background-color: #1890ff;  // Couleur de fond principale de NG-ZORRO (ou une couleur personnalisée)
+    color: white;               // Texte blanc
+    border: none;               // Pas de bordure
+    cursor: pointer;            // Changer le curseur au survol
+    padding: 10px 20px;         // Ajouter du padding pour le texte
+    font-size: 16px;            // Taille de la police
+    border-radius: 4px;         // Coins arrondis pour un effet plus doux
+    display: inline-flex;
+    align-items: center;        // Aligner le texte et l'icône au centre
+    transition: background-color 0.3s; // Transition pour la couleur de fond lors du survol
+
+    i {
+      margin-right: 8px;         // Espacement entre l'icône et le texte
+    }
+
+    &:hover {
+      background-color: #40a9ff; // Changer la couleur de fond au survol
+    }
+
+    &:focus {
+      outline: none;             // Retirer la bordure au focus
+    }
+  }
+}
+
+

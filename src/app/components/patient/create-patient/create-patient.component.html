@@ -1,0 +1,93 @@
+<nz-card nzTitle="Créer Patient" nzHoverable class="form-card">
+  <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" nz-form nzLayout="vertical">
+
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="titre" nzRequired>Titre</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="titre" id="titre" nzPlaceHolder="Choisir un titre">
+              <nz-option nzValue="Mr" nzLabel="Mr"></nz-option>
+              <nz-option nzValue="MMe" nzLabel="Mme"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="nom" nzRequired>Nom</nz-form-label>
+          <nz-form-control>
+            <input nz-input id="nom" formControlName="nom" placeholder="Nom du patient" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="dateNaissance" nzRequired>Date de naissance</nz-form-label>
+          <nz-form-control>
+            <input nz-input type="date" id="dateNaissance" formControlName="dateNaissance" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="numeroTelephone" nzRequired>Téléphone</nz-form-label>
+          <nz-form-control>
+            <input nz-input id="numeroTelephone" formControlName="numeroTelephone" placeholder="Numéro de téléphone" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="adresse" nzRequired>Adresse</nz-form-label>
+          <nz-form-control>
+            <input nz-input id="adresse" formControlName="adresse" placeholder="Adresse du patient" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="malade" nzRequired>État de santé</nz-form-label>
+          <nz-form-control>
+            <nz-radio-group formControlName="malade">
+              <label nz-radio [nzValue]="true">Malade</label>
+              <label nz-radio [nzValue]="false">Sain</label>
+            </nz-radio-group>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-row [nzGutter]="16" class="text-area-container">
+      <div nz-col [nzSpan]="24">
+        <nz-form-item>
+          <nz-form-label nzFor="rapport" nzRequired>Rapport</nz-form-label>
+          <nz-form-control>
+        <textarea
+          nz-input
+          id="rapport"
+          formControlName="rapport"
+          placeholder="Écrivez le rapport du patient ici..."
+          rows="6"
+          style="resize: both; width: 100%;"
+        ></textarea>
+          </nz-form-control>
+        </nz-form-item>
+        <div class="form-actions" >
+          <button nz-button nzType="default" (click)="onCancel()" style="margin-right: 8px;">Annuler</button>
+          <button nz-button nzType="primary" [disabled]="patientForm.invalid">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+    </div>
+  </form>
+
+</nz-card>
