@@ -1,0 +1,41 @@
+::ng-deep {
+
+
+  .ant-tabs-tab + .ant-tabs-tab {
+    margin: 0 0 0 10px;
+  }
+
+  .ant-tabs-tab {
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 500;
+    min-width: 105px;
+    color: #006f60;
+  }
+
+  .ant-tabs-tab:hover {
+    color: #006f60;
+  }
+
+  .ant-tabs-top > .ant-tabs-nav {
+    margin: 0;
+  }
+
+  .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: #006f60;
+    text-shadow: none;
+    font-size: 16px;
+    font-weight: 600;
+    min-width: 105px;
+    text-transform: capitalize;
+  }
+
+  .ant-tabs-top > .ant-tabs-nav .ant-tabs-ink-bar {
+    height: 3px;
+  }
+
+  .ant-tabs-ink-bar {
+    background: #006f60;
+  }
+}

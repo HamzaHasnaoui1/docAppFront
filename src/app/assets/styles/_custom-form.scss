@@ -1,0 +1,64 @@
+@import "./../../assets/styles/variables";
+
+::ng-deep {
+  .ant-input,
+  .ant-picker,
+  .ant-select,
+  .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    border-radius: $border-radius-input;
+    width: 100%;
+    height: 34px !important;
+    border-color: $border-color;
+    box-shadow: none !important;
+
+    &:focus {
+      outline: none !important;
+      box-shadow: none !important;
+      border-color: $border-color !important;
+    }
+    &:hover {
+      border-color: $border-color !important;
+    }
+  }
+
+  textarea.ant-input {
+    height: auto !important;
+  }
+
+  .ant-form-item {
+    margin: 0 0 15px;
+  }
+
+  .ant-form-vertical .ant-form-item-label {
+    padding: 0 0 3px;
+  }
+
+  .ant-input-affix-wrapper {
+    border-radius: 8px;
+    border: 1px solid $main-color-dark;
+    width: 330px;
+    &:hover,
+    &:focus {
+      border-color: $main-color-dark !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+  }
+
+}
+
+.req {
+  color: red;
+}
+
+// SELECT-HOVER
+::ng-deep .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+  border-color: $border-color;
+}
+
+// SELECT-FOCUS
+::ng-deep .ant-select-focused .ant-select-selector {
+  border-color: $border-color !important;
+  outline: none !important;
+  box-shadow: none !important;
+}

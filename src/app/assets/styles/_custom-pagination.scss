@@ -1,0 +1,68 @@
+::ng-deep {
+  .custom-pagination .ant-pagination-item {
+    background-color: transparent;
+    border: none;
+  }
+
+  .custom-pagination .ant-pagination-item-active {
+    background-color: #0f736a !important; /* Couleur de fond pour la page active */
+    color: white !important; /* Couleur du texte de la page active */
+    border-radius: 50% !important; /* Pour un style arrondi */
+  }
+
+  .custom-pagination .ant-pagination-item a,
+  .custom-pagination .ant-pagination-item a:hover {
+    color: #000000 !important; /* Couleur du texte des autres pages */
+  }
+
+  .custom-pagination .ant-pagination-item-active a {
+    color: white !important; /* Couleur du texte pour la page active */
+  }
+  .custom-pagination .ant-pagination-prev,
+  .custom-pagination .ant-pagination-next {
+    color: #0f736a !important; /* Couleur des flèches par défaut */
+  }
+
+  .custom-pagination .ant-pagination-prev:hover,
+  .custom-pagination .ant-pagination-next:hover {
+    color: #0c5a55 !important; /* Couleur des flèches au survol */
+  }
+
+  .custom-pagination .ant-pagination-prev .anticon,
+  .custom-pagination .ant-pagination-next .anticon {
+    font-size: 19px; /* Taille des flèches */
+    color: #0f736a !important; /* Couleur des icônes de flèches */
+  }
+
+  .ant-pagination-next .ant-pagination-item-link,
+  .ant-pagination-prev .ant-pagination-item-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none !important;
+  }
+
+  .custom-pagination .ant-pagination-prev:hover .anticon,
+  .custom-pagination .ant-pagination-next:hover .anticon {
+    color: #0c5a55 !important;
+  }
+
+}
+
+/*::ng-deep {
+  .ant-input,
+  .ant-select,
+  .ant-picker {
+    width: 100%;
+    height: 32px;
+    border-radius: 2px;
+    &:focus {
+      outline: none !important;
+      box-shadow: none !important;
+      border-color: #ddd !important;
+    }
+    &:hover {
+      border-color: #ddd!important;
+    }
+  }
+}*/
