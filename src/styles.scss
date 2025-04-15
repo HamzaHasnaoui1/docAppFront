@@ -1,0 +1,183 @@
+@import "./app/assets/styles/custom-table";
+@import "./app/assets/styles/variables";
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Titillium Web', sans-serif;
+}
+
+.header-title-section {
+  padding-block: 0 20px;
+
+  h6 {
+    margin: 0;
+    font-size: 18px;
+    color: $main-color-light;
+    font-weight: 600;
+  }
+}
+
+
+.pointer {
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+  margin: 0 !important;
+}
+a {
+  list-style: none;
+}
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+
+.container {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.global-lucide {
+  height: 18px !important;
+  display: inline-block !important;
+}
+
+
+nz-table {
+  margin-top: 16px;
+
+  th {
+    background-color: #fafafa;
+    font-weight: 600;
+  }
+
+  .ant-tag {
+    margin: 0;
+  }
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .page-info {
+    font-weight: 500;
+  }
+}
+
+body {
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  color: #1f1f1f;
+  background-color: #f5f5f5;
+  margin: 0;
+}
+
+.ant-pagination.ant-table-pagination {
+  display: none !important;
+}
+
+
+.ant-table {
+  .ant-table-thead > tr > th {
+    background-color: #f8f9fa !important;
+    font-weight: 600 !important;
+    color: #495057 !important;
+    text-transform: uppercase !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.5px !important;
+    border-bottom: 2px solid #dee2e6 !important;
+    padding: 12px 16px !important;
+
+    white-space: nowrap !important;
+    text-align: center !important;
+  }
+
+  .ant-table-tbody > tr > td {
+    border-bottom: 1px solid #f0f0f0 !important;
+    text-align: center !important;
+
+  }
+
+  .fade-out {
+    opacity: 0;
+    transition: opacity 0.6s ease-out;
+  }
+}
+
+.ant-modal {
+  &-confirm {
+    &-btns {
+      display: flex !important;
+      justify-content: center !important;
+      gap: 16px !important;
+      margin-top: 24px !important;
+
+      .ant-btn {
+        min-width: 100px !important;
+        margin: 0 !important;
+      }
+    }
+  }
+}
+
+.form-card {
+  max-width: 800px;
+  margin: auto;
+
+  .form-actions {
+    text-align: center;
+    margin-top: 24px;
+  }
+}
+
+/* Assure-toi que le div parent (container) occupe toute la largeur et permet la mise en page centrée */
+.text-area-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;  /* Ajoute un peu d'espace au-dessus du champ */
+}
+
+/* Style du champ de texte */
+textarea[nz-input] {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  font-size: 14px;
+  font-family: 'Arial', sans-serif;
+  resize: both;
+  width: 100%;
+  min-height: 120px; /* hauteur minimale */
+  box-sizing: border-box;
+  transition: border-color 0.3s ease-in-out;
+}
+
+/* Quand l'utilisateur entre du texte dans le champ, on peut changer le bord pour un effet visuel */
+textarea[nz-input]:focus {
+  border-color: #007bff;
+  outline: none;  /* enlever le contour par défaut */
+}
+
+/* Optionnel: Ajout d'un effet de survol pour les zones de texte */
+textarea[nz-input]:hover {
+  border-color: #80b3ff;
+}
+
+
