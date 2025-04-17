@@ -1,0 +1,16 @@
+angular-editor {
+  .angular-editor-toolbar {
+    background: #f7f7f7;
+    border: 1px solid #dcdcdc;
+    border-bottom: none;
+  }
+
+  .angular-editor-textarea {
+    min-height: 200px;
+    padding: 10px;
+    border: 1px solid #dcdcdc;
+    border-radius: 0 0 4px 4px;
+    font-size: 16px;
+    font-family: 'Times New Roman', serif;
+  }
+}

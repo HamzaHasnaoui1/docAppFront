@@ -18,7 +18,7 @@
         <th nzWidth="80px">ID</th>
         <th nzWidth="150px">Nom</th>
         <th nzWidth="120px">Specialiste</th>
-        <th nzWidth="150px">Téléphone</th>
+        <th nzWidth="50px">Téléphone</th>
         <th nzWidth="150px">Email</th>
         <th nzWidth="150px">Action</th>
       </tr>
@@ -28,8 +28,11 @@
         <td>{{ m.id }}</td>
         <td><strong>{{ m.nom }}</strong></td>
         <td>{{ m.specialite }}</td>
-        <td>{{ m.numeroTelephone}}</td>
-        <td>{{ m.email }}</td>
+        <td class="center-cell">
+          <button nz-button nz-tooltip nzTooltipTitle="Voir le Numero" nzType="link" (click)="showPhoneModal(m)">
+            <i nz-icon nzType="phone"></i>
+          </button>
+        </td>        <td>{{ m.email }}</td>
         <td>
           <button nz-button nz-tooltip nzTooltipTitle="Modifier" nzType="link" (click)="onEdit(m)">
             <i nz-icon nzType="edit"></i>

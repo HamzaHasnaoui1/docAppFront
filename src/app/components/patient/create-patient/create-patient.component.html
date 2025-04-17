@@ -1,3 +1,5 @@
+<!-- create-patient.component.html -->
+
 <nz-card nzTitle="Créer Patient" nzHoverable class="form-card">
   <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" nz-form nzLayout="vertical">
 
@@ -66,28 +68,25 @@
         </nz-form-item>
       </div>
 
-      <div nz-row [nzGutter]="16" class="text-area-container">
-      <div nz-col [nzSpan]="24">
+      <div nz-col [nzSpan]="24" class="text-area-container">
         <nz-form-item>
           <nz-form-label nzFor="rapport" nzRequired>Rapport</nz-form-label>
           <nz-form-control>
-        <textarea
-          nz-input
-          id="rapport"
-          formControlName="rapport"
-          placeholder="Écrivez le rapport du patient ici..."
-          rows="6"
-          style="resize: both; width: 100%;"
-        ></textarea>
+            <angular-editor
+              formControlName="rapport"
+              [config]="editorConfig"
+              placeholder="Écrivez le rapport du patient ici..."
+              class="custom-angular-editor"
+            ></angular-editor>
           </nz-form-control>
         </nz-form-item>
-        <div class="form-actions" >
-          <button nz-button nzType="default" (click)="onCancel()" style="margin-right: 8px;">Annuler</button>
-          <button nz-button nzType="primary" [disabled]="patientForm.invalid">Enregistrer</button>
-        </div>
       </div>
     </div>
-    </div>
-  </form>
 
+    <div class="form-actions">
+      <button nz-button nzType="default" (click)="onCancel()" style="margin-right: 8px;">Annuler</button>
+      <button nz-button nzType="primary" [disabled]="patientForm.invalid">Enregistrer</button>
+    </div>
+
+  </form>
 </nz-card>

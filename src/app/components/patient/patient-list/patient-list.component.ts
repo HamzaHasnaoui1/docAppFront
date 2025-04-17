@@ -113,6 +113,17 @@ export class PatientListComponent implements OnInit {
     });
   }
 
+  showPhoneModal(p: any): void {
+    this.modal.create({
+      nzTitle: 'Numero du patient',
+      nzContent: `<p style="white-space: pre-wrap;">${p.numeroTelephone || 'Aucun Numero disponible.'}</p>`,
+      nzClosable: true,
+      nzWidth: 600,
+      nzFooter: null,
+      nzWrapClassName: 'phone-modal',
+    });
+  }
+
   prevPage(): void {
     if (this.currentPage > 0) this.loadPage(this.currentPage - 1);
   }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule} from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PatientService } from '../../../service/patient.service';
@@ -13,6 +13,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzCardComponent } from 'ng-zorro-antd/card';
 import { NzRadioComponent, NzRadioGroupComponent } from 'ng-zorro-antd/radio';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import {AngularEditorConfig, AngularEditorModule} from '@kolkov/angular-editor';;
 
 @Component({
   selector: 'app-create-patient',
@@ -28,14 +29,42 @@ import { NzMessageService } from 'ng-zorro-antd/message';
     NzSelectModule,
     NzCardComponent,
     NzRadioComponent,
-    NzRadioGroupComponent
+    NzRadioGroupComponent,
+    AngularEditorModule,
+    FormsModule,
   ]
 })
 export class CreatePatientComponent implements OnInit {
   patientForm!: FormGroup;
   titres = Object.values(Titre);
 
-  constructor(
+
+editorConfig: AngularEditorConfig = {
+  editable: true,
+  spellcheck: true,
+  height: '200px',
+  minHeight: '150px',
+  placeholder: 'Écrivez le rapport du patient ici...',
+  translate: 'no',
+  defaultParagraphSeparator: 'p',
+  defaultFontName: 'Times New Roman',
+  defaultFontSize: '2',
+  fonts: [
+    { class: 'times-new-roman', name: 'Times New Roman' },
+    { class: 'arial', name: 'Arial' },
+    { class: 'calibri', name: 'Calibri' },
+    { class: 'comic-sans-ms', name: 'Comic Sans MS' }
+  ],
+  toolbarHiddenButtons: [
+    ['undo', 'redo'],
+    ['insertVideo']
+  ]
+};
+
+
+
+
+constructor(
     private fb: FormBuilder,
     private router: Router,
     private patientService: PatientService,
@@ -80,4 +109,5 @@ export class CreatePatientComponent implements OnInit {
   onCancel(): void {
     this.router.navigate(['/doc/patients']);
   }
+
 }

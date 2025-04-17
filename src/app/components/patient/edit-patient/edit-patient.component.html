@@ -65,12 +65,19 @@
           </nz-form-control>
         </nz-form-item>
       </div>
-      <div nz-row [nzGutter]="16">
+      <div nz-row [nzGutter]="16" class="text-area-container">
         <div nz-col [nzSpan]="24">
           <nz-form-item>
             <nz-form-label nzFor="rapport" nzRequired>Rapport</nz-form-label>
             <nz-form-control>
-              <input nz-input id="rapport" formControlName="rapport" placeholder="Rapport du patient" />
+        <textarea
+          nz-input
+          id="rapport"
+          formControlName="rapport"
+          placeholder="Écrivez le rapport du patient ici..."
+          rows="6"
+          style="resize: both; width: 100%;"
+        ></textarea>
             </nz-form-control>
           </nz-form-item>
         </div>

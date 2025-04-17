@@ -118,5 +118,16 @@ export class MedecinListComponent implements OnInit{
   nextPage(): void {
     if (this.currentPage < this.totalPages - 1) this.loadPage(this.currentPage + 1);
   }
+
+  showPhoneModal(m: Medecin) {
+    this.modal.create({
+      nzTitle: 'Numero du medecin',
+      nzContent: `<p style="white-space: pre-wrap;">${m.numeroTelephone || 'Aucun Numero disponible.'}</p>`,
+      nzClosable: true,
+      nzWidth: 600,
+      nzFooter: null,
+      nzWrapClassName: 'phone-modal',
+    });
+  }
 }
 
