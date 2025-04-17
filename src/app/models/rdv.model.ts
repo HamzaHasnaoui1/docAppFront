@@ -6,7 +6,7 @@ export interface RendezVous {
   id: number;
   date: string;
   statusRDV: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'DONE';
-  patient?: Patient;
+  patient: Patient;
   medecin: Medecin;
   consultation?: Consultation;
 }
