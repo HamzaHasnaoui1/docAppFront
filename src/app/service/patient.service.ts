@@ -10,7 +10,7 @@ import {Patient} from '../models/patient.model';
 export class PatientService {
   constructor(private http: HttpClient) {}
 
-  getPatients(page: number = 0, size: number = 5, keyword: string = ''): Observable<any> {
+  getPatients(page: number = 0, keyword: string = '', size: number = 5): Observable<any> {
     const params = new HttpParams()
       .set('page', page)
       .set('size', size)
@@ -18,6 +18,8 @@ export class PatientService {
 
     return this.http.get<any>(`${environment.apiUrl}/user/patients`, { params });
   }
+
+
 
   createPatient( patient:Patient):Observable<Patient> {
     return this.http.post<Patient>(`${environment.apiUrl}/admin/patients`, patient);

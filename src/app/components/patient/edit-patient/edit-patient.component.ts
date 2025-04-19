@@ -12,27 +12,53 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { Titre } from '../../../enums/titre.enum';
 import {NzCardComponent} from 'ng-zorro-antd/card';
 import {NzRadioComponent, NzRadioGroupComponent} from 'ng-zorro-antd/radio';
+import {AngularEditorConfig, AngularEditorModule} from "@kolkov/angular-editor";
 
 @Component({
   selector: 'app-edit-patient',
   templateUrl: './edit-patient.component.html',
   standalone: true,
   styleUrl: './edit-patient.component.scss',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    NzFormModule,
-    NzInputModule,
-    NzButtonModule,
-    NzSelectModule,
-    NzCardComponent,
-    NzRadioComponent,
-    NzRadioGroupComponent
-  ]
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        NzFormModule,
+        NzInputModule,
+        NzButtonModule,
+        NzSelectModule,
+        NzCardComponent,
+        NzRadioComponent,
+        NzRadioGroupComponent,
+        AngularEditorModule
+    ]
 })
 export class EditPatientComponent implements OnInit {
   patientForm!: FormGroup;
   patientId!: number;
+
+
+  editorConfig: AngularEditorConfig = {
+    editable: true,
+    spellcheck: true,
+    height: '200px',
+    minHeight: '150px',
+    placeholder: 'Écrivez le rapport du patient ici...',
+    translate: 'no',
+    defaultParagraphSeparator: 'p',
+    defaultFontName: 'Times New Roman',
+    defaultFontSize: '2',
+    fonts: [
+      { class: 'times-new-roman', name: 'Times New Roman' },
+      { class: 'arial', name: 'Arial' },
+      { class: 'calibri', name: 'Calibri' },
+      { class: 'comic-sans-ms', name: 'Comic Sans MS' }
+    ],
+    toolbarHiddenButtons: [
+      ['undo', 'redo'],
+      ['insertVideo']
+    ]
+  };
+
 
   constructor(
     private fb: FormBuilder,

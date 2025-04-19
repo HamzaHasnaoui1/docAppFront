@@ -1,20 +1,14 @@
 <nz-card nzHoverable>
   <ng-container *ngIf="patients$ | async as patients; else error">
-
-    <div class="add-btn">
-      <button nz-button  (click)="onAdd()">
-        <i nz-icon nzType="plus" nzTheme="outline"></i>
-        Ajouter un patient
-      </button>
-    </div>
-
+    <app-search-add-actions
+      searchPlaceholder="Rechercher un patient"
+      addButtonText="Ajouter un patient"
+      (searchChange)="onSearch($event)"
+      (addClick)="onAdd()">
+    </app-search-add-actions>
     <nz-table
-      #patientTable
-      [nzData]="patients"
-      nzBordered
-      nzSize="middle"
-      [nzScroll]="{ x: '1000px' }"
-    >
+
+      #patientTable [nzData]="patients" nzBordered nzSize="middle" [nzScroll]="{ x: '1000px' }">
       <thead>
       <tr>
         <th nzWidth="80px">ID</th>
@@ -30,14 +24,16 @@
       </thead>
       <tbody>
       <tr *ngFor="let p of patientTable.data"
-          [ngClass]="{ 'fade-out': deletedIds.includes(p.id) }"
-      >
+          [ngClass]="{ 'fade-out': deletedIds.includes(p.id) }">
         <td>{{ p.id }}</td>
         <td>{{ p.titre }}</td>
         <td><strong>{{ p.nom }}</strong></td>
         <td>{{ p.dateNaissance | date: 'dd/MM/yyyy' }}</td>
-        <td>{{ p.numeroTelephone }}</td>
-        <td>{{ p.adresse }}</td>
+        <td class="center-cell">
+          <button nz-button nz-tooltip nzTooltipTitle="Voir le numero" nzType="link" (click)="showPhoneModal(p)">
+            <i nz-icon nzType="phone"></i>
+          </button>
+        </td>        <td>{{ p.adresse }}</td>
         <td class="center-cell">
           <button nz-button nz-tooltip nzTooltipTitle="Voir le Rapport" nzType="link" (click)="showRapportModal(p)">
             <i nz-icon nzType="eye"></i>

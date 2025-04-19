@@ -25,20 +25,15 @@
               "src/assets",
               {
                 "glob": "**/*",
-                "input": "public"
-              },
-              {
-                "glob": "**/*",
                 "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
                 "output": "/assets/"
               },
               {
-                "glob": "icons.svg",
-                "input": "node_modules/@kolkov/angular-editor/assets",
-                "output": "assets/"
+                "glob": "**/*",
+                "input": "./node_modules/@kolkov/angular-editor/assets/icons",
+                "output": "assets/ae-icons/"
               }
             ],
-
             "styles": [
               "./node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
               "src/styles.scss"
@@ -98,13 +93,9 @@
               "zone.js/testing"
             ],
             "tsConfig": "tsconfig.spec.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
+              "./node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -112,5 +103,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

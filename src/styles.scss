@@ -1,5 +1,9 @@
-@import "./app/assets/styles/custom-table";
-@import "./app/assets/styles/variables";
+@import "assets/styles/variables";
+
+angular-editor i {
+  font-family: "Font Awesome 5 Free"; // ou "Font Awesome 6 Free"
+  font-weight: 900;
+}
 
 * {
   padding: 0;

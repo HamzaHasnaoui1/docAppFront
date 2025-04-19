@@ -65,22 +65,18 @@
           </nz-form-control>
         </nz-form-item>
       </div>
-      <div nz-row [nzGutter]="16" class="text-area-container">
-        <div nz-col [nzSpan]="24">
-          <nz-form-item>
-            <nz-form-label nzFor="rapport" nzRequired>Rapport</nz-form-label>
-            <nz-form-control>
-        <textarea
-          nz-input
-          id="rapport"
-          formControlName="rapport"
-          placeholder="Écrivez le rapport du patient ici..."
-          rows="6"
-          style="resize: both; width: 100%;"
-        ></textarea>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
+      <div nz-col [nzSpan]="24" class="text-area-container">
+        <nz-form-item>
+          <nz-form-label nzFor="rapport" nzRequired>Rapport</nz-form-label>
+          <nz-form-control>
+            <angular-editor
+              formControlName="rapport"
+              [config]="editorConfig"
+              placeholder="Écrivez le rapport du patient ici..."
+              class="custom-angular-editor"
+            ></angular-editor>
+          </nz-form-control>
+        </nz-form-item>
       </div>
     </div>
 

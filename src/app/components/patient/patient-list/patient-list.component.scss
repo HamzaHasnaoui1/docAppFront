@@ -1,16 +1,41 @@
-.center-cell {
+.search-add-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-}
+  margin-bottom: 16px;
+  gap: 16px;
 
+  .search-form {
+    flex-grow: 1;
+    max-width: 500px;
 
-.add-btn {
-  display: flex;
-  justify-content: flex-end;  // Aligner à droite
-  margin-bottom: 16px;         // Espacement sous le bouton
+    ::ng-deep .ant-input-group {
+      display: flex;
+      align-items: stretch;
+    }
 
-  button {
+    ::ng-deep .ant-input {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    ::ng-deep .ant-input-group-addon {
+      padding: 0 !important;
+      margin: 0 !important;
+      border-left: none;
+    }
+
+    ::ng-deep button[nzSearch] {
+      height: 32px;
+      padding: 0 12px;
+      margin-left: -1px; // évite la double bordure
+      border-radius: 0 4px 4px 0;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .add-btn {
     background-color: #1890ff;  // Couleur de fond principale de NG-ZORRO (ou une couleur personnalisée)
     color: white;               // Texte blanc
     border: none;               // Pas de bordure
@@ -20,20 +45,19 @@
     border-radius: 4px;         // Coins arrondis pour un effet plus doux
     display: inline-flex;
     align-items: center;        // Aligner le texte et l'icône au centre
-    transition: background-color 0.3s; // Transition pour la couleur de fond lors du survol
+    transition: background-color 0.3s;
 
     i {
-      margin-right: 8px;         // Espacement entre l'icône et le texte
+      font-size: 14px;
     }
 
     &:hover {
-      background-color: #40a9ff; // Changer la couleur de fond au survol
+      background-color: #40a9ff;
     }
 
     &:focus {
-      outline: none;             // Retirer la bordure au focus
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
     }
   }
 }
-
-

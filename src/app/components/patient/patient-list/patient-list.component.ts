@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Patient } from '../../../models/patient.model';
 import { PatientService } from '../../../service/patient.service';
-import { catchError, map, Observable, throwError, of } from 'rxjs';
+import {catchError, map, Observable, throwError, of, switchMap, Subject} from 'rxjs';
 import {AsyncPipe, CommonModule, DatePipe} from '@angular/common';
 import {NzTableModule} from 'ng-zorro-antd/table';
 import {NzTagModule} from 'ng-zorro-antd/tag';
@@ -15,6 +15,10 @@ import {NzPopconfirmDirective} from 'ng-zorro-antd/popconfirm';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {NzModalModule, NzModalService} from 'ng-zorro-antd/modal';
 import {NzToolTipModule} from 'ng-zorro-antd/tooltip';
+import {NzInputGroupComponent} from 'ng-zorro-antd/input';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {SearchAddActionsComponent} from '../../../shared/search-add-actions/search-add-actions.component';
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 
 
 @Component({
@@ -34,7 +38,12 @@ import {NzToolTipModule} from 'ng-zorro-antd/tooltip';
     NzSpaceModule,
     NzPopconfirmDirective,
     NzModalModule,
-    NzToolTipModule
+    NzToolTipModule,
+    NzInputGroupComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    SearchAddActionsComponent,
+    NzModalModule,
   ],
   styleUrl: './patient-list.component.scss'
 })
@@ -43,38 +52,64 @@ export class PatientListComponent implements OnInit {
   errorMessage = '';
   currentPage = 0;
   totalPages = 0;
+  deletedIds: number[] = [];
+  searchTerm$ = new Subject<string>();
 
-  constructor(private patientService: PatientService , private router: Router, private message: NzMessageService,
-              private modal: NzModalService
-
+  constructor(
+    private patientService: PatientService,
+    private router: Router,
+    private message: NzMessageService,
+    private modal: NzModalService
   ) {}
 
   ngOnInit(): void {
+    this.setupSearch();
     this.loadPage(0);
   }
 
-  loadPage(page: number): void {
-    this.patients$ = this.patientService.getPatients(page).pipe(
-      map((response: any) => {
-        this.totalPages = response.totalPages;
-        this.currentPage = response.currentPage;
-        return response.patients;
-      }),
-      catchError(err => {
-        this.errorMessage = err.message;
-        return of([]);
-      })
-    );
+  private setupSearch(): void {
+    this.searchTerm$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(keyword =>
+        this.patientService.getPatients(0, keyword).pipe(
+          catchError(err => {
+            this.errorMessage = err.message;
+            return of({ patients: [], totalPages: 0, currentPage: 0 });
+          })
+        )
+      )
+    ).subscribe(response => {
+      this.patients$ = of(response.patients);
+      this.totalPages = response.totalPages;
+      this.currentPage = response.currentPage;
+    });
   }
 
+  onSearch(keyword: string): void {
+    this.searchTerm$.next(keyword);
+  }
 
+  loadPage(page: number): void {
+    this.patientService.getPatients(page).pipe(
+      catchError(err => {
+        this.errorMessage = err.message;
+        return of({patients: [], totalPages: 0, currentPage: 0});
+      })
+    ).subscribe(response => {
+      this.patients$ = of(response.patients);
+      this.totalPages = response.totalPages;
+      this.currentPage = response.currentPage;
+    });
+
+  }
   onEdit(patient: Patient): void {
     this.router.navigate(['/doc/patients/edit', patient.id]);
   }
 
   onDelete(patient: Patient): void {
     this.modal.confirm({
-      nzTitle: `Voulez-vous supprimer ${patient.titre} ${patient.nom} ?`,
+      nzTitle: `Voulez-vous supprimer ${patient.titre || ''} ${patient.nom} ?`,
       //nzContent: 'Cette action est irréversible.',
       nzOkText: 'Supprimer',
       nzOkDanger: true,
@@ -92,7 +127,6 @@ export class PatientListComponent implements OnInit {
     });
   }
 
-  deletedIds: number[] = [];
 
   animateRemoval(id: number): void {
     this.deletedIds.push(id);
@@ -136,4 +170,6 @@ export class PatientListComponent implements OnInit {
   onAdd() {
     this.router.navigate(['/doc/patients/create']);
   }
+
+
 }

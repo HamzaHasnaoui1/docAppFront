@@ -36,8 +36,6 @@ import {AngularEditorConfig, AngularEditorModule} from '@kolkov/angular-editor';
 })
 export class CreatePatientComponent implements OnInit {
   patientForm!: FormGroup;
-  titres = Object.values(Titre);
-
 
 editorConfig: AngularEditorConfig = {
   editable: true,
@@ -61,9 +59,6 @@ editorConfig: AngularEditorConfig = {
   ]
 };
 
-
-
-
 constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -80,17 +75,17 @@ constructor(
       nom: ['', Validators.required],
       dateNaissance: ['', Validators.required],
       malade: [false],
-      adresse: [''],
+      adresse: ['',Validators.required],
       codePostal: [''],
-      numeroTelephone: [''],
+      numeroTelephone: ['', Validators.required],
       titre: [null, Validators.required],
-      rapport: ['']
+      rapport: ['',Validators.required]
     });
   }
 
   onSubmit(): void {
     if (this.patientForm.invalid) {
-      this.message.warning('Veuillez remplir tous les champs requis.');
+      this.patientForm.markAllAsTouched();
       return;
     }
 
@@ -110,4 +105,7 @@ constructor(
     this.router.navigate(['/doc/patients']);
   }
 
+  clearReport() {
+    this.patientForm.get('rapport')?.setValue('');
+  }
 }

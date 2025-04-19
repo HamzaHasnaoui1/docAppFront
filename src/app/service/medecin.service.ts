@@ -11,7 +11,7 @@ import {Medecin} from '../models/medecin.model';
 export class MedecinService {
   constructor(private http: HttpClient) {}
 
-  getMedecins(page: number = 0, size: number = 5, keyword: string = ''): Observable<any> {
+  getMedecins(page: number = 0, keyword: string = '', size: number = 5): Observable<any> {
     const params = new HttpParams()
       .set('page', page)
       .set('size', size)

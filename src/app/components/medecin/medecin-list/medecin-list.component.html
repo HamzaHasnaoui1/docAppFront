@@ -1,11 +1,11 @@
 <nz-card nzHoverable>
   <ng-container *ngIf="medecins$ | async as medecins; else error">
-    <div class="add-btn">
-      <button nz-button  (click)="onAdd()">
-        <i nz-icon nzType="plus" nzTheme="outline"></i>
-        Ajouter un Medecin
-      </button>
-    </div>
+    <app-search-add-actions
+      searchPlaceholder="Rechercher un medecin"
+      addButtonText="Ajouter un medecin"
+      (searchChange)="onSearch($event)"
+      (addClick)="onAdd()">
+    </app-search-add-actions>
     <nz-table
       #medecinTable
       [nzData]="medecins"

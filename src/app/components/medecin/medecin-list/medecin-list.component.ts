@@ -13,7 +13,7 @@ import {
 } from "ng-zorro-antd/table";
 import {NzTagComponent, NzTagModule} from "ng-zorro-antd/tag";
 import {NzWaveDirective} from "ng-zorro-antd/core/wave";
-import {catchError, map, Observable, of} from 'rxjs';
+import {catchError, map, Observable, of, Subject, switchMap} from 'rxjs';
 import {Medecin} from '../../../models/medecin.model';
 import {MedecinService} from '../../../service/medecin.service';
 import {NzSpaceModule} from 'ng-zorro-antd/space';
@@ -22,6 +22,10 @@ import {NzMessageService} from 'ng-zorro-antd/message';
 import {NzModalModule, NzModalService} from 'ng-zorro-antd/modal';
 import {NzTooltipDirective, NzToolTipModule} from 'ng-zorro-antd/tooltip';
 import {NzPopconfirmDirective} from 'ng-zorro-antd/popconfirm';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {NzInputGroupComponent} from "ng-zorro-antd/input";
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
+import {SearchAddActionsComponent} from '../../../shared/search-add-actions/search-add-actions.component';
 
 @Component({
   selector: 'app-medecin-list',
@@ -38,7 +42,13 @@ import {NzPopconfirmDirective} from 'ng-zorro-antd/popconfirm';
     NzSpaceModule,
     NzPopconfirmDirective,
     NzModalModule,
-    NzToolTipModule
+    NzToolTipModule,
+    FormsModule,
+    NzInputGroupComponent,
+    ReactiveFormsModule,
+    NzModalModule,
+    SearchAddActionsComponent,
+
   ],
   templateUrl: './medecin-list.component.html',
   standalone: true,
@@ -49,27 +59,55 @@ export class MedecinListComponent implements OnInit{
   errorMessage = '';
   currentPage = 0;
   totalPages = 0;
+  deletedIds: number[] = [];
+  searchTerm$ = new Subject<string>();
+
 
   constructor(private medecinService: MedecinService, private router: Router, private message: NzMessageService,
-              private modal: NzModalService) {}
+              private modal: NzModalService) {
+  }
 
   ngOnInit(): void {
+    this.setupSearch();
     this.loadPage(0);
+  }
+
+  private setupSearch(): void {
+    this.searchTerm$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(keyword =>
+        this.medecinService.getMedecins(0, keyword).pipe(
+          catchError(err => {
+            this.errorMessage = err.message;
+            return of({ medecins: [], totalPages: 0, currentPage: 0 });
+          })
+        )
+      )
+    ).subscribe(response => {
+      this.medecins$ = of(response.medecins);
+      this.totalPages = response.totalPages;
+      this.currentPage = response.currentPage;
+    });
+  }
+
+  onSearch(keyword: string): void {
+    this.searchTerm$.next(keyword);
   }
 
 
   loadPage(page: number): void {
-    this.medecins$ = this.medecinService.getMedecins(page).pipe(
-      map((response: any) => {
-        this.totalPages = response.totalPages;
-        this.currentPage = response.currentPage;
-        return response.medecins;
-      }),
+    this.medecinService.getMedecins(page).pipe(
       catchError(err => {
         this.errorMessage = err.message;
-        return of([]);
+        return of({medecins: [], totalPages: 0, currentPage: 0});
       })
-    );
+    ).subscribe(response => {
+      this.medecins$ = of(response.medecins);
+      this.totalPages = response.totalPages;
+      this.currentPage = response.currentPage;
+    });
+
   }
 
 
@@ -97,7 +135,6 @@ export class MedecinListComponent implements OnInit{
     });
   }
 
-  deletedIds: number[] = [];
 
   animateRemoval(id: number): void {
     this.deletedIds.push(id);
