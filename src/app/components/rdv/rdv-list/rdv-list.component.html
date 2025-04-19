@@ -14,7 +14,8 @@
         <th nzWidth="150px">Médecin</th>
         <th nzWidth="150px">Patient</th>
         <th nzWidth="150px">Prix du Consultation</th>
-        <th nzWidth="100px">Statut</th>
+        <th nzWidth="100px">Status</th>
+        <th nzWidth="100px">Actions</th>
       </tr>
       </thead>
       <tbody>
@@ -28,7 +29,15 @@
           <nz-tag [nzColor]="getStatusConfig(r.statusRDV)?.color || 'default'">
             {{ getStatusConfig(r.statusRDV)?.label || 'Inconnu' }}
           </nz-tag>
+        </td>
+        <td class="center-cell">
+          <button nz-button nz-tooltip nzTooltipTitle="Modifier" nzType="link" (click)="onEdit(r)">
+            <i nz-icon nzType="edit"></i>
+          </button>
 
+          <button nz-button nz-tooltip nzTooltipTitle="Supprimer" nzType="link" nzDanger (click)="onDelete(r)">
+            <i nz-icon nzType="delete"></i>
+          </button>
         </td>
       </tr>
       </tbody>

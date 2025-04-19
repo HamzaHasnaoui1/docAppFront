@@ -6,4 +6,6 @@ export interface Consultation {
   rapport: string;
   rendezVous: RendezVous;
   prix: string;
+  statusRDV: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'DONE';
+
 }
