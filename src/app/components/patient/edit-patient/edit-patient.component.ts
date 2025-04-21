@@ -19,7 +19,7 @@ import {AngularEditorConfig, AngularEditorModule} from "@kolkov/angular-editor";
   templateUrl: './edit-patient.component.html',
   standalone: true,
   styleUrl: './edit-patient.component.scss',
-    imports: [
+  imports: [
         CommonModule,
         ReactiveFormsModule,
         NzFormModule,
@@ -30,7 +30,7 @@ import {AngularEditorConfig, AngularEditorModule} from "@kolkov/angular-editor";
         NzRadioComponent,
         NzRadioGroupComponent,
         AngularEditorModule
-    ]
+  ]
 })
 export class EditPatientComponent implements OnInit {
   patientForm!: FormGroup;

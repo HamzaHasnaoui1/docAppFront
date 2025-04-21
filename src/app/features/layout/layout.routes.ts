@@ -28,6 +28,41 @@ export const LAYOUT_ROUTES: Routes = [
           ),
       },
       {
+        path: 'notification',
+        loadChildren: () =>
+          import('../../components/notification/notification.routes').then(
+            (c) => c.NOTIFICATION_ROUTES
+          ),
+      },
+      {
+        path: 'paiement',
+        loadChildren: () =>
+          import('../../components/paiement/paiement.routes').then(
+            (c) => c.PAIEMENT_ROUTES
+          ),
+      },
+      {
+        path: 'ordonnance',
+        loadChildren: () =>
+          import('../../components/ordonnance/ordonnance.routes').then(
+            (c) => c.ORDONNANCE_ROUTES
+          ),
+      },
+      {
+        path: 'dossierMedical',
+        loadChildren: () =>
+          import('../../components/dossierMedical/dossierMedical.routes').then(
+            (c) => c.DOSSIERMEDICAL_ROUTES
+          ),
+      },
+      {
+        path: 'disponibiliteMedecin',
+        loadChildren: () =>
+          import('../../components/disponibiliteMedecin/disponibiliteMedecin.routes').then(
+            (c) => c.DISPONIBILITE_ROUTES
+          ),
+      },
+      {
         path: 'rdv',
         loadChildren: () =>
           import('../../components/rdv/rdv.routes').then(

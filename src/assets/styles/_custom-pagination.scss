@@ -5,7 +5,7 @@
   }
 
   .custom-pagination .ant-pagination-item-active {
-    background-color: #0f736a !important; /* Couleur de fond pour la page active */
+    background-color: #007bff !important; /* Couleur de fond pour la page active */
     color: white !important; /* Couleur du texte de la page active */
     border-radius: 50% !important; /* Pour un style arrondi */
   }
@@ -20,7 +20,7 @@
   }
   .custom-pagination .ant-pagination-prev,
   .custom-pagination .ant-pagination-next {
-    color: #0f736a !important; /* Couleur des flèches par défaut */
+    color: #007bff !important; /* Couleur des flèches par défaut */
   }
 
   .custom-pagination .ant-pagination-prev:hover,
@@ -31,7 +31,7 @@
   .custom-pagination .ant-pagination-prev .anticon,
   .custom-pagination .ant-pagination-next .anticon {
     font-size: 19px; /* Taille des flèches */
-    color: #0f736a !important; /* Couleur des icônes de flèches */
+    color: #007bff !important; /* Couleur des icônes de flèches */
   }
 
   .ant-pagination-next .ant-pagination-item-link,
@@ -44,7 +44,7 @@
 
   .custom-pagination .ant-pagination-prev:hover .anticon,
   .custom-pagination .ant-pagination-next:hover .anticon {
-    color: #0c5a55 !important;
+    color: #007bff !important;
   }
 
 }

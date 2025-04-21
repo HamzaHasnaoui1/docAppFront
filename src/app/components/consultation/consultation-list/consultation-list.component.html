@@ -11,6 +11,7 @@
       <thead>
       <tr>
         <th nzWidth="100px">ID</th>
+        <th nzWidth="100px">Nom du Patient</th>
         <th nzWidth="100px">Date Du Consultation</th>
         <th nzWidth="100px">Rapport</th>
         <th nzWidth="120px">Rendez-Vous</th>
@@ -23,13 +24,14 @@
       <tr *ngFor="let c of consultationTable.data"
           [ngClass]="{ 'fade-out': deletedIds.includes(c.id) }">
         <td>{{ c.id }}</td>
+        <td>{{ c.rendezVous.patient.nom }}</td>
         <td>{{ c.dateConsultation | date: 'dd/MM/yyyy'}}</td>
         <td class="center-cell">
           <button nz-button nz-tooltip nzTooltipTitle="Voir le Rapport" nzType="link" (click)="showRapportModal(c)">
             <i nz-icon nzType="eye"></i>
           </button>
         </td>
-        <td>{{ c.rendezVous }}</td>
+        <td>{{ c.rendezVous?.date | date: 'dd/MM/yyyy' }}</td>
         <td>{{ c.prix }}</td>
         <td>
           <nz-tag [nzColor]="getStatusConfig(c.statusRDV)?.color || 'default'">
@@ -48,6 +50,19 @@
       </tr>
       </tbody>
     </nz-table>
+    <div class="pagination-controls">
+      <button nz-button (click)="prevPage()" [disabled]="currentPage === 0">
+        <i nz-icon nzType="left"></i> Précédent
+      </button>
+
+      <span class="page-info">
+        Page {{ currentPage + 1 }} / {{ totalPages }}
+      </span>
+
+      <button nz-button (click)="nextPage()" [disabled]="currentPage === totalPages - 1">
+        Suivant <i nz-icon nzType="right"></i>
+      </button>
+    </div>
   </ng-container>
   <ng-template #error>
     <nz-alert nzType="error" [nzMessage]="errorMessage" nzShowIcon></nz-alert>

@@ -1,7 +1,13 @@
-@import "assets/styles/variables";
+@import 'assets/styles/variables';
+
+// Define %custom-content here
+%custom-content {
+  display: flex;
+  flex-direction: column;
+}
 
 angular-editor i {
-  font-family: "Font Awesome 5 Free"; // ou "Font Awesome 6 Free"
+  font-family: 'Font Awesome 5 Free'; // or "Font Awesome 6 Free"
   font-weight: 900;
 }
 
@@ -23,7 +29,6 @@ angular-editor i {
   }
 }
 
-
 .pointer {
   cursor: pointer;
 }
@@ -41,7 +46,6 @@ button {
   cursor: pointer;
 }
 
-
 .container {
   width: 90%;
   margin: 0 auto;
@@ -52,10 +56,34 @@ button {
   display: inline-block !important;
 }
 
+body {
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  color: #1f1f1f;
+  background-color: #f5f5f5;
+  margin: 0;
+}
+
+.layout[_ngcontent-ng-c2432897389] .inner-content[_ngcontent-ng-c2432897389] {
+  padding-block: 8px 0;
+  height: calc(100vh - 178px);
+  overflow-y: auto;
+  background-color: transparent !important;
+  background-image: url('assets/images/blur-hospital.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+
+nz-card {
+  background-color: transparent !important; // Make cards transparent
+  border: none;
+}
 
 nz-table {
   margin-top: 16px;
-
+  background-color: transparent !important; //Make the nz-table transparent
   th {
     background-color: #fafafa;
     font-weight: 600;
@@ -64,6 +92,21 @@ nz-table {
   .ant-tag {
     margin: 0;
   }
+
+  .ant-table-tbody {
+    background-color: transparent !important;
+  }
+}
+.ant-modal-content{
+  background-color: transparent !important; //Make the ant-modal-content transparent
+}
+
+nz-layout, nz-content {
+  background-color: transparent !important; // Make the content transparent
+}
+
+nz-tabset, nz-tab {
+  background-color: transparent !important; // Make the content transparent
 }
 
 .pagination-controls {
@@ -84,18 +127,9 @@ nz-table {
   }
 }
 
-body {
-  font-family: 'Segoe UI', Roboto, sans-serif;
-  font-size: 14px;
-  color: #1f1f1f;
-  background-color: #f5f5f5;
-  margin: 0;
-}
-
 .ant-pagination.ant-table-pagination {
   display: none !important;
 }
-
 
 .ant-table {
   .ant-table-thead > tr > th {
@@ -115,7 +149,6 @@ body {
   .ant-table-tbody > tr > td {
     border-bottom: 1px solid #f0f0f0 !important;
     text-align: center !important;
-
   }
 
   .fade-out {
@@ -140,6 +173,21 @@ body {
   }
 }
 
+.ant-card-body{
+  /*
+  background-color: #fff;
+  */
+}
+.ant-card-head{
+  background-color: #fff;
+}
+.ant-card-bordered {
+  border: none
+}
+.ant-modal-body{
+  background-color: #fff;
+}
+
 .form-card {
   max-width: 800px;
   margin: auto;
@@ -156,7 +204,8 @@ body {
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin-top: 20px;  /* Ajoute un peu d'espace au-dessus du champ */
+  margin-top: 20px;
+  background-color: #ffffff;
 }
 
 /* Style du champ de texte */
@@ -176,7 +225,7 @@ textarea[nz-input] {
 /* Quand l'utilisateur entre du texte dans le champ, on peut changer le bord pour un effet visuel */
 textarea[nz-input]:focus {
   border-color: #007bff;
-  outline: none;  /* enlever le contour par défaut */
+  outline: none; /* enlever le contour par défaut */
 }
 
 /* Optionnel: Ajout d'un effet de survol pour les zones de texte */

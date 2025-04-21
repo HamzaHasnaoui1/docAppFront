@@ -66,7 +66,7 @@ constructor(private consultationService:ConsultationService, private router: Rou
   }
 
   onEdit(consultaion: Consultation): void {
-  this.router.navigate(['/doc/consultation/edit', consultaion.id]);
+  this.router.navigate(['/doc/consultations/edit', consultaion.id]);
   }
 
   onDelete(consultation: Consultation): void {
@@ -116,5 +116,13 @@ constructor(private consultationService:ConsultationService, private router: Rou
 
   getStatusConfig(status: RdvStatus) {
     return RDV_STATUS_CONFIG[status];
+  }
+
+  prevPage(): void {
+    if (this.currentPage > 0) this.loadPage(this.currentPage - 1);
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages - 1) this.loadPage(this.currentPage + 1);
   }
 }

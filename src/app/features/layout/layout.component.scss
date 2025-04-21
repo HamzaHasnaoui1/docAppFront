@@ -26,14 +26,14 @@
   }
 
   .inner-content::-webkit-scrollbar-thumb {
-    background: #00736e;
+    background: #007bff;
     border-radius: 5px;
     border: 2px solid #ffffff;
   }
 
   @supports not selector(::-webkit-scrollbar) {
     body {
-      scrollbar-color: #00736e #fff;
+      scrollbar-color: #007bff #fff;
     }
   }
 }

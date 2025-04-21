@@ -74,3 +74,10 @@
   display: flex;
   gap: 8px;
 }
+
+.custom-angular-editor {
+  .angular-editor-wrapper {
+    background-color: transparent !important; // Remove the background
+    border: none !important; // Remove the border
+  }
+}
