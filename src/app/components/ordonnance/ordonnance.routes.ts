@@ -23,6 +23,17 @@ export const ORDONNANCE_ROUTES: Routes = [
       breadcrumb: 'Création'
     }
   },
+  {
+    path: 'edit/:id',
+    title: 'Édition ordonnance',
+    loadComponent: () =>
+      import('./edit-ordonnance/edit-ordonnance.component').then(
+        (c) => c.EditOrdonnanceComponent
+      ),
+    data: {
+      breadcrumb: 'Édition'
+    }
+  },
 
   // Redirections
   {

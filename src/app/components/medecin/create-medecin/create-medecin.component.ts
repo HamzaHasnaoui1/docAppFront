@@ -8,10 +8,8 @@ import {NzSelectModule} from 'ng-zorro-antd/select';
 import {NzCardComponent} from 'ng-zorro-antd/card';
 import {NzRadioComponent, NzRadioGroupComponent} from 'ng-zorro-antd/radio';
 import {Router} from '@angular/router';
-import {PatientService} from '../../../service/patient.service';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {MedecinService} from '../../../service/medecin.service';
-import {Patient} from '../../../models/patient.model';
 import {Medecin} from '../../../models/medecin.model';
 
 @Component({

@@ -23,6 +23,17 @@ export const DISPONIBILITE_ROUTES: Routes = [
       breadcrumb: 'Création'
     }
   },
+  {
+    path: 'edit/:id',
+    title: 'Édition disponibilite',
+    loadComponent: () =>
+      import('./edit-disponibilite-medecin/edit-disponibilite-medecin.component').then(
+        (c) => c.EditDisponibiliteMedecinComponent
+      ),
+    data: {
+      breadcrumb: 'Édition'
+    }
+  },
   // Redirections
   {
     path: '',

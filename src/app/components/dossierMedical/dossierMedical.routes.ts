@@ -34,6 +34,17 @@ export const DOSSIERMEDICAL_ROUTES: Routes = [
       breadcrumb: 'Detail'
     }
   },
+  {
+    path: 'edit/:id',
+    title: 'Édition dossier-medical',
+    loadComponent: () =>
+      import('./edit-dossier-medical/edit-dossier-medical.component').then(
+        (c) => c.EditDossierMedicalComponent
+      ),
+    data: {
+      breadcrumb: 'Édition'
+    }
+  },
   // Redirections
   {
     path: '',
