@@ -1,6 +1,6 @@
 import {RendezVous} from './rdv.model';
 import {DossierMedical} from './dossierMedical.model';
-import {Ordonnance} from './ordonnance.mode';
+import {Ordonnance} from './ordonnance.model';
 
 export interface Consultation {
   id: number;
