@@ -19,6 +19,14 @@ import {NzInputGroupComponent} from 'ng-zorro-antd/input';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SearchAddActionsComponent} from '../../../shared/search-add-actions/search-add-actions.component';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
+import {NzCollapseComponent, NzCollapsePanelComponent} from 'ng-zorro-antd/collapse';
+import {RDV_STATUS_CONFIG, RdvStatus} from '../../../models/rdv.model';
+import {Consultation} from '../../../models/consultation.model';
+import {ConsultationService} from '../../../service/consultation.service';
+import {NzEmptyComponent} from 'ng-zorro-antd/empty';
+import {NzDescriptionsComponent, NzDescriptionsItemComponent} from 'ng-zorro-antd/descriptions';
+import {NzOptionComponent, NzSelectComponent} from 'ng-zorro-antd/select';
+import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 
 
 @Component({
@@ -44,8 +52,37 @@ import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
     ReactiveFormsModule,
     SearchAddActionsComponent,
     NzModalModule,
+    NzCollapsePanelComponent,
+    NzCollapseComponent,
+    NzEmptyComponent,
+    NzDescriptionsItemComponent,
+    NzDescriptionsComponent,
+    NzSelectComponent,
+    NzOptionComponent,
   ],
-  styleUrl: './patient-list.component.scss'
+  styleUrl: './patient-list.component.scss',
+  animations: [
+    trigger('listAnimation', [
+      transition('* => *', [
+        query(':enter', [
+          style({
+            opacity: 0,
+            transform: 'translateY(-20px)',
+            background: 'transparent'
+          }),
+          stagger('50ms', [
+            animate('300ms ease-out',
+              style({
+                opacity: 1,
+                transform: 'translateY(0)',
+                background: 'transparent'
+              }))
+          ])
+        ], { optional: true })
+      ])
+    ])
+  ]
+
 })
 export class PatientListComponent implements OnInit {
   patients$!: Observable<Patient[]>;
@@ -54,9 +91,12 @@ export class PatientListComponent implements OnInit {
   totalPages = 0;
   deletedIds: number[] = [];
   searchTerm$ = new Subject<string>();
+  totalPagesArray: number[] = [];
+
 
   constructor(
     private patientService: PatientService,
+    private consultationService:ConsultationService,
     private router: Router,
     private message: NzMessageService,
     private modal: NzModalService
@@ -86,6 +126,9 @@ export class PatientListComponent implements OnInit {
     });
   }
 
+  getStatusConfig(status: RdvStatus) {
+    return RDV_STATUS_CONFIG[status];
+  }
   onSearch(keyword: string): void {
     this.searchTerm$.next(keyword);
   }
@@ -100,14 +143,18 @@ export class PatientListComponent implements OnInit {
       this.patients$ = of(response.patients);
       this.totalPages = response.totalPages;
       this.currentPage = response.currentPage;
+      this.initPagesArray();
     });
 
   }
-  onEdit(patient: Patient): void {
+  onEditPatient(patient: Patient): void {
     this.router.navigate(['/doc/patients/edit', patient.id]);
   }
+  onEdit(consultation: Consultation): void {
+    this.router.navigate(['/doc/consultations/edit', consultation.id]);
+  }
 
-  onDelete(patient: Patient): void {
+  onDeletePatient(patient: Patient): void {
     this.modal.confirm({
       nzTitle: `Voulez-vous supprimer ${patient.titre || ''} ${patient.nom} ?`,
       //nzContent: 'Cette action est irréversible.',
@@ -119,6 +166,25 @@ export class PatientListComponent implements OnInit {
           next: () => {
             this.message.success(`Patient "${patient.nom}" supprimé avec succès`);
             this.animateRemoval(patient.id);
+          },
+          error: (err) => {
+            this.message.error(`Erreur : ${err.message}`);
+          }
+        })
+    });
+  }
+  onDelete(consultation: Consultation): void {
+    this.modal.confirm({
+      nzTitle: `Voulez-vous supprimer la consultation du ${consultation.rendezVous.patient}  ?`,
+      //nzContent: 'Cette action est irréversible.',
+      nzOkText: 'Supprimer',
+      nzOkDanger: true,
+      nzCancelText: 'Annuler',
+      nzOnOk: () =>
+        this.consultationService.deleteConsultation(consultation.id).subscribe({
+          next: () => {
+            this.message.success(`Consultation numero "${consultation.id}" supprimé avec succès`);
+            this.animateRemoval(consultation.id);
           },
           error: (err) => {
             this.message.error(`Erreur : ${err.message}`);
@@ -147,6 +213,16 @@ export class PatientListComponent implements OnInit {
     });
   }
 
+  showOrdonnanceModal(c: any): void {
+    this.modal.create({
+      nzTitle: 'Ordonnance du patient',
+      nzContent: `<p style="white-space: pre-wrap;">${c.ordonnance || 'Aucune ordonnance disponible.'}</p>`,
+      nzClosable: true,
+      nzWidth: 600,
+      nzFooter: null,
+      nzWrapClassName: 'rapport-modal',
+    });
+  }
   showPhoneModal(p: any): void {
     this.modal.create({
       nzTitle: 'Numero du patient',
@@ -159,11 +235,11 @@ export class PatientListComponent implements OnInit {
   }
 
   prevPage(): void {
-    if (this.currentPage > 0) this.loadPage(this.currentPage - 1);
+    this.goToPage(this.currentPage - 1);
   }
 
   nextPage(): void {
-    if (this.currentPage < this.totalPages - 1) this.loadPage(this.currentPage + 1);
+    this.goToPage(this.currentPage + 1);
   }
 
 
@@ -171,5 +247,14 @@ export class PatientListComponent implements OnInit {
     this.router.navigate(['/doc/patients/create']);
   }
 
+  initPagesArray(): void {
+    this.totalPagesArray = Array.from({length: this.totalPages}, (_, i) => i + 1);
+  }
 
+  goToPage(pageIndex: number): void {
+    if (pageIndex >= 0 && pageIndex < this.totalPages) {
+      this.currentPage = pageIndex;
+      this.loadPage(pageIndex);
+    }
+  }
 }

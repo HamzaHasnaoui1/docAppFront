@@ -1,4 +1,6 @@
 import {Titre} from '../enums/titre.enum';
+import {DossierMedical} from './dossierMedical.model';
+import {RendezVous} from './rdv.model';
 
 export interface Patient {
   id: number;
@@ -9,6 +11,6 @@ export interface Patient {
   codePostal: string ;
   numeroTelephone: string;
   titre: Titre;
-  rapport: string;
+  dossierMedical:DossierMedical;
 }
 

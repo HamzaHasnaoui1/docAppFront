@@ -1,78 +1,149 @@
-<nz-card nzHoverable>
+<nz-card nzHoverable class="patient-management modern-theme">
   <ng-container *ngIf="patients$ | async as patients; else error">
-    <app-search-add-actions
-      searchPlaceholder="Rechercher un patient"
-      addButtonText="Ajouter un patient"
-      (searchChange)="onSearch($event)"
-      (addClick)="onAdd()">
-    </app-search-add-actions>
-    <nz-table
+    <!-- Header avec effet de verre -->
+    <div class="glass-header">
+      <app-search-add-actions
+        searchPlaceholder="Rechercher un patient..."
+        addButtonText="Nouveau Patient"
+        (searchChange)="onSearch($event)"
+        (addClick)="onAdd()">
+      </app-search-add-actions>
+    </div>
 
-      #patientTable [nzData]="patients" nzBordered nzSize="middle" [nzScroll]="{ x: '1000px' }">
-      <thead>
-      <tr>
-        <th nzWidth="80px">ID</th>
-        <th nzWidth="40px">Titre</th>
-        <th nzWidth="150px">Nom Complet</th>
-        <th nzWidth="120px">Naissance</th>
-        <th nzWidth="150px">Téléphone</th>
-        <th nzWidth="150px">Adresse</th>
-        <th nzWidth="70px">Rapport</th>
-        <th nzWidth="100px">Statut</th>
-        <th nzWidth="100px">Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let p of patientTable.data"
-          [ngClass]="{ 'fade-out': deletedIds.includes(p.id) }">
-        <td>{{ p.id }}</td>
-        <td>{{ p.titre }}</td>
-        <td><strong>{{ p.nom }}</strong></td>
-        <td>{{ p.dateNaissance | date: 'dd/MM/yyyy' }}</td>
-        <td class="center-cell">
-          <button nz-button nz-tooltip nzTooltipTitle="Voir le numero" nzType="link" (click)="showPhoneModal(p)">
-            <i nz-icon nzType="phone"></i>
-          </button>
-        </td>        <td>{{ p.adresse }}</td>
-        <td class="center-cell">
-          <button nz-button nz-tooltip nzTooltipTitle="Voir le Rapport" nzType="link" (click)="showRapportModal(p)">
-            <i nz-icon nzType="eye"></i>
-          </button>
-        </td>
-        <td >
-          <nz-tag [nzColor]="p.malade ? 'error' : 'success'">
-            {{ p.malade ? 'Malade' : 'Sain' }}
+    <!-- Liste des patients avec animation -->
+    <nz-collapse nzAccordion class="patient-accordion" [@listAnimation]="patients.length">
+      <nz-collapse-panel *ngFor="let patient of patients" [nzHeader]="patient.titre + ' ' + patient.nom"
+        [nzExtra]="extraTemplate"
+        class="patient-panel">
+
+        <ng-template #extraTemplate>
+          <nz-tag [nzColor]="patient.malade ? 'error' : 'success'" class="status-tag">
+            {{ patient.malade ? 'Malade' : 'Sain' }}
           </nz-tag>
-        </td>
-        <td class="center-cell">
-          <button nz-button nz-tooltip nzTooltipTitle="Modifier" nzType="link" (click)="onEdit(p)">
-            <i nz-icon nzType="edit"></i>
-          </button>
+        </ng-template>
 
-          <button nz-button nz-tooltip nzTooltipTitle="Supprimer" nzType="link" nzDanger (click)="onDelete(p)">
-            <i nz-icon nzType="delete"></i>
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </nz-table>
+        <!-- Carte d'identité patient -->
+        <div class="patient-id-card">
+          <nz-descriptions nzBordered [nzColumn]="2" >
+            <nz-descriptions-item nzTitle="ID">{{ patient.id }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Date de Naissance">{{ patient.dateNaissance | date: 'dd/MM/yyyy' }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Téléphone">{{ patient.numeroTelephone }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Adresse">{{ patient.adresse }}</nz-descriptions-item>
+          </nz-descriptions>
+        </div>
 
-    <div class="pagination-controls">
-      <button nz-button (click)="prevPage()" [disabled]="currentPage === 0">
-        <i nz-icon nzType="left"></i> Précédent
+
+        <!-- Dossier médical -->
+        <nz-card *ngIf="patient.dossierMedical" class="medical-record" >
+          <h3 class="section-title">Dossier Médical</h3>
+
+          <div class="medical-summary">
+            <nz-descriptions nzBordered [nzColumn]="{lg: 0,xl: 0,xxl: 0, xs: 1, sm: 2, md: 3 }">
+              <nz-descriptions-item nzTitle="Allergies"><span class="medical-data">{{ patient.dossierMedical.allergies || 'Aucune' }}</span></nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Antécédents"><span class="medical-data">{{ patient.dossierMedical.antecedents || 'Aucun' }}</span></nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Traitements"><span class="medical-data">{{ patient.dossierMedical.traitementsChroniques || 'Aucun' }}</span></nz-descriptions-item>
+            </nz-descriptions>
+          </div>
+
+          <!-- Historique des consultations -->
+          <div class="consultation-history">
+            <h3 class="section-title">Historique des Consultations</h3>
+
+            <nz-table
+              #consultationTable
+              [nzData]="patient.dossierMedical.consultations"
+              nzSize="middle"
+              [nzFrontPagination]="false"
+              class="consultation-table">
+
+              <thead>
+              <tr>
+                <th nzWidth="120px">Date</th>
+                <th nzWidth="80px">Rapport</th>
+                <th nzWidth="80px">Ordonnance</th>
+                <th nzWidth="100px">Prix</th>
+                <th nzWidth="120px">Statut</th>
+                <th nzWidth="120px">Actions</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <tr *ngFor="let c of consultationTable.data" class="consultation-row">
+                <td>{{ c.dateConsultation | date: 'dd/MM/yyyy'}}</td>
+                <td class="action-cell">
+                  <button nz-button nzType="text" nz-tooltip="Voir le rapport" (click)="showRapportModal(c)">
+                    <i nz-icon nzType="file-text" nzTheme="outline" class="doc-icon"></i>
+                  </button>
+                </td>
+                <td class="action-cell">
+                  <button nz-button nzType="text" nz-tooltip="Voir l'ordonnance" (click)="showOrdonnanceModal(c)">
+                    <i nz-icon nzType="medicine-box" nzTheme="outline" class="doc-icon"></i>
+                  </button>
+                </td>
+                <td class="price-cell">{{ c.prix }} DH</td>
+                <td>
+                  <nz-tag [nzColor]="getStatusConfig(c.statusRDV)?.color || 'default'" class="status-tag">
+                    {{ getStatusConfig(c.statusRDV)?.label || c.statusRDV }}
+                  </nz-tag>
+                </td>
+                <td class="action-cell">
+                  <nz-space nzSize="small">
+                    <button *nzSpaceItem nz-button nzType="text" nz-tooltip="Modifier" (click)="onEdit(c)">
+                      <i nz-icon nzType="edit" nzTheme="outline"></i>
+                    </button>
+                    <button *nzSpaceItem nz-button nzType="text" nz-tooltip="Supprimer" nzDanger (click)="onDelete(c)">
+                      <i nz-icon nzType="delete" nzTheme="outline"></i>
+                    </button>
+                  </nz-space>
+                </td>
+              </tr>
+              </tbody>
+            </nz-table>
+
+            <div *ngIf="!patient.dossierMedical.consultations?.length" class="empty-state">
+              <nz-empty nzNotFoundContent="Aucune consultation enregistrée">
+              </nz-empty>
+            </div>
+          </div>
+        </nz-card>
+
+        <!-- Actions patient -->
+        <div class="patient-actions">
+          <button nz-button nzType="primary" nzShape="round" (click)="onEditPatient(patient)">
+            <i nz-icon nzType="edit" nzTheme="outline"></i> Modifier le patient
+          </button>
+          <button nz-button nzType="default" nzShape="round" nzDanger (click)="onDeletePatient(patient)">
+            <i nz-icon nzType="delete" nzTheme="outline"></i> Supprimer le patient
+          </button>
+        </div>
+      </nz-collapse-panel>
+    </nz-collapse>
+
+    <!-- Pagination moderne -->
+    <div class="modern-pagination">
+      <button nz-button nzShape="circle" (click)="prevPage()" [disabled]="currentPage === 0">
+        <i nz-icon nzType="left" nzTheme="outline"></i>
       </button>
-
-      <span class="page-info">
-        Page {{ currentPage + 1 }} / {{ totalPages }}
-      </span>
-
-      <button nz-button (click)="nextPage()" [disabled]="currentPage === totalPages - 1">
-        Suivant <i nz-icon nzType="right"></i>
+      <nz-select
+        class="page-selector"
+        [ngModel]="currentPage + 1"
+        (ngModelChange)="goToPage($event - 1)"
+        nzShowSearch
+        nzAllowClear>
+        <nz-option
+          *ngFor="let page of totalPagesArray"
+          [nzLabel]="'Page ' + page"
+          [nzValue]="page">
+        </nz-option>
+      </nz-select>
+      <span class="page-info">sur {{ totalPages }}</span>
+      <button nz-button nzShape="circle" (click)="nextPage()" [disabled]="currentPage === totalPages - 1">
+        <i nz-icon nzType="right" nzTheme="outline"></i>
       </button>
     </div>
   </ng-container>
 
   <ng-template #error>
-    <nz-alert nzType="error" [nzMessage]="errorMessage" nzShowIcon></nz-alert>
+    <nz-alert nzType="error" [nzMessage]="errorMessage" nzShowIcon class="error-message"></nz-alert>
   </ng-template>
 </nz-card>

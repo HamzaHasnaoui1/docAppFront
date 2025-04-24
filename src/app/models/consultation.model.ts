@@ -10,5 +10,4 @@ export interface Consultation {
   prix: string;
   statusRDV: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'DONE';
   ordonnance?: Ordonnance;
-  dossierMedical?: DossierMedical;
 }

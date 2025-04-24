@@ -1,11 +1,11 @@
 <nz-card nzHoverable>
   <ng-container *ngIf="consultation$ | async as consultations ; else error">
-<div class="add-btn">
-  <button nz-button (click)="onAdd()">
-    <i nz-icon nzType="plus" nzTheme="outline"></i>
-    Ajouter une Consultation
-  </button>
-</div >
+    <app-search-add-actions
+      searchPlaceholder="Rechercher un patient"
+      addButtonText="Ajouter une consultation"
+      (searchChange)="onSearch($event)"
+      (addClick)="onAdd()">
+    </app-search-add-actions>
     <nz-table
       #consultationTable [nzData]="consultations" nzBordered nzSize="middle" [nzScroll]="{ x: '1000px' }">
       <thead>
@@ -14,6 +14,7 @@
         <th nzWidth="100px">Nom du Patient</th>
         <th nzWidth="100px">Date Du Consultation</th>
         <th nzWidth="100px">Rapport</th>
+        <th nzWidth="100px">Ordonnance</th>
         <th nzWidth="120px">Rendez-Vous</th>
         <th nzWidth="100px">Prix</th>
         <th nzWidth="100px">Status</th>
@@ -24,11 +25,16 @@
       <tr *ngFor="let c of consultationTable.data"
           [ngClass]="{ 'fade-out': deletedIds.includes(c.id) }">
         <td>{{ c.id }}</td>
-        <td>{{ c.rendezVous.patient.nom }}</td>
+        <td>{{ c.rendezVous?.patient?.nom || '—' }}</td>
         <td>{{ c.dateConsultation | date: 'dd/MM/yyyy'}}</td>
         <td class="center-cell">
           <button nz-button nz-tooltip nzTooltipTitle="Voir le Rapport" nzType="link" (click)="showRapportModal(c)">
             <i nz-icon nzType="eye"></i>
+          </button>
+        </td>
+        <td >
+          <button nz-button nz-tooltip nzTooltipTitle="Voir l'ordonnance" nzType="link" (click)="showOrdonnanceModal(c)">
+            <i nz-icon nzType="file-text" nzTheme="outline"></i>
           </button>
         </td>
         <td>{{ c.rendezVous?.date | date: 'dd/MM/yyyy' }}</td>

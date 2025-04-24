@@ -12,10 +12,11 @@ export class ConsultationService {
 
   constructor(private http:HttpClient) { }
 
-  getConsultation(page: number = 0, size: number = 5): Observable<any> {
+  getConsultation(page: number = 0, keyword: string = '', size: number = 5): Observable<any> {
     const params = new HttpParams()
       .set('page', page)
       .set('size', size)
+      .set('keyword', keyword);
 
     return this.http.get<any>(`${environment.apiUrl}/user/consultations`, { params });
   }

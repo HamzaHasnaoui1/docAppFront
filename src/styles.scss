@@ -7,7 +7,7 @@
 }
 
 angular-editor i {
-  font-family: 'Font Awesome 5 Free'; // or "Font Awesome 6 Free"
+  font-family: 'Font Awesome 5 Free';
   font-weight: 900;
 }
 
@@ -233,4 +233,13 @@ textarea[nz-input]:hover {
   border-color: #80b3ff;
 }
 
+.ant-table-expanded-row-fixed {
+  display: none !important;
+}
 
+.ant-descriptions-bordered .ant-descriptions-item-label {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.ant-descriptions-item-content{
+}
