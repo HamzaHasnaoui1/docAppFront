@@ -26,6 +26,7 @@ import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular
 import {NzInputGroupComponent} from "ng-zorro-antd/input";
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {SearchAddActionsComponent} from '../../../shared/search-add-actions/search-add-actions.component';
+import {NzOptionComponent, NzSelectComponent} from 'ng-zorro-antd/select';
 
 @Component({
   selector: 'app-medecin-list',
@@ -48,6 +49,8 @@ import {SearchAddActionsComponent} from '../../../shared/search-add-actions/sear
     ReactiveFormsModule,
     NzModalModule,
     SearchAddActionsComponent,
+    NzSelectComponent,
+    NzOptionComponent,
 
   ],
   templateUrl: './medecin-list.component.html',
@@ -61,6 +64,7 @@ export class MedecinListComponent implements OnInit{
   totalPages = 0;
   deletedIds: number[] = [];
   searchTerm$ = new Subject<string>();
+  totalPagesArray: number[] = [];
 
 
   constructor(private medecinService: MedecinService, private router: Router, private message: NzMessageService,
@@ -154,6 +158,13 @@ export class MedecinListComponent implements OnInit{
 
   nextPage(): void {
     if (this.currentPage < this.totalPages - 1) this.loadPage(this.currentPage + 1);
+  }
+
+  goToPage(pageIndex: number): void {
+    if (pageIndex >= 0 && pageIndex < this.totalPages) {
+      this.currentPage = pageIndex;
+      this.loadPage(pageIndex);
+    }
   }
 
   showPhoneModal(m: Medecin) {

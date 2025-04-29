@@ -31,10 +31,20 @@ export const RDV_ROUTES: Routes = [
         (c) => c.EditRdvComponent
       ),
     data: {
-      breadcrumb: 'Édition'
+      breadcrumb: 'Édition complète'
     }
   },
-  // Redirections
+  {
+    path: 'edit-date/:id',
+    title: 'Édition date RDV',
+    loadComponent: () =>
+      import('./edit-rdvD/edit-rdvD.component').then(
+        (c) => c.EditRdvDComponent
+      ),
+    data: {
+      breadcrumb: 'Édition date'
+    }
+  },
   {
     path: '',
     redirectTo: 'list',

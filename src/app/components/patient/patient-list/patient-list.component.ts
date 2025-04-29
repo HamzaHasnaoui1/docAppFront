@@ -1,32 +1,32 @@
 import { Component, OnInit } from '@angular/core';
 import { Patient } from '../../../models/patient.model';
 import { PatientService } from '../../../service/patient.service';
-import {catchError, map, Observable, throwError, of, switchMap, Subject} from 'rxjs';
-import {AsyncPipe, CommonModule, DatePipe} from '@angular/common';
-import {NzTableModule} from 'ng-zorro-antd/table';
-import {NzTagModule} from 'ng-zorro-antd/tag';
-import {NzButtonModule} from 'ng-zorro-antd/button';
-import {NzIconModule} from 'ng-zorro-antd/icon';
-import {NzCardModule} from 'ng-zorro-antd/card';
-import {NzAlertModule} from 'ng-zorro-antd/alert';
-import {NzSpaceModule} from 'ng-zorro-antd/space';
-import {ActivatedRoute, Router} from '@angular/router';
-import {NzPopconfirmDirective} from 'ng-zorro-antd/popconfirm';
-import {NzMessageService} from 'ng-zorro-antd/message';
-import {NzModalModule, NzModalService} from 'ng-zorro-antd/modal';
-import {NzToolTipModule} from 'ng-zorro-antd/tooltip';
-import {NzInputGroupComponent} from 'ng-zorro-antd/input';
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {SearchAddActionsComponent} from '../../../shared/search-add-actions/search-add-actions.component';
-import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
-import {NzCollapseComponent, NzCollapsePanelComponent} from 'ng-zorro-antd/collapse';
-import {RDV_STATUS_CONFIG, RdvStatus, RendezVous} from '../../../models/rdv.model';
-import {NzEmptyComponent} from 'ng-zorro-antd/empty';
-import {NzDescriptionsComponent, NzDescriptionsItemComponent} from 'ng-zorro-antd/descriptions';
-import {NzOptionComponent, NzSelectComponent} from 'ng-zorro-antd/select';
+import { catchError, map, Observable, throwError, of, switchMap, Subject, forkJoin } from 'rxjs';
+import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NzPopconfirmDirective } from 'ng-zorro-antd/popconfirm';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzInputGroupComponent } from 'ng-zorro-antd/input';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SearchAddActionsComponent } from '../../../shared/search-add-actions/search-add-actions.component';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { NzCollapseComponent, NzCollapsePanelComponent } from 'ng-zorro-antd/collapse';
+import { RDV_STATUS_CONFIG, RdvStatus, RendezVous } from '../../../models/rdv.model';
+import { NzEmptyComponent } from 'ng-zorro-antd/empty';
+import { NzDescriptionsComponent, NzDescriptionsItemComponent } from 'ng-zorro-antd/descriptions';
+import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
-import {RdvService} from '../../../service/rdv.service';
-
+import { RdvService } from '../../../service/rdv.service';
+import {PatientWithRdvs} from '../../../models/PatientWithRdvs.model';
 
 @Component({
   selector: 'app-patient-list',
@@ -81,10 +81,10 @@ import {RdvService} from '../../../service/rdv.service';
       ])
     ])
   ]
-
 })
 export class PatientListComponent implements OnInit {
   patients$!: Observable<Patient[]>;
+  patientsWithRdvs$!: Observable<PatientWithRdvs[]>; // Au lieu de patients$
   errorMessage = '';
   currentPage = 0;
   totalPages = 0;
@@ -92,10 +92,9 @@ export class PatientListComponent implements OnInit {
   searchTerm$ = new Subject<string>();
   totalPagesArray: number[] = [];
 
-
   constructor(
     private patientService: PatientService,
-    private rdvService:RdvService,
+    private rdvService: RdvService,
     private router: Router,
     private message: NzMessageService,
     private modal: NzModalService
@@ -106,18 +105,36 @@ export class PatientListComponent implements OnInit {
     this.loadPage(0);
   }
 
+  combinePatientWithRdvs(patients: Patient[], rdvs: RendezVous[]): Patient[] {
+    return patients.map(patient => {
+      const rendezVousList = rdvs.filter(rdv => rdv.patient.id === patient.id);
+      return { ...patient, rendezVousList };
+    });
+  }
+
   private setupSearch(): void {
     this.searchTerm$.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap(keyword =>
-        this.patientService.getPatients(0, keyword).pipe(
+      switchMap(keyword => {
+        return forkJoin([
+          this.patientService.getPatients(0, keyword),
+          this.rdvService.getRdvs()
+        ]).pipe(
+          map(([patientsResponse, rdvsResponse]) => {
+            const combinedPatients = this.combinePatientWithRdvs(patientsResponse.patients, rdvsResponse.rdvs);
+            return {
+              patients: combinedPatients,
+              totalPages: patientsResponse.totalPages,
+              currentPage: patientsResponse.currentPage
+            };
+          }),
           catchError(err => {
             this.errorMessage = err.message;
             return of({ patients: [], totalPages: 0, currentPage: 0 });
           })
-        )
-      )
+        );
+      })
     ).subscribe(response => {
       this.patients$ = of(response.patients);
       this.totalPages = response.totalPages;
@@ -125,18 +142,22 @@ export class PatientListComponent implements OnInit {
     });
   }
 
-  getStatusConfig(status: RdvStatus) {
-    return RDV_STATUS_CONFIG[status];
-  }
-  onSearch(keyword: string): void {
-    this.searchTerm$.next(keyword);
-  }
-
   loadPage(page: number): void {
-    this.patientService.getPatients(page).pipe(
+    forkJoin([
+      this.patientService.getPatients(page),
+      this.rdvService.getRdvs()
+    ]).pipe(
+      map(([patientsResponse, rdvsResponse]) => {
+        const combinedPatients = this.combinePatientWithRdvs(patientsResponse.patients, rdvsResponse.rdvs);
+        return {
+          patients: combinedPatients,
+          totalPages: patientsResponse.totalPages,
+          currentPage: patientsResponse.currentPage
+        };
+      }),
       catchError(err => {
         this.errorMessage = err.message;
-        return of({patients: [], totalPages: 0, currentPage: 0});
+        return of({ patients: [], totalPages: 0, currentPage: 0 });
       })
     ).subscribe(response => {
       this.patients$ = of(response.patients);
@@ -144,19 +165,28 @@ export class PatientListComponent implements OnInit {
       this.currentPage = response.currentPage;
       this.initPagesArray();
     });
-
   }
+
+
+  getStatusConfig(status: RdvStatus) {
+    return RDV_STATUS_CONFIG[status];
+  }
+
+  onSearch(keyword: string): void {
+    this.searchTerm$.next(keyword);
+  }
+
   onEditPatient(patient: Patient): void {
     this.router.navigate(['/doc/patients/edit', patient.id]);
   }
-  onEdit(rdv: RendezVous): void {
+
+  onEditRdv(rdv: RendezVous): void {
     this.router.navigate(['/doc/rdv/edit', rdv.id]);
   }
 
   onDeletePatient(patient: Patient): void {
     this.modal.confirm({
       nzTitle: `Voulez-vous supprimer ${patient.titre || ''} ${patient.nom} ?`,
-      //nzContent: 'Cette action est irréversible.',
       nzOkText: 'Supprimer',
       nzOkDanger: true,
       nzCancelText: 'Annuler',
@@ -172,10 +202,10 @@ export class PatientListComponent implements OnInit {
         })
     });
   }
-  onDelete(rdv: RendezVous): void {
+
+  onDeleteRdv(rdv: RendezVous): void {
     this.modal.confirm({
-      nzTitle: `Voulez-vous supprimer le RDV du ${rdv.patient}  ?`,
-      //nzContent: 'Cette action est irréversible.',
+      nzTitle: `Voulez-vous supprimer le RDV du ${rdv.patient.nom} ?`,
       nzOkText: 'Supprimer',
       nzOkDanger: true,
       nzCancelText: 'Annuler',
@@ -191,7 +221,6 @@ export class PatientListComponent implements OnInit {
         })
     });
   }
-
 
   animateRemoval(id: number): void {
     this.deletedIds.push(id);
@@ -212,16 +241,17 @@ export class PatientListComponent implements OnInit {
     });
   }
 
-  showOrdonnanceModal(c: any): void {
+  showOrdonnanceModal(rdv: RendezVous): void {
     this.modal.create({
       nzTitle: 'Ordonnance du patient',
-      nzContent: `<p style="white-space: pre-wrap;">${c.ordonnance || 'Aucune ordonnance disponible.'}</p>`,
+      nzContent: `<p style="white-space: pre-wrap;">${rdv.ordonnance || 'Aucune ordonnance disponible.'}</p>`,
       nzClosable: true,
       nzWidth: 600,
       nzFooter: null,
       nzWrapClassName: 'rapport-modal',
     });
   }
+
   showPhoneModal(p: any): void {
     this.modal.create({
       nzTitle: 'Numero du patient',
@@ -241,13 +271,12 @@ export class PatientListComponent implements OnInit {
     this.goToPage(this.currentPage + 1);
   }
 
-
   onAdd() {
     this.router.navigate(['/doc/patients/create']);
   }
 
   initPagesArray(): void {
-    this.totalPagesArray = Array.from({length: this.totalPages}, (_, i) => i + 1);
+    this.totalPagesArray = Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
 
   goToPage(pageIndex: number): void {

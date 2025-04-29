@@ -36,11 +36,11 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
     NzRadioGroupComponent,
     NzIconDirective
   ],
-  templateUrl: './edit-rdv.component.html',
+  templateUrl: './edit-rdvD.component.html',
   standalone: true,
-  styleUrl: './edit-rdv.component.scss'
+  styleUrl: './edit-rdvD.component.scss'
 })
-export class EditRdvComponent implements OnInit {
+export class EditRdvDComponent implements OnInit {
   rdvForm!: FormGroup;
   rdvId!: number;
 

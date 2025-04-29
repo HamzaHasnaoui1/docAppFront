@@ -1,3 +1,4 @@
+
 import {Component, OnInit} from '@angular/core';
 import {AsyncPipe, CommonModule, DatePipe} from '@angular/common';
 import {NzAlertComponent, NzAlertModule} from 'ng-zorro-antd/alert';
@@ -13,7 +14,7 @@ import {
 } from 'ng-zorro-antd/table';
 import {NzTagComponent, NzTagModule} from 'ng-zorro-antd/tag';
 import {NzWaveDirective} from 'ng-zorro-antd/core/wave';
-import {catchError, map, Observable, of} from 'rxjs';
+import {catchError, map, Observable, of, Subject} from 'rxjs';
 import {Patient} from '../../../models/patient.model';
 import {RDV_STATUS_CONFIG, RdvStatus, RendezVous} from '../../../models/rdv.model';
 import {RdvService} from '../../../service/rdv.service';
@@ -23,6 +24,9 @@ import {NzMessageService} from 'ng-zorro-antd/message';
 import {NzModalModule, NzModalService} from 'ng-zorro-antd/modal';
 import {NzSpaceModule} from 'ng-zorro-antd/space';
 import {NzPopconfirmDirective} from 'ng-zorro-antd/popconfirm';
+import {SearchAddActionsComponent} from "../../../shared/search-add-actions/search-add-actions.component";
+import {NzOptionComponent, NzSelectComponent} from 'ng-zorro-antd/select';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-rdv-list',
@@ -39,7 +43,11 @@ import {NzPopconfirmDirective} from 'ng-zorro-antd/popconfirm';
     NzSpaceModule,
     NzPopconfirmDirective,
     NzModalModule,
-    NzToolTipModule
+    NzToolTipModule,
+    SearchAddActionsComponent,
+    NzOptionComponent,
+    NzSelectComponent,
+    FormsModule
   ],
   templateUrl: './rdv-list.component.html',
   standalone: true,
@@ -50,6 +58,9 @@ export class RdvListComponent implements OnInit{
   errorMessage = '';
   currentPage = 0;
   totalPages = 0;
+  searchTerm$ = new Subject<string>();
+  totalPagesArray: number[] = [];
+
 
   constructor(private rdvService: RdvService, private router: Router, private message: NzMessageService,
               private modal: NzModalService) {}
@@ -84,12 +95,12 @@ export class RdvListComponent implements OnInit{
   }
 
   onEdit(rdv: RendezVous): void {
-    this.router.navigate(['/doc/rdv/edit', rdv.id]);
+    this.router.navigate(['/doc/rdv/edit-date', rdv.id]);
   }
 
   onDelete(rdv: RendezVous): void {
     this.modal.confirm({
-      nzTitle: `Voulez-vous supprimer rendez-vous du Patient : ${rdv.patient}  ?`,
+      nzTitle: `Voulez-vous supprimer rendez-vous du Patient : ${rdv.patient.nom}  ?`,
       //nzContent: 'Cette action est irréversible.',
       nzOkText: 'Supprimer',
       nzOkDanger: true,
@@ -115,5 +126,19 @@ export class RdvListComponent implements OnInit{
       this.loadPage(this.currentPage);
       this.deletedIds = this.deletedIds.filter(x => x !== id);
     }, 400);
+  }
+
+  onSearch(keyword: string): void {
+    this.searchTerm$.next(keyword);
+  }
+  onAdd() {
+    this.router.navigate(['/doc/rdv/create']);
+  }
+
+  goToPage(pageIndex: number): void {
+    if (pageIndex >= 0 && pageIndex < this.totalPages) {
+      this.currentPage = pageIndex;
+      this.loadPage(pageIndex);
+    }
   }
 }

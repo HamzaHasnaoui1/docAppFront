@@ -178,31 +178,7 @@ $card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
   }
 
-  /* Pagination moderne */
-  .modern-pagination {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    padding: 16px;
 
-    .page-selector {
-      width: 120px;
-    }
-
-    .page-info {
-      color: darken($text-color, 15%);
-      font-size: 14px;
-    }
-
-    button {
-      transition: all 0.2s ease;
-      &:hover:not([disabled]) {
-        background-color: $primary-color;
-        color: white;
-      }
-    }
-  }
 
   /* États vides */
   .empty-state {

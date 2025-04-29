@@ -46,17 +46,26 @@
       </tbody>
     </nz-table>
 
-    <div class="pagination-controls">
-      <button nz-button (click)="prevPage()" [disabled]="currentPage === 0">
-        <i nz-icon nzType="left"></i> Précédent
+    <!-- Pagination moderne -->
+    <div class="modern-pagination">
+      <button nz-button nzShape="circle" (click)="prevPage()" [disabled]="currentPage === 0">
+        <i nz-icon nzType="left" nzTheme="outline"></i>
       </button>
-
-      <span class="page-info">
-        Page {{ currentPage + 1 }} / {{ totalPages }}
-      </span>
-
-      <button nz-button (click)="nextPage()" [disabled]="currentPage === totalPages - 1">
-        Suivant <i nz-icon nzType="right"></i>
+      <nz-select
+        class="page-selector"
+        [ngModel]="currentPage + 1"
+        (ngModelChange)="goToPage($event - 1)"
+        nzShowSearch
+        nzAllowClear>
+        <nz-option
+          *ngFor="let page of totalPagesArray"
+          [nzLabel]="'Page ' + page"
+          [nzValue]="page">
+        </nz-option>
+      </nz-select>
+      <span class="page-info">sur {{ totalPages }}</span>
+      <button nz-button nzShape="circle" (click)="nextPage()" [disabled]="currentPage === totalPages - 1">
+        <i nz-icon nzType="right" nzTheme="outline"></i>
       </button>
     </div>
   </ng-container>

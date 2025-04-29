@@ -24,7 +24,7 @@
 
         <!-- Carte d'identité patient -->
         <div class="patient-id-card">
-          <nz-descriptions nzBordered [nzColumn]="2" >
+          <nz-descriptions nzBordered [nzColumn]="2">
             <nz-descriptions-item nzTitle="ID">{{ patient.id }}</nz-descriptions-item>
             <nz-descriptions-item nzTitle="Date de Naissance">{{ patient.dateNaissance | date: 'dd/MM/yyyy' }}</nz-descriptions-item>
             <nz-descriptions-item nzTitle="Téléphone">{{ patient.numeroTelephone }}</nz-descriptions-item>
@@ -33,11 +33,11 @@
         </div>
 
         <!-- Dossier médical -->
-        <nz-card *ngIf="patient.dossierMedical" class="medical-record">
+        <nz-card *ngIf="patient.dossierMedical; else noMedicalRecord" class="medical-record">
           <h3 class="section-title">Dossier Médical</h3>
 
           <div class="medical-summary">
-            <nz-descriptions nzBordered [nzColumn]="{lg: 0,xl: 0,xxl: 0, xs: 1, sm: 2, md: 3 }">
+            <nz-descriptions nzBordered [nzColumn]="{lg: 0,xl: 0,xxl: 0, xs: 1, sm: 2, md: 3}">
               <nz-descriptions-item nzTitle="Allergies">
                 <span class="medical-data">{{ patient.dossierMedical.allergies || 'Aucune' }}</span>
               </nz-descriptions-item>
@@ -50,13 +50,13 @@
             </nz-descriptions>
           </div>
 
-          <!-- Historique des consultations -->
+          <!-- Historique des Rendez-vous -->
           <div class="consultation-history">
-            <h3 class="section-title">Historique des Consultations</h3>
+            <h3 class="section-title">Historique des Rendez-vous</h3>
 
             <nz-table
-              #consultationTable
-              [nzData]="patient.rdv"
+              #rdvTable
+              [nzData]="patient.rendezVousList || []"
               nzSize="middle"
               [nzFrontPagination]="false"
               class="consultation-table">
@@ -64,7 +64,10 @@
               <thead>
               <tr>
                 <th nzWidth="120px">Date</th>
+                <th nzWidth="150px">Médecin</th>
+<!--
                 <th nzWidth="80px">Rapport</th>
+-->
                 <th nzWidth="80px">Ordonnance</th>
                 <th nzWidth="100px">Prix</th>
                 <th nzWidth="120px">Statut</th>
@@ -73,30 +76,31 @@
               </thead>
 
               <tbody>
-              <tr *ngFor="let c of consultationTable.data" class="consultation-row">
-                <td>{{ c.date | date: 'dd/MM/yyyy'}}</td>
-                <td class="action-cell">
-                  <button nz-button nzType="text" nz-tooltip="Voir le rapport" (click)="showRapportModal(c)">
+              <tr *ngFor="let rdv of rdvTable.data" class="consultation-row">
+                <td>{{ rdv.date | date: 'dd/MM/yyyy HH:mm'}}</td>
+                <td>{{ rdv.medecin?.nom || 'Non spécifié' }}</td>
+                <!--<td class="action-cell">
+                  <button nz-button nzType="text" nz-tooltip="Voir le rapport" (click)="showRapportModal(rdv)">
                     <i nz-icon nzType="file-text" nzTheme="outline" class="doc-icon"></i>
                   </button>
-                </td>
+                </td>-->
                 <td class="action-cell">
-                  <button nz-button nzType="text" nz-tooltip="Voir l'ordonnance" (click)="showOrdonnanceModal(c)">
+                  <button nz-button nzType="text" nz-tooltip="Voir l'ordonnance" (click)="showOrdonnanceModal(rdv)">
                     <i nz-icon nzType="medicine-box" nzTheme="outline" class="doc-icon"></i>
                   </button>
                 </td>
-                <td class="price-cell">{{ c.prix }} DH</td>
+                <td class="price-cell">{{ rdv.prix }} DH</td>
                 <td>
-                  <nz-tag [nzColor]="getStatusConfig(c.statusRDV)?.color || 'default'" class="status-tag">
-                    {{ getStatusConfig(c.statusRDV)?.label || c.statusRDV }}
+                  <nz-tag [nzColor]="getStatusConfig(rdv.statusRDV)?.color || 'default'" class="status-tag">
+                    {{ getStatusConfig(rdv.statusRDV)?.label || rdv.statusRDV }}
                   </nz-tag>
                 </td>
                 <td class="action-cell">
                   <nz-space nzSize="small">
-                    <button *nzSpaceItem nz-button nzType="text" nz-tooltip="Modifier" (click)="onEdit(c)">
+                    <button *nzSpaceItem nz-button nzType="text" nz-tooltip="Modifier" (click)="onEditRdv(rdv)">
                       <i nz-icon nzType="edit" nzTheme="outline"></i>
                     </button>
-                    <button *nzSpaceItem nz-button nzType="text" nz-tooltip="Supprimer" nzDanger (click)="onDelete(c)">
+                    <button *nzSpaceItem nz-button nzType="text" nz-tooltip="Supprimer" nzDanger (click)="onDeleteRdv(rdv)">
                       <i nz-icon nzType="delete" nzTheme="outline"></i>
                     </button>
                   </nz-space>
@@ -105,11 +109,15 @@
               </tbody>
             </nz-table>
 
-            <div *ngIf="patient.rdv" class="empty-state">
-              <nz-empty nzNotFoundContent="Aucune consultation enregistrée"></nz-empty>
+            <div *ngIf="!patient.rendezVousList?.length" class="empty-state">
+              <nz-empty nzNotFoundContent="Aucun rendez-vous enregistré"></nz-empty>
             </div>
           </div>
         </nz-card>
+
+        <ng-template #noMedicalRecord>
+          <nz-alert nzType="info" nzMessage="Aucun dossier médical disponible" nzShowIcon class="no-record-alert"></nz-alert>
+        </ng-template>
 
         <!-- Actions patient -->
         <div class="patient-actions">

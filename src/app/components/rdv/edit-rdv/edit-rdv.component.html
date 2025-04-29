@@ -1,1 +1,168 @@
-<p>edit-rdv works!</p>
+<nz-card nzTitle="Modifier Rendez-vous" nzHoverable class="form-card">
+  <form [formGroup]="rdvForm" (ngSubmit)="onSubmit()" nz-form nzLayout="vertical">
+
+    <!-- Section Date et Statut -->
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="date" nzRequired>Date et Heure</nz-form-label>
+          <nz-form-control>
+            <input nz-input type="datetime-local" id="date" formControlName="date" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="statusRDV" nzRequired>Statut</nz-form-label>
+          <nz-form-control>
+            <nz-radio-group formControlName="statusRDV">
+              <label nz-radio nzValue="PENDING">En attente</label>
+              <label nz-radio nzValue="CONFIRMED">Confirmé</label>
+              <label nz-radio nzValue="CANCELLED">Annulé</label>
+              <label nz-radio nzValue="DONE">Terminé</label>
+            </nz-radio-group>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <!-- Section Patient -->
+    <nz-card nzTitle="Patient" nzType="inner" class="inner-card">
+      <div formGroupName="patient">
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzSpan]="24">
+            <nz-form-item>
+              <nz-form-label nzFor="patient-nom">Nom</nz-form-label>
+              <nz-form-control>
+                <input nz-input id="patient-nom" formControlName="nom" readonly />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </div>
+    </nz-card>
+
+    <!-- Section Médecin -->
+    <nz-card nzTitle="Médecin" nzType="inner" class="inner-card">
+      <div formGroupName="medecin">
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzSpan]="24">
+            <nz-form-item>
+              <nz-form-label nzFor="medecin-nom">Nom</nz-form-label>
+              <nz-form-control>
+                <input nz-input id="medecin-nom" formControlName="nom" readonly />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </div>
+    </nz-card>
+
+    <!-- Section Rapport et Prix -->
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="16">
+        <nz-form-item>
+          <nz-form-label nzFor="rapport" nzRequired>Rapport médical</nz-form-label>
+          <nz-form-control>
+            <textarea nz-input id="rapport" formControlName="rapport" rows="4"></textarea>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="8">
+        <nz-form-item>
+          <nz-form-label nzFor="prix" nzRequired>Prix (DH)</nz-form-label>
+          <nz-form-control>
+            <input nz-input type="number" id="prix" formControlName="prix" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <!-- Section Ordonnance -->
+    <nz-card nzTitle="Ordonnance" nzType="inner" class="inner-card">
+      <div formGroupName="ordonnance">
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzSpan]="24">
+            <nz-form-item>
+              <nz-form-label nzFor="contenu">Contenu</nz-form-label>
+              <nz-form-control>
+                <textarea nz-input id="contenu" formControlName="contenu" rows="3"></textarea>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+
+        <!-- Médicaments et Posologies -->
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzSpan]="24">
+            <h4>Médicaments prescrits</h4>
+            <div formArrayName="medicamentsPrescrits">
+              <div *ngFor="let medControl of medicamentsPrescrits.controls; let i = index" class="medicament-row">
+                <div nz-row [nzGutter]="8">
+                  <!-- Champ Médicament -->
+                  <div nz-col [nzSpan]="10">
+                    <nz-form-control>
+                      <input nz-input placeholder="Médicament" [formControl]="$any(medControl)" />
+                    </nz-form-control>
+                  </div>
+
+                  <!-- Champ Posologie -->
+                  <div nz-col [nzSpan]="10">
+                    <nz-form-control>
+                      <input
+                        nz-input
+                        placeholder="Posologie"
+                        [formControl]="getPosologieControl(i)"
+                      />
+                    </nz-form-control>
+                  </div>
+
+                  <!-- Bouton Supprimer -->
+                  <div nz-col [nzSpan]="4">
+                    <button nz-button nzType="default" nzDanger (click)="removeMedicament(i)">
+                      <span nz-icon nzType="delete"></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button nz-button nzType="dashed" (click)="addMedicament()"
+              style="width: 100%; margin-top: 8px;">
+              <span nz-icon nzType="plus"></span> Ajouter un médicament
+            </button>
+          </div>
+        </div>
+
+        <div nz-row [nzGutter]="16" style="margin-top: 16px;">
+          <div nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label nzFor="remarques">Remarques</nz-form-label>
+              <nz-form-control>
+                <textarea nz-input id="remarques" formControlName="remarques" rows="2"></textarea>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label>Date d'émission</nz-form-label>
+              <nz-form-control>
+                <input nz-input type="date" formControlName="dateEmission" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <label nz-checkbox formControlName="archivee">Ordonnance archivée</label>
+            </nz-form-item>
+          </div>
+        </div>
+      </div>
+    </nz-card>
+  </form>
+  <!-- Actions -->
+  <div class="form-actions">
+    <button nz-button type="button" (click)="onCancel()" style="margin-right: 8px">Annuler</button>
+    <button nz-button nzType="primary" [disabled]="rdvForm.invalid">
+      Enregistrer les modifications
+    </button>
+  </div>
+</nz-card>

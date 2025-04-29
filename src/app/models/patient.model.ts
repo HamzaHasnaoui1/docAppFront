@@ -10,8 +10,9 @@ export interface Patient {
   adresse: string;
   codePostal: string ;
   numeroTelephone: string;
+  rapport:string;
   titre: Titre;
   dossierMedical:DossierMedical;
-  rdv: RendezVous[];
+  rendezVousList: RendezVous[];
 }
 

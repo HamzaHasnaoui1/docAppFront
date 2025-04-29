@@ -13,7 +13,10 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzCardComponent } from 'ng-zorro-antd/card';
 import { NzRadioComponent, NzRadioGroupComponent } from 'ng-zorro-antd/radio';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import {AngularEditorConfig, AngularEditorModule} from '@kolkov/angular-editor';;
+import {AngularEditorConfig, AngularEditorModule} from '@kolkov/angular-editor';
+import {NzDividerComponent} from 'ng-zorro-antd/divider';
+
+;
 
 @Component({
   selector: 'app-create-patient',
@@ -32,6 +35,7 @@ import {AngularEditorConfig, AngularEditorModule} from '@kolkov/angular-editor';
     NzRadioGroupComponent,
     AngularEditorModule,
     FormsModule,
+    NzDividerComponent,
   ]
 })
 export class CreatePatientComponent implements OnInit {
@@ -79,7 +83,12 @@ constructor(
       codePostal: [''],
       numeroTelephone: ['', Validators.required],
       titre: [null, Validators.required],
-      rapport: ['',Validators.required]
+      rapport: ['',Validators.required],
+      dossierMedical: this.fb.group({
+        allergies: [''],
+        antecedents: [''],
+        traitementsChroniques: ['']
+      })
     });
   }
 
@@ -93,12 +102,11 @@ constructor(
 
     this.patientService.createPatient(newPatient).subscribe({
       next: () => {
-        this.message.success('Patient créé avec succès.');
+        this.message.success('Patient créé avec son dossier médical.');
         this.router.navigate(['/doc/patients']);
       },
-      error: () => this.message.error('Erreur lors de la création du patient.')
+      error: () => this.message.error('Erreur lors de la création du patient.'),
     });
-
   }
 
   onCancel(): void {

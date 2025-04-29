@@ -69,7 +69,7 @@ body {
   height: calc(100vh - 178px);
   overflow-y: auto;
   background-color: transparent !important;
-  background-image: url('assets/images/blur-hospital.jpg');
+  background-image: none;
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -109,21 +109,29 @@ nz-tabset, nz-tab {
   background-color: transparent !important; // Make the content transparent
 }
 
-.pagination-controls {
+.modern-pagination {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   gap: 16px;
-  margin-top: 24px;
+  padding: 16px;
 
-  button {
-    display: flex;
-    align-items: center;
-    gap: 4px;
+  .page-selector {
+    width: 120px;
   }
 
   .page-info {
-    font-weight: 500;
+    color: #1f1f1f;
+    font-size: 14px;
+  }
+
+  button {
+    transition: all 0.2s ease;
+
+    &:hover:not([disabled]) {
+      background-color: #007bff;
+      color: white;
+    }
   }
 }
 
@@ -243,3 +251,5 @@ textarea[nz-input]:hover {
 
 .ant-descriptions-item-content{
 }
+
+
