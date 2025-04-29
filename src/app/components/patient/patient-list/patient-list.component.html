@@ -13,8 +13,8 @@
     <!-- Liste des patients avec animation -->
     <nz-collapse nzAccordion class="patient-accordion" [@listAnimation]="patients.length">
       <nz-collapse-panel *ngFor="let patient of patients" [nzHeader]="patient.titre + ' ' + patient.nom"
-        [nzExtra]="extraTemplate"
-        class="patient-panel">
+                         [nzExtra]="extraTemplate"
+                         class="patient-panel">
 
         <ng-template #extraTemplate>
           <nz-tag [nzColor]="patient.malade ? 'error' : 'success'" class="status-tag">
@@ -32,16 +32,21 @@
           </nz-descriptions>
         </div>
 
-
         <!-- Dossier médical -->
-        <nz-card *ngIf="patient.dossierMedical" class="medical-record" >
+        <nz-card *ngIf="patient.dossierMedical" class="medical-record">
           <h3 class="section-title">Dossier Médical</h3>
 
           <div class="medical-summary">
             <nz-descriptions nzBordered [nzColumn]="{lg: 0,xl: 0,xxl: 0, xs: 1, sm: 2, md: 3 }">
-              <nz-descriptions-item nzTitle="Allergies"><span class="medical-data">{{ patient.dossierMedical.allergies || 'Aucune' }}</span></nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Antécédents"><span class="medical-data">{{ patient.dossierMedical.antecedents || 'Aucun' }}</span></nz-descriptions-item>
-              <nz-descriptions-item nzTitle="Traitements"><span class="medical-data">{{ patient.dossierMedical.traitementsChroniques || 'Aucun' }}</span></nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Allergies">
+                <span class="medical-data">{{ patient.dossierMedical.allergies || 'Aucune' }}</span>
+              </nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Antécédents">
+                <span class="medical-data">{{ patient.dossierMedical.antecedents || 'Aucun' }}</span>
+              </nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Traitements">
+                <span class="medical-data">{{ patient.dossierMedical.traitementsChroniques || 'Aucun' }}</span>
+              </nz-descriptions-item>
             </nz-descriptions>
           </div>
 
@@ -51,7 +56,7 @@
 
             <nz-table
               #consultationTable
-              [nzData]="patient.dossierMedical.consultations"
+              [nzData]="patient.rdv"
               nzSize="middle"
               [nzFrontPagination]="false"
               class="consultation-table">
@@ -69,7 +74,7 @@
 
               <tbody>
               <tr *ngFor="let c of consultationTable.data" class="consultation-row">
-                <td>{{ c.dateConsultation | date: 'dd/MM/yyyy'}}</td>
+                <td>{{ c.date | date: 'dd/MM/yyyy'}}</td>
                 <td class="action-cell">
                   <button nz-button nzType="text" nz-tooltip="Voir le rapport" (click)="showRapportModal(c)">
                     <i nz-icon nzType="file-text" nzTheme="outline" class="doc-icon"></i>
@@ -100,9 +105,8 @@
               </tbody>
             </nz-table>
 
-            <div *ngIf="!patient.dossierMedical.consultations?.length" class="empty-state">
-              <nz-empty nzNotFoundContent="Aucune consultation enregistrée">
-              </nz-empty>
+            <div *ngIf="patient.rdv" class="empty-state">
+              <nz-empty nzNotFoundContent="Aucune consultation enregistrée"></nz-empty>
             </div>
           </div>
         </nz-card>

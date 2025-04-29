@@ -1,4 +1,3 @@
-import { Consultation } from './consultation.model';
 import { Patient } from './patient.model';
 
 
@@ -8,7 +7,6 @@ export interface Paiement {
   datePaiement: string;
   modePaiement: ModePaiement;
   patient: Patient;
-  consultation: Consultation;
 }
 
 export const MODE_PAIEMENT_CONFIG = {

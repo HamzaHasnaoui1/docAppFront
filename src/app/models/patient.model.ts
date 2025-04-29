@@ -12,5 +12,6 @@ export interface Patient {
   numeroTelephone: string;
   titre: Titre;
   dossierMedical:DossierMedical;
+  rdv: RendezVous[];
 }
 

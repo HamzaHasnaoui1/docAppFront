@@ -30,10 +30,10 @@
         [ngClass]="{ 'fade-out': deletedIds.includes(o.id) }"
       >
         <td>{{ o.id }}</td>
-        <td>{{ o.consultation?.rendezVous?.patient?.nom || 'N/A' }}</td>
+        <td>{{ o.rendezVous?.patient?.nom || 'N/A' }}</td>
         <td>{{ o.contenu }}</td>
         <td>{{ o.dateEmission | date: 'dd/MM/yyyy' }}</td>
-        <td>{{ o.consultation?.dateConsultation | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ o.rendezVous?.date | date: 'dd/MM/yyyy' }}</td>
         <td class="center-cell">
           <button
             nz-button

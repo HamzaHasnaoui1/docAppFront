@@ -1,8 +1,12 @@
-import { Consultation } from './consultation.model';
+import {RendezVous} from './rdv.model';
 
 export interface Ordonnance {
   id: number;
   contenu: string;
-  consultation: Consultation;
-  dateEmission: string;
+  dateEmission: Date;
+  archivee: boolean;
+  rendezVous: RendezVous;
+  medicamentsPrescrits: string[];
+  posologies: { [key: string]: string };
+  remarques: string;
 }

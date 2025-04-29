@@ -20,13 +20,12 @@ import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular
 import {SearchAddActionsComponent} from '../../../shared/search-add-actions/search-add-actions.component';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {NzCollapseComponent, NzCollapsePanelComponent} from 'ng-zorro-antd/collapse';
-import {RDV_STATUS_CONFIG, RdvStatus} from '../../../models/rdv.model';
-import {Consultation} from '../../../models/consultation.model';
-import {ConsultationService} from '../../../service/consultation.service';
+import {RDV_STATUS_CONFIG, RdvStatus, RendezVous} from '../../../models/rdv.model';
 import {NzEmptyComponent} from 'ng-zorro-antd/empty';
 import {NzDescriptionsComponent, NzDescriptionsItemComponent} from 'ng-zorro-antd/descriptions';
 import {NzOptionComponent, NzSelectComponent} from 'ng-zorro-antd/select';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
+import {RdvService} from '../../../service/rdv.service';
 
 
 @Component({
@@ -96,7 +95,7 @@ export class PatientListComponent implements OnInit {
 
   constructor(
     private patientService: PatientService,
-    private consultationService:ConsultationService,
+    private rdvService:RdvService,
     private router: Router,
     private message: NzMessageService,
     private modal: NzModalService
@@ -150,8 +149,8 @@ export class PatientListComponent implements OnInit {
   onEditPatient(patient: Patient): void {
     this.router.navigate(['/doc/patients/edit', patient.id]);
   }
-  onEdit(consultation: Consultation): void {
-    this.router.navigate(['/doc/consultations/edit', consultation.id]);
+  onEdit(rdv: RendezVous): void {
+    this.router.navigate(['/doc/rdv/edit', rdv.id]);
   }
 
   onDeletePatient(patient: Patient): void {
@@ -173,18 +172,18 @@ export class PatientListComponent implements OnInit {
         })
     });
   }
-  onDelete(consultation: Consultation): void {
+  onDelete(rdv: RendezVous): void {
     this.modal.confirm({
-      nzTitle: `Voulez-vous supprimer la consultation du ${consultation.rendezVous.patient}  ?`,
+      nzTitle: `Voulez-vous supprimer le RDV du ${rdv.patient}  ?`,
       //nzContent: 'Cette action est irréversible.',
       nzOkText: 'Supprimer',
       nzOkDanger: true,
       nzCancelText: 'Annuler',
       nzOnOk: () =>
-        this.consultationService.deleteConsultation(consultation.id).subscribe({
+        this.rdvService.deleteRdv(rdv.id).subscribe({
           next: () => {
-            this.message.success(`Consultation numero "${consultation.id}" supprimé avec succès`);
-            this.animateRemoval(consultation.id);
+            this.message.success(`Rdv numero "${rdv.id}" supprimé avec succès`);
+            this.animateRemoval(rdv.id);
           },
           error: (err) => {
             this.message.error(`Erreur : ${err.message}`);

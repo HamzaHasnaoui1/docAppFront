@@ -56,24 +56,10 @@ export const LAYOUT_ROUTES: Routes = [
           ),
       },
       {
-        path: 'disponibiliteMedecin',
-        loadChildren: () =>
-          import('../../components/disponibiliteMedecin/disponibiliteMedecin.routes').then(
-            (c) => c.DISPONIBILITE_ROUTES
-          ),
-      },
-      {
         path: 'rdv',
         loadChildren: () =>
           import('../../components/rdv/rdv.routes').then(
             (c) => c.RDV_ROUTES
-          ),
-      },
-      {
-        path: 'consultations',
-        loadChildren: () =>
-          import('../../components/consultation/consultation.routes').then(
-            (c) => c.CONSULTATION_ROUTES
           ),
       },
      /* {
