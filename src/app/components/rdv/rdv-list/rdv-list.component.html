@@ -24,7 +24,7 @@
         <td>{{ r.date | date: 'dd/MM/yyyy' }}</td>
         <td>{{ r.medecin?.nom || '—' }}</td>
         <td>{{ r.patient?.nom || '—' }}</td>
-        <td>{{ r.consultation?.prix }}</td>
+        <td>{{ r.prix }}</td>
         <td>
           <nz-tag [nzColor]="getStatusConfig(r.statusRDV)?.color || 'default'">
             {{ getStatusConfig(r.statusRDV)?.label || 'Inconnu' }}

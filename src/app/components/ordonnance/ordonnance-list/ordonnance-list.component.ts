@@ -15,8 +15,6 @@ import {Ordonnance} from '../../../models/ordonnance.model';
 import {OrdonnanceService} from '../../../service/ordonnance.service';
 import {Router} from '@angular/router';
 import {NzMessageService} from 'ng-zorro-antd/message';
-import {Consultation} from '../../../models/consultation.model';
-import {RDV_STATUS_CONFIG, RdvStatus} from '../../../models/rdv.model';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {SearchAddActionsComponent} from '../../../shared/search-add-actions/search-add-actions.component';
 
