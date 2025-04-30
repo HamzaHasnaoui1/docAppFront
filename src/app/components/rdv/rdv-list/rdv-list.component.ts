@@ -26,7 +26,9 @@ import {NzSpaceModule} from 'ng-zorro-antd/space';
 import {NzPopconfirmDirective} from 'ng-zorro-antd/popconfirm';
 import {SearchAddActionsComponent} from "../../../shared/search-add-actions/search-add-actions.component";
 import {NzOptionComponent, NzSelectComponent} from 'ng-zorro-antd/select';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {NzFormItemComponent, NzFormLabelComponent} from 'ng-zorro-antd/form';
+import {NzColDirective} from 'ng-zorro-antd/grid';
 
 @Component({
   selector: 'app-rdv-list',
@@ -47,7 +49,11 @@ import {FormsModule} from '@angular/forms';
     SearchAddActionsComponent,
     NzOptionComponent,
     NzSelectComponent,
-    FormsModule
+    FormsModule,
+    NzFormItemComponent,
+    NzFormLabelComponent,
+    NzColDirective,
+    ReactiveFormsModule
   ],
   templateUrl: './rdv-list.component.html',
   standalone: true,
