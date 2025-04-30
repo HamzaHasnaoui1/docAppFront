@@ -1,0 +1,48 @@
+<nz-card nzTitle="Planifier un Rendez-vous" nzHoverable class="form-card">
+  <form [formGroup]="rdvForm" (ngSubmit)="onSubmit()" nz-form nzLayout="vertical">
+
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="24">
+        <nz-form-item>
+          <nz-form-label nzFor="date" nzRequired>Date et heure du Rendez-Vous</nz-form-label>
+          <nz-form-control [nzErrorTip]="'La date du Rendez-Vous est requise'">
+            <input nz-input type="datetime-local" id="date" formControlName="date" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="patientId" nzRequired>Patient</nz-form-label>
+          <nz-form-control [nzErrorTip]="'Veuillez sélectionner un patient'">
+            <nz-select id="patientId" formControlName="patientId" nzPlaceHolder="Choisir un patient">
+              <nz-option *ngFor="let p of patients" [nzValue]="p.id" [nzLabel]="p.nom"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="medecinId" nzRequired>Médecin</nz-form-label>
+          <nz-form-control [nzErrorTip]="'Veuillez sélectionner un médecin'">
+            <nz-select id="medecinId" formControlName="medecinId" nzPlaceHolder="Choisir un médecin">
+              <nz-option *ngFor="let m of medecins" [nzValue]="m.id" [nzLabel]="m.nom"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button nz-button type="button" (click)="onCancel()" style="margin-right: 8px">Annuler</button>
+      <button nz-button nzType="primary" [disabled]="rdvForm.invalid">
+        Enregistrer
+      </button>
+    </div>
+
+  </form>
+</nz-card>

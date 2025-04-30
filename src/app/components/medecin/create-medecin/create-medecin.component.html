@@ -1,0 +1,53 @@
+<nz-card nzTitle="Créer Medecin" nzHoverable class="form-card">
+  <form [formGroup]="medecinForm" (ngSubmit)="onSubmit()" nz-form nzLayout="vertical">
+
+    <div nz-row [nzGutter]="16">
+
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="nom" nzRequired>Nom</nz-form-label>
+          <nz-form-control [nzErrorTip]="'Le nom est requis'">
+            <input nz-input id="nom" formControlName="nom" placeholder="Nom du medecin" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="email" nzRequired>Email</nz-form-label>
+          <nz-form-control [nzErrorTip]="'Le mail est requis'">
+            <input nz-input type="email" id="email" formControlName="email" placeholder="Email" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div nz-row [nzGutter]="16">
+
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="numeroTelephone" nzRequired>Téléphone</nz-form-label>
+          <nz-form-control [nzErrorTip]="'Le numero est requis'">
+            <input nz-input type="number" id="numeroTelephone" formControlName="numeroTelephone" placeholder="Numéro de téléphone" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="specialite" nzRequired>Specialite</nz-form-label>
+          <nz-form-control [nzErrorTip]="'La specialite est requis'">
+            <input nz-input id="specialite" formControlName="specialite" placeholder="Specialite du medecin" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+
+
+    <div class="form-actions" >
+      <button nz-button type="button" (click)="onCancel()" style="margin-right: 8px">Annuler</button>
+      <button nz-button nzType="primary" [disabled]="medecinForm.invalid">Enregistrer</button>
+    </div>
+
+  </form>
+</nz-card>

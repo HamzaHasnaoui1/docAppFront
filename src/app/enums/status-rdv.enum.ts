@@ -1,0 +1,6 @@
+export enum StatusRDV {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  CANCELLED = 'CANCELLED',
+  DONE = 'DONE'
+}

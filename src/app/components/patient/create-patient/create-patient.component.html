@@ -1,0 +1,145 @@
+<nz-card nzTitle="Créer Patient" nzHoverable class="form-card">
+  <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" nz-form nzLayout="vertical">
+
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="titre" nzRequired>Titre</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="titre" id="titre" nzPlaceHolder="Choisir un titre">
+              <nz-option nzValue="Mr" nzLabel="Mr"></nz-option>
+              <nz-option nzValue="MMe" nzLabel="Mme"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="12">
+        <nz-form-item >
+          <nz-form-label nzFor="nom" nzRequired>Nom</nz-form-label>
+          <nz-form-control [nzErrorTip]="'Le nom est requis'">
+            <input nz-input id="nom" formControlName="nom" placeholder="Nom du patient" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="dateNaissance" nzRequired>Date de naissance</nz-form-label>
+          <nz-form-control [nzErrorTip]="'La date du naissance est requis'">
+            <input nz-input type="date" id="dateNaissance" formControlName="dateNaissance" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="numeroTelephone" nzRequired>Téléphone</nz-form-label>
+          <nz-form-control [nzErrorTip]="'Le numero est requis'">
+            <input nz-input type="number" id="numeroTelephone" formControlName="numeroTelephone" placeholder="Numéro de téléphone" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="adresse" nzRequired>Adresse</nz-form-label>
+          <nz-form-control [nzErrorTip]="'L adresse est obligatoire'">
+            <input nz-input id="adresse" formControlName="adresse" placeholder="Adresse du patient" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="codePostal">Code Postal</nz-form-label>
+          <nz-form-control>
+            <input nz-input id="codePostal" formControlName="codePostal" placeholder="Code postal" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="malade" nzRequired>État de santé</nz-form-label>
+          <nz-form-control>
+            <nz-radio-group formControlName="malade">
+              <label nz-radio [nzValue]="true">Malade</label>
+              <label nz-radio [nzValue]="false">Sain</label>
+            </nz-radio-group>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <!-- Dossier Médical Section -->
+    <nz-divider nzText="Dossier Médical"></nz-divider>
+
+    <div formGroupName="dossierMedical">
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzFor="traitementsChroniques">Traitements Chroniques</nz-form-label>
+            <nz-form-control>
+              <textarea nz-input id="traitementsChroniques" formControlName="traitementsChroniques"
+                        placeholder="Veuillez décrire les traitements chroniques du patient" [nzAutosize]="{ minRows: 0.5, maxRows: 5 }"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzFor="allergies">Allergies</nz-form-label>
+            <nz-form-control>
+              <textarea nz-input id="allergies" formControlName="allergies"
+                        placeholder="Veuillez décrire les allergies du patient" [nzAutosize]="{ minRows: 0.5, maxRows: 5 }"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="24">
+          <nz-form-item>
+            <nz-form-label nzFor="antecedents">Antécédents Médicaux</nz-form-label>
+            <nz-form-control>
+              <textarea nz-input id="antecedents" formControlName="antecedents"
+                        placeholder="Veuillez décrire les antécédents médicaux du patient" [nzAutosize]="{ minRows: 0.5, maxRows: 5 }"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    </div>
+
+    <div nz-col [nzSpan]="24" class="text-area-container">
+      <nz-form-item>
+        <nz-form-label nzFor="rapport" nzRequired>Rapport</nz-form-label>
+        <nz-form-control [nzErrorTip]="'Le rapport est requis'">
+          <angular-editor formControlName="rapport" [config]="editorConfig"
+                          placeholder="Écrivez le rapport du patient ici..."
+                          class="custom-angular-editor"
+          ></angular-editor>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div class="form-actions">
+      <button nz-button nzType="default" class="clear-btn"
+              [disabled]="!patientForm.get('rapport')?.value"
+              (click)="clearReport()">
+        Clear
+      </button>
+      <div class="right-buttons">
+        <button nz-button type="button" (click)="onCancel()" style="margin-right: 8px">Annuler</button>
+        <button nz-button nzType="primary" [disabled]="patientForm.invalid">
+          Enregistrer
+        </button>
+      </div>
+    </div>
+  </form>
+</nz-card>
