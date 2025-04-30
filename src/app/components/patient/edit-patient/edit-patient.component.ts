@@ -83,33 +83,55 @@ export class EditPatientComponent implements OnInit {
       codePostal: [''],
       numeroTelephone: [''],
       titre: [null],
-      rapport: ['']
+      rapport: [''],
+      dossierMedical: this.fb.group({
+        allergies: [''],
+        antecedents: [''],
+        traitementsChroniques: ['']
+      })
     });
   }
 
   loadPatient(): void {
     this.patientService.getPatientById(this.patientId).subscribe({
-      next: (patient: Patient) => this.patientForm.patchValue(patient),
-      error: () => this.message.error('Impossible de charger les données du patient.')
+      next: (patient: Patient) => {
+        this.patientForm.patchValue({
+          nom: patient.nom,
+          dateNaissance: patient.dateNaissance,
+          malade: patient.malade,
+          adresse: patient.adresse,
+          codePostal: patient.codePostal,
+          numeroTelephone: patient.numeroTelephone,
+          titre: patient.titre,
+          rapport: patient.rapport,
+          dossierMedical: {
+            allergies: patient.dossierMedical?.allergies ?? '',
+            antecedents: patient.dossierMedical?.antecedents ?? '',
+            traitementsChroniques: patient.dossierMedical?.traitementsChroniques ?? ''
+          }
+        });
+      },
+      error: () => this.message.error('Erreur lors du chargement du patient')
     });
   }
 
   onSubmit(): void {
-    if (this.patientForm.invalid) {
-      this.message.warning('Veuillez remplir tous les champs requis.');
-      return;
+    if (this.patientForm.valid) {
+      const updatedPatient: Patient = {
+        id: this.patientId,
+        ...this.patientForm.value
+      };
+
+      this.patientService.updatePatient(this.patientId, updatedPatient).subscribe({
+        next: () => {
+          this.message.success('Patient modifié avec succès');
+          this.router.navigate(['/doc/patients/list']); // ou autre route
+        },
+        error: () => this.message.error('Erreur lors de la modification')
+      });
     }
-
-    const updatedPatient: Patient = { id: this.patientId, ...this.patientForm.value };
-
-    this.patientService.updatePatient(this.patientId, updatedPatient).subscribe({
-      next: () => {
-        this.message.success('Patient mis à jour avec succès.');
-        this.router.navigate(['/doc/patients']);
-      },
-      error: () => this.message.error('Erreur lors de la mise à jour du patient.')
-    });
   }
+
 
   onCancel(): void {
     this.router.navigate(['/doc/patients']);

@@ -57,12 +57,13 @@
         </div>
       </div>
     </nz-card>
+    <!-- Actions -->
+    <div class="form-actions">
+      <button nz-button type="button" (click)="onCancel()" style="margin-right: 8px">Annuler</button>
+      <button nz-button nzType="primary" [disabled]="rdvForm.invalid">
+        Enregistrer les modifications
+      </button>
+    </div>
   </form>
-  <!-- Actions -->
-  <div class="form-actions">
-    <button nz-button type="button" (click)="onCancel()" style="margin-right: 8px">Annuler</button>
-    <button nz-button nzType="primary" [disabled]="rdvForm.invalid">
-      Enregistrer les modifications
-    </button>
-  </div>
+
 </nz-card>

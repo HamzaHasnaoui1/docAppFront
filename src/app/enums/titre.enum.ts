@@ -1,4 +1,4 @@
 export enum Titre {
-  MMe = 'MMe',
+  Mme = 'Mme',
   Mr = 'Mr'
 }
