@@ -1,0 +1,407 @@
+.dashboard-container {
+  padding: 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Section titre de bienvenue */
+.welcome-section {
+  margin-bottom: 24px;
+  padding: 16px 24px;
+  border-radius: 8px;
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.welcome-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.medecin-welcome {
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+}
+
+.secretaire-welcome {
+  background: linear-gradient(135deg, #722ed1 0%, #531dab 100%);
+}
+
+.welcome-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.welcome-subtitle {
+  margin: 8px 0 0;
+  opacity: 0.9;
+}
+
+.welcome-date {
+  margin-top: 8px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.toggle-role-btn {
+  white-space: nowrap;
+}
+
+/* Cartes de statistiques */
+.stat-cards {
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  height: 100%;
+  transition: all 0.3s;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.stat-icon {
+  font-size: 24px;
+  margin-right: 8px;
+}
+
+.patients-icon {
+  color: #1890ff;
+}
+
+.consults-icon {
+  color: #722ed1;
+}
+
+.month-icon {
+  color: #fa8c16;
+}
+
+.upcoming-icon, .confirmed-icon {
+  color: #52c41a;
+}
+
+.today-icon {
+  color: #1890ff;
+}
+
+.pending-icon {
+  color: #fa8c16;
+}
+
+.total-icon {
+  color: #722ed1;
+}
+
+.stat-footer {
+  margin-top: 16px;
+  text-align: right;
+  padding-top: 8px;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* Graphiques */
+.chart-row {
+  margin-bottom: 24px;
+}
+
+.chart-card {
+  height: 100%;
+  min-height: 340px;
+}
+
+.chart-container {
+  height: 280px;
+  padding: 16px 0;
+}
+
+/* Graphique à barres simplifié */
+.bar-chart {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 100%;
+}
+
+.bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 60px;
+}
+
+.bar-value {
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.bar {
+  width: 75%;
+  background-color: #1890ff;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.3s ease-in-out;
+  min-height: 4px;
+}
+
+.revenue-bar {
+  background-color: #52c41a;
+}
+
+.bar-label {
+  margin-top: 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  transform: rotate(-45deg);
+  transform-origin: top left;
+  max-width: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Listes */
+.list-row, .tabs-row, .filter-row {
+  margin-bottom: 24px;
+}
+
+.list-card {
+  height: 100%;
+  min-height: 380px;
+}
+
+.filter-card {
+  padding: 8px 0;
+}
+
+.medecin-filter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  span {
+    white-space: nowrap;
+  }
+
+  nz-select {
+    min-width: 200px;
+  }
+}
+
+.simple-table {
+  th, td {
+    padding: 12px 8px;
+  }
+}
+
+.standard-table {
+  th, td {
+    padding: 12px 8px;
+  }
+
+  i {
+    margin-right: 8px;
+    font-size: 16px;
+  }
+
+  td {
+    vertical-align: middle;
+  }
+}
+
+/* Tab actions */
+.tab-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+/* Liste des patients */
+.patient-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.patient-card {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  transition: all 0.3s;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+}
+
+.patient-avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  background-color: #e6f7ff;
+  border-radius: 50%;
+  margin-right: 16px;
+
+  i {
+    font-size: 20px;
+    color: #1890ff;
+  }
+}
+
+.patient-info {
+  flex: 1;
+}
+
+.patient-name {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.patient-details {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.patient-actions {
+  a {
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.45);
+
+    &:hover {
+      color: #1890ff;
+    }
+  }
+}
+
+/* Accès rapide */
+.action-row {
+  margin-bottom: 24px;
+}
+
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.quick-action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 100px;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+  transition: all 0.3s;
+  text-align: center;
+
+  i {
+    font-size: 24px;
+    margin-bottom: 8px;
+    color: #1890ff;
+  }
+
+  span {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.65);
+  }
+
+  &:hover {
+    background-color: #e6f7ff;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.secretary-btn {
+  i {
+    color: #722ed1;
+  }
+
+  &:hover {
+    background-color: #f9f0ff;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .welcome-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .toggle-role-btn {
+    align-self: flex-end;
+  }
+
+  .chart-row, .list-row, .action-row, .tabs-row, .filter-row {
+    margin-bottom: 16px;
+  }
+
+  [nz-col] {
+    margin-bottom: 16px;
+  }
+
+  .quick-action-btn {
+    width: calc(50% - 8px);
+  }
+
+  .medecin-filter {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+
+    nz-select {
+      width: 100%;
+    }
+  }
+
+  .tab-actions {
+    margin-bottom: 8px;
+  }
+
+  .patient-card {
+    padding: 8px 12px;
+  }
+}
+.bar {
+  width: 75%;
+  background-color: #1890ff;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.3s ease-in-out;
+  min-height: 4px;
+}
+
+.revenue-bar {
+  background-color: #52c41a;
+}
+
+.minimal-bar {
+  min-height: 10px;
+  position: relative;
+}
+
+.minimal-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.3) 5px,
+      transparent 5px,
+      transparent 10px
+  );
+}
