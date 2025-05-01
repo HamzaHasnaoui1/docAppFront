@@ -34,6 +34,17 @@ export const PATIENT_ROUTES: Routes = [
       breadcrumb: 'Édition'
     }
   },
+  {
+    path: 'detail/:id',
+    title: 'Detail patient',
+    loadComponent: () =>
+      import('./patient-detail/patient-detail.component').then(
+        (c) => c.PatientDetailComponent
+      ),
+    data: {
+      breadcrumb: 'Detail'
+    }
+  },
   // Redirections
   {
     path: '',

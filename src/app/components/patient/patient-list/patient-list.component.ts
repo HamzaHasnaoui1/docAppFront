@@ -27,6 +27,8 @@ import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 import { RdvService } from '../../../service/rdv.service';
 import {PatientWithRdvs} from '../../../models/PatientWithRdvs.model';
+import {NzListComponent, NzListItemComponent, NzListItemMetaComponent, NzListModule} from 'ng-zorro-antd/list';
+import {NzAvatarComponent} from 'ng-zorro-antd/avatar';
 
 @Component({
   selector: 'app-patient-list',
@@ -58,6 +60,11 @@ import {PatientWithRdvs} from '../../../models/PatientWithRdvs.model';
     NzDescriptionsComponent,
     NzSelectComponent,
     NzOptionComponent,
+    NzListComponent,
+    NzListItemComponent,
+    NzListItemMetaComponent,
+    NzListModule,
+    NzAvatarComponent
   ],
   styleUrl: './patient-list.component.scss',
   animations: [
@@ -167,59 +174,8 @@ export class PatientListComponent implements OnInit {
     });
   }
 
-
-  getStatusConfig(status: RdvStatus) {
-    return RDV_STATUS_CONFIG[status];
-  }
-
   onSearch(keyword: string): void {
     this.searchTerm$.next(keyword);
-  }
-
-  onEditPatient(patient: Patient): void {
-    this.router.navigate(['/doc/patients/edit', patient.id]);
-  }
-
-  onEditRdv(rdv: RendezVous): void {
-    this.router.navigate(['/doc/rdv/edit', rdv.id]);
-  }
-
-  onDeletePatient(patient: Patient): void {
-    this.modal.confirm({
-      nzTitle: `Voulez-vous supprimer ${patient.titre || ''} ${patient.nom} ?`,
-      nzOkText: 'Supprimer',
-      nzOkDanger: true,
-      nzCancelText: 'Annuler',
-      nzOnOk: () =>
-        this.patientService.deletePatient(patient.id).subscribe({
-          next: () => {
-            this.message.success(`Patient "${patient.nom}" supprimé avec succès`);
-            this.animateRemoval(patient.id);
-          },
-          error: (err) => {
-            this.message.error(`Erreur : ${err.message}`);
-          }
-        })
-    });
-  }
-
-  onDeleteRdv(rdv: RendezVous): void {
-    this.modal.confirm({
-      nzTitle: `Voulez-vous supprimer le RDV du ${rdv.patient.nom} ?`,
-      nzOkText: 'Supprimer',
-      nzOkDanger: true,
-      nzCancelText: 'Annuler',
-      nzOnOk: () =>
-        this.rdvService.deleteRdv(rdv.id).subscribe({
-          next: () => {
-            this.message.success(`Rdv numero "${rdv.id}" supprimé avec succès`);
-            this.animateRemoval(rdv.id);
-          },
-          error: (err) => {
-            this.message.error(`Erreur : ${err.message}`);
-          }
-        })
-    });
   }
 
   animateRemoval(id: number): void {
@@ -230,31 +186,22 @@ export class PatientListComponent implements OnInit {
     }, 400);
   }
 
-  showRapportModal(p: any): void {
-    this.modal.create({
-      nzTitle: 'Rapport du patient',
-      nzContent: `<p style="white-space: pre-wrap;">${p.rapport || 'Aucun rapport disponible.'}</p>`,
-      nzClosable: true,
-      nzWidth: 600,
-      nzFooter: null,
-      nzWrapClassName: 'rapport-modal',
-    });
+  getAge(dateNaissance: string | Date): number {
+    const birth = new Date(dateNaissance);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+    return age;
   }
 
-  showOrdonnanceModal(rdv: RendezVous): void {
-    this.modal.create({
-      nzTitle: 'Ordonnance du patient',
-      nzContent: `<p style="white-space: pre-wrap;">${rdv.ordonnance || 'Aucune ordonnance disponible.'}</p>`,
-      nzClosable: true,
-      nzWidth: 600,
-      nzFooter: null,
-      nzWrapClassName: 'rapport-modal',
-    });
+  navigateToDetails(patientId: number): void {
+    this.router.navigate(['/doc/patients/detail', patientId]);
   }
 
   showPhoneModal(p: any): void {
     this.modal.create({
-      nzTitle: 'Numero du patient',
+      nzTitle: `Numéro de téléphone de ${p.nom}`,
       nzContent: `<p style="white-space: pre-wrap;">${p.numeroTelephone || 'Aucun Numero disponible.'}</p>`,
       nzClosable: true,
       nzWidth: 600,
