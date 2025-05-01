@@ -134,6 +134,7 @@ export class EditPatientComponent implements OnInit {
 
 
   onCancel(): void {
-    this.router.navigate(['/doc/patients']);
+    this.router.navigate(['/doc/patients/detail', this.patientId]);
   }
+
 }

@@ -21,6 +21,8 @@ import {NzDatePickerComponent} from 'ng-zorro-antd/date-picker';
 import {NzButtonComponent} from 'ng-zorro-antd/button';
 import {NzIconDirective} from 'ng-zorro-antd/icon';
 import {CommonModule} from '@angular/common';
+import {Patient} from '../../../models/patient.model';
+import {id} from 'date-fns/locale';
 
 @Component({
   selector: 'app-edit-rdv',
@@ -49,11 +51,12 @@ import {CommonModule} from '@angular/common';
   styleUrls: ['./edit-rdv.component.scss']
 })
 export class EditRdvComponent implements OnInit {
+  patientId!: number;
   rdvForm!: FormGroup;
   loading = false;
   rdvId!: number;
-  medecinNom: string = '';
-  patientNom: string = '';
+  medecin: string = '';
+  patient: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -106,8 +109,9 @@ export class EditRdvComponent implements OnInit {
     this.loading = true;
     this.rdvService.getRdvById(this.rdvId).subscribe({
       next: (rdv: RendezVous) => {
-        this.medecinNom = rdv.medecin?.nom || rdv.medecin?.nom || 'Médecin inconnu';
-        this.patientNom = rdv.patient?.nom || rdv.patient?.nom || 'Patient inconnu';
+        this.patientId = rdv.patient?.id;
+        this.medecin = rdv.medecin?.nom || rdv.medecin?.nom || 'Médecin inconnu';
+        this.patient = rdv.patient?.nom || rdv.patient?.nom || 'Patient inconnu';
 
         this.rdvForm.patchValue({
           date: rdv.date,
@@ -175,7 +179,7 @@ export class EditRdvComponent implements OnInit {
     this.rdvService.updateRdv(this.rdvId, rdv).subscribe({
       next: () => {
         this.message.success('Rendez-vous mis à jour avec succès');
-        this.router.navigate(['/doc/patients/list']);
+        this.router.navigate(['/doc/patients/detail']);
       },
       error: (err) => {
         console.error('Erreur de mise à jour :', err);
@@ -184,7 +188,11 @@ export class EditRdvComponent implements OnInit {
     });
   }
 
-  onCancel() {
-    this.router.navigate(['/doc/patients/list']);
+  onCancel(): void {
+    if (this.patientId) {
+      this.router.navigate(['/doc/patients/detail', this.patientId]);
+    } else {
+      this.message.warning('ID patient non disponible');
+    }
   }
 }
