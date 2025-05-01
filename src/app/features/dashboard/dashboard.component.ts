@@ -159,7 +159,7 @@ export class DashboardComponent implements OnInit {
 
       // Rendez-vous en attente (PENDING ou EN_ATTENTE)
       this.pendingAppointments = appointments.filter((rdv: RendezVous) =>
-        rdv.statusRDV === 'PENDING' || rdv.statusRDV === 'EN_ATTENTE'
+        rdv.statusRDV === 'PENDING'
       );
       this.pendingAppointmentsCount = this.pendingAppointments.length;
 
@@ -364,7 +364,7 @@ export class DashboardComponent implements OnInit {
 
         // Mettre à jour les rendez-vous en attente
         this.pendingAppointments = filteredAppointments.filter((rdv: RendezVous) =>
-          rdv.statusRDV === 'PENDING' || rdv.statusRDV === 'EN_ATTENTE'
+          rdv.statusRDV === 'PENDING'
         );
         this.pendingAppointmentsCount = this.pendingAppointments.length;
 
