@@ -235,6 +235,6 @@ export class RdvListComponent implements OnInit {
   }
 
   viewDetails(rdv: RendezVous): void {
-    this.router.navigate(['/patients/details', rdv.patient?.id]);
+    this.router.navigate(['/doc/patients/detail', rdv.patient?.id]);
   }
 }

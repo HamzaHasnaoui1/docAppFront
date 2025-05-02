@@ -6,8 +6,16 @@ export const routes: Routes = [
     loadChildren: () => import('./features/layout/layout.routes').then(c => c.LAYOUT_ROUTES)
   },
   {
+    path: 'login',
+    loadComponent: () => import('./components/login/login.component').then(c => c.LoginComponent)
+  },
+  {
     path: '',
-    redirectTo: 'doc',
+    redirectTo: 'login',
     pathMatch: 'full'
+  },
+  {
+    path: '**',
+    redirectTo: 'login'
   }
 ];

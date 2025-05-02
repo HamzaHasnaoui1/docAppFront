@@ -179,7 +179,7 @@ export class EditRdvComponent implements OnInit {
     this.rdvService.updateRdv(this.rdvId, rdv).subscribe({
       next: () => {
         this.message.success('Rendez-vous mis à jour avec succès');
-        this.router.navigate(['/doc/patients/detail']);
+        this.router.navigate(['/doc/patients/detail', this.patientId]);
       },
       error: (err) => {
         console.error('Erreur de mise à jour :', err);

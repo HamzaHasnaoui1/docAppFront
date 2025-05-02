@@ -10,7 +10,7 @@ import {Patient} from '../models/patient.model';
 export class PatientService {
   constructor(private http: HttpClient) {}
 
-  getPatients(page: number = 0, keyword: string = '', size: number = 5): Observable<any> {
+  getPatients(page: number = 0, keyword: string = '', size: number = 15): Observable<any> {
     const params = new HttpParams()
       .set('page', page)
       .set('size', size)

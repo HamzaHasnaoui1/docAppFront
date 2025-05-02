@@ -1,0 +1,60 @@
+<div class="login-container">
+  <nz-card class="login-card" nzBorderless>
+    <div class="login-header">
+      <h1 class="login-title">Connexion</h1>
+      <p class="login-subtitle">Accédez à votre espace professionnel</p>
+    </div>
+
+    <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" class="login-form">
+      <nz-form-item>
+        <nz-form-control nzHasFeedback [nzErrorTip]="usernameErrorTpl">
+          <nz-input-group nzPrefixIcon="user">
+            <input formControlName="username" nz-input placeholder="Nom d'utilisateur" />
+          </nz-input-group>
+          <ng-template #usernameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              Veuillez saisir votre nom d'utilisateur
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control nzHasFeedback [nzErrorTip]="passwordErrorTpl">
+          <nz-input-group nzPrefixIcon="lock">
+            <input type="password" formControlName="password" nz-input placeholder="Mot de passe" />
+          </nz-input-group>
+          <ng-template #passwordErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              Veuillez saisir votre mot de passe
+            </ng-container>
+            <ng-container *ngIf="control.hasError('minlength')">
+              Le mot de passe doit contenir au moins 6 caractères
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <div class="login-options">
+        <label nz-checkbox formControlName="remember" class="remember-me">
+          Se souvenir de moi
+        </label>
+        <a routerLink="/reset-password" class="forgot-password">
+          Mot de passe oublié ?
+        </a>
+      </div>
+
+      <button nz-button
+              nzType="primary"
+              nzBlock
+              [nzLoading]="isLoading"
+              class="login-button">
+        Se connecter
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <p>Nouveau sur la plateforme ? <a routerLink="/register">Créer un compte</a></p>
+    </div>
+  </nz-card>
+</div>

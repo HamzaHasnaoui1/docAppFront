@@ -19,7 +19,7 @@ export class RdvService {
     return this.http.get<any>(`${environment.apiUrl}/user/rdv`, { params });
   }
 
-  getRdvsMedecin(medecinId: number = 2): Observable<any> {
+  getRdvsMedecin(medecinId: number = 1): Observable<any> {
     return this.http.get<any>(`${environment.apiUrl}/user/medecins/${medecinId}/rdv`);
   }
 

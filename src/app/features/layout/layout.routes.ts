@@ -61,7 +61,15 @@ export const LAYOUT_ROUTES: Routes = [
           import('../../components/rdv/rdv.routes').then(
             (c) => c.RDV_ROUTES
           ),
+      }, {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full',
       },
+      {
+        path: '**',
+        redirectTo: 'dashboard',
+      }
      /* {
         path: '',
         redirectTo: 'dashboard',

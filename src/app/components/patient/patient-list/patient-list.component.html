@@ -1,6 +1,6 @@
 <ng-container *ngIf="patients$ | async as patients; else error">
   <nz-list nzItemLayout="horizontal" class="patient-list modern-list">
-    <div class="glass-header">
+    <div class="search-add-container">
       <app-search-add-actions
         searchPlaceholder="Rechercher un patient..."
         addButtonText="Nouveau Patient"
