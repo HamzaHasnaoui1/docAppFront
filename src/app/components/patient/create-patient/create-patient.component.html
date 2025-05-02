@@ -27,6 +27,27 @@
     <div nz-row [nzGutter]="16">
       <div nz-col [nzSpan]="12">
         <nz-form-item>
+          <nz-form-label nzFor="cin" nzRequired>CIN</nz-form-label>
+          <nz-form-control [nzErrorTip]="'La CIN est requis'">
+            <input nz-input  id="cin" formControlName="cin" placeholder="CIN"/>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="email">Email</nz-form-label>
+          <nz-form-control [nzErrorTip]="'Email'">
+            <input nz-input type="email" id="email" formControlName="email" placeholder="Email" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
           <nz-form-label nzFor="dateNaissance" nzRequired>Date de naissance</nz-form-label>
           <nz-form-control [nzErrorTip]="'La date du naissance est requis'">
             <input nz-input type="date" id="dateNaissance" formControlName="dateNaissance" />

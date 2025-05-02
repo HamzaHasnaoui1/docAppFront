@@ -77,6 +77,8 @@ export class EditPatientComponent implements OnInit {
   initForm(): void {
     this.patientForm = this.fb.group({
       nom: [''],
+      cin: [''],
+      email: [''],
       dateNaissance: [''],
       malade: [false],
       adresse: [''],
@@ -97,6 +99,8 @@ export class EditPatientComponent implements OnInit {
       next: (patient: Patient) => {
         this.patientForm.patchValue({
           nom: patient.nom,
+          cin: patient.cin,
+          email: patient.email,
           dateNaissance: patient.dateNaissance,
           malade: patient.malade,
           adresse: patient.adresse,
@@ -125,7 +129,7 @@ export class EditPatientComponent implements OnInit {
       this.patientService.updatePatient(this.patientId, updatedPatient).subscribe({
         next: () => {
           this.message.success('Patient modifié avec succès');
-          this.router.navigate(['/doc/patients/list']); // ou autre route
+          this.router.navigate(['/doc/patients/detail',this.patientId]);
         },
         error: () => this.message.error('Erreur lors de la modification')
       });

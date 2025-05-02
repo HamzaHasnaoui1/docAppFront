@@ -5,6 +5,8 @@ import {RendezVous} from './rdv.model';
 export interface Patient {
   id: number;
   nom: string;
+  cin: string;
+  email: string;
   dateNaissance: string;
   malade: boolean;
   adresse: string;

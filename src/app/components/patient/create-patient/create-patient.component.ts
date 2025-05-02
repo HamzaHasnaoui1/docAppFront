@@ -77,6 +77,8 @@ constructor(
   initForm(): void {
     this.patientForm = this.fb.group({
       nom: ['', Validators.required],
+      cin: ['', Validators.required],
+      email: [''],
       dateNaissance: ['', Validators.required],
       malade: [false],
       adresse: ['',Validators.required],

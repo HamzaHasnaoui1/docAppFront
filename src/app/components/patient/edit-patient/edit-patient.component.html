@@ -23,7 +23,25 @@
         </nz-form-item>
       </div>
     </div>
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="cin" nzRequired>CIN</nz-form-label>
+          <nz-form-control>
+            <input nz-input  id="cin" formControlName="cin" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
 
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="emal" nzRequired>Email</nz-form-label>
+          <nz-form-control>
+            <input nz-input type="email" id="email" formControlName="email" placeholder="Email" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
     <div nz-row [nzGutter]="16">
       <div nz-col [nzSpan]="12">
         <nz-form-item>
