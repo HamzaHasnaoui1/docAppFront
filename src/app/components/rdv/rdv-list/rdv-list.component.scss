@@ -1,23 +1,71 @@
-<style>
-.calendar-events {
-  min-height: 60px;
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 0 16px;
 }
 
-.calendar-event {
-  margin: 2px 0;
-  padding: 2px 5px;
-  background: #f0f0f0;
+.week-view {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px;
+}
+
+.day-column {
+  min-width: 240px;
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+.day-header {
+  padding: 12px;
+  background: #1890ff;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 8px 8px 0 0;
+}
+
+.rdv-container {
+  padding: 8px;
+  min-height: 120px;
+}
+
+.rdv-card {
+  padding: 12px;
+  margin-bottom: 8px;
+  background: white;
   border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  display: flex;
+  gap: 8px;
+  align-items: center;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
 }
 
-.calendar-event:hover {
-  background: #e6f7ff;
+.rdv-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.patient-name {
-  margin-right: 5px;
+.rdv-time {
+  font-weight: bold;
+  color: #1890ff;
+  min-width: 50px;
+}
+
+.rdv-details {
+  flex: 1;
+}
+
+.patient {
   font-weight: 500;
 }
-</style>
+
+.doctor {
+  font-size: 12px;
+  color: #666;
+}

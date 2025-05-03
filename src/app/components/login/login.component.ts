@@ -1,3 +1,4 @@
+/*
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -9,6 +10,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {NzCardComponent} from 'ng-zorro-antd/card';
+import {AuthService} from '../auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -31,7 +33,7 @@ export class LoginComponent {
   validateForm: FormGroup;
   isLoading = false;
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(private fb: FormBuilder, private router: Router, private authService : AuthService) {
     this.validateForm = this.fb.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -40,19 +42,21 @@ export class LoginComponent {
   }
 
   submitForm(): void {
-    if (this.validateForm.invalid) {
-      this.markFormControlsAsDirty();
-      return;
+    if (this.validateForm.valid) {
+      this.isLoading = true;
+      const { username, password } = this.validateForm.value;
+      this.authService.login(username, password).subscribe({
+        next: () => {
+          this.router.navigate(['/doc/dashboard']);
+        },
+        error: () => {
+          this.validateForm.setErrors({ invalidLogin: true });
+          this.isLoading = false;
+        },
+      });
     }
-
-    this.isLoading = true;
-
-    setTimeout(() => {
-      this.isLoading = false;
-      this.handleRememberMe();
-      this.router.navigate(['/doc/dashboard']);
-    }, 1500);
   }
+
 
   private markFormControlsAsDirty(): void {
     Object.values(this.validateForm.controls).forEach(control => {
@@ -70,3 +74,4 @@ export class LoginComponent {
       : localStorage.removeItem('username');
   }
 }
+*/

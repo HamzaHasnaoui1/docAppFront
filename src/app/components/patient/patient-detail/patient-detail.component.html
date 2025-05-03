@@ -115,7 +115,7 @@
         </nz-table>
 
         <div *ngIf="!patient.rendezVousList?.length" class="empty-state">
-          <nz-empty nzNotFoundContent="Aucun rendez-vous enregistré"></nz-empty>
+          <nz-empty [nzNotFoundContent]="'Aucun rendez-vous enregistré'"></nz-empty>
         </div>
       </nz-card>
 

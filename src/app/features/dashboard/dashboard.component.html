@@ -23,7 +23,7 @@
         <nz-card nzHoverable class="stat-card">
           <nz-statistic
             [nzValue]="totalPatients"
-            [nzTitle]="'Patients totaux'"
+            [nzTitle]="'Patients totaux :'"
             [nzLoading]="loadingPatients"
             [nzPrefix]="userIcon">
           </nz-statistic>
@@ -40,7 +40,7 @@
         <nz-card nzHoverable class="stat-card">
           <nz-statistic
             [nzValue]="totalAppointments"
-            [nzTitle]="'Consultations totales'"
+            [nzTitle]="'Consultations totales :'"
             [nzLoading]="loadingAppointments"
             [nzPrefix]="consultIcon">
           </nz-statistic>
@@ -57,7 +57,7 @@
         <nz-card nzHoverable class="stat-card">
           <nz-statistic
             [nzValue]="patientsThisMonth"
-            [nzTitle]="'Patients ce mois'"
+            [nzTitle]="'Patients ce mois :'"
             [nzLoading]="loadingPatients"
             [nzPrefix]="monthIcon">
           </nz-statistic>
@@ -71,7 +71,7 @@
         <nz-card nzHoverable class="stat-card">
           <nz-statistic
             [nzValue]="upcomingAppointments"
-            [nzTitle]="'Rendez-vous à venir'"
+            [nzTitle]="'Rendez-vous à venir :'"
             [nzLoading]="loadingAppointments"
             [nzPrefix]="upcomingIcon"
             [nzValueStyle]="{ color: '#52c41a' }">
@@ -89,7 +89,7 @@
     <!-- Graphiques de données -->
     <div nz-row [nzGutter]="16" class="chart-row">
       <div nz-col [nzXs]="24" [nzMd]="12">
-        <nz-card nzTitle="Rendez-vous par mois" class="chart-card">
+        <nz-card nzTitle="Rendez-vous par mois :" class="chart-card">
           <div *ngIf="rdvsByMonth.length > 0" class="chart-container">
             <!-- Graphique des rendez-vous par mois -->
             <div class="bar-chart">
@@ -109,7 +109,7 @@
       </div>
 
       <div nz-col [nzXs]="24" [nzMd]="12">
-        <nz-card nzTitle="Revenus par mois (DH)" class="chart-card">
+        <nz-card nzTitle="Revenus par mois (DH) :" class="chart-card">
           <div *ngIf="revenueByMonth.length > 0" class="chart-container">
             <!-- Graphique des revenus par mois -->
             <div class="bar-chart">
@@ -132,7 +132,7 @@
     <!-- Listes de données -->
     <div nz-row [nzGutter]="16" class="list-row">
       <div nz-col [nzXs]="24" [nzMd]="12">
-        <nz-card nzTitle="Patients fréquents" [nzExtra]="extraFrequentPatients" class="list-card">
+        <nz-card nzTitle="Patients fréquents :" [nzExtra]="extraFrequentPatients" class="list-card">
           <ng-template #extraFrequentPatients>
             <a routerLink="/doc/patients/list">Tous les patients</a>
           </ng-template>
@@ -156,7 +156,7 @@
               <td>{{ item.patient.titre || '' }} {{ item.patient.nom }}</td>
               <td>{{ item.count }}</td>
               <td>
-                <a [routerLink]="['/doc/patients/edit', item.patient.id]" nz-tooltip nzTooltipTitle="Voir le dossier">
+                <a (click)="navigateToDetails(item.patient.id)" nz-tooltip nzTooltipTitle="Voir le dossier medical">
                   <i nz-icon nzType="folder-open" nzTheme="outline"></i>
                 </a>
               </td>
@@ -168,7 +168,7 @@
       </div>
 
       <div nz-col [nzXs]="24" [nzMd]="12">
-        <nz-card nzTitle="Rendez-vous d'aujourd'hui" [nzExtra]="extraToday" class="list-card">
+        <nz-card nzTitle="Rendez-vous d'aujourd'hui :" [nzExtra]="extraToday" class="list-card">
           <ng-template #extraToday>
             <a routerLink="/doc/rdv/list">Tous les rendez-vous</a>
           </ng-template>
@@ -213,7 +213,7 @@
     <!-- Accès rapide -->
     <div nz-row [nzGutter]="16" class="action-row">
       <div nz-col [nzSpan]="24">
-        <nz-card nzTitle="Accès rapide" class="action-card">
+        <nz-card nzTitle="Accès rapide :" class="action-card">
           <div class="quick-actions">
             <a routerLink="/doc/patients/create" class="quick-action-btn">
               <i nz-icon nzType="user-add" nzTheme="outline"></i>
@@ -248,7 +248,7 @@
         <nz-card nzHoverable class="stat-card">
           <nz-statistic
             [nzValue]="todayAppointmentsCount"
-            [nzTitle]="'Rendez-vous aujourd\'hui'"
+            [nzTitle]="'Rendez-vous aujourd\'hui :'"
             [nzLoading]="loadingAppointments"
             [nzPrefix]="todayIcon">
           </nz-statistic>
@@ -265,7 +265,7 @@
         <nz-card nzHoverable class="stat-card">
           <nz-statistic
             [nzValue]="pendingAppointmentsCount"
-            [nzTitle]="'En attente de confirmation'"
+            [nzTitle]="'En attente de confirmation :'"
             [nzLoading]="loadingAppointments"
             [nzPrefix]="pendingIcon"
             [nzValueStyle]="{ color: '#fa8c16' }">
@@ -280,7 +280,7 @@
         <nz-card nzHoverable class="stat-card">
           <nz-statistic
             [nzValue]="confirmedAppointmentsCount"
-            [nzTitle]="'Rendez-vous confirmés'"
+            [nzTitle]="'Rendez-vous confirmés :'"
             [nzLoading]="loadingAppointments"
             [nzPrefix]="confirmedIcon"
             [nzValueStyle]="{ color: '#52c41a' }">
@@ -295,7 +295,7 @@
         <nz-card nzHoverable class="stat-card">
           <nz-statistic
             [nzValue]="totalPatients"
-            [nzTitle]="'Nombre total de patients'"
+            [nzTitle]="'Nombre total de patients :'"
             [nzLoading]="loadingPatients"
             [nzPrefix]="totalIcon">
           </nz-statistic>
@@ -335,7 +335,7 @@
       <div nz-col [nzSpan]="24">
         <nz-card>
           <nz-tabset>
-            <nz-tab nzTitle="Rendez-vous d'aujourd'hui">
+            <nz-tab nzTitle="Rendez-vous d'aujourd'hui :">
               <div class="tab-actions">
                 <button nz-button nzType="primary" (click)="exportTodayAppointments()">
                   <i nz-icon nzType="export" nzTheme="outline"></i>
@@ -383,7 +383,7 @@
               <nz-empty *ngIf="todayAppointments.length === 0 && !loadingAppointments"></nz-empty>
             </nz-tab>
 
-            <nz-tab nzTitle="En attente de confirmation">
+            <nz-tab nzTitle="En attente de confirmation :">
               <nz-table
                 #pendingAppointmentsTable
                 [nzData]="pendingAppointments"
@@ -430,7 +430,7 @@
     <!-- Liste des prochains patients -->
     <div nz-row [nzGutter]="16" class="list-row">
       <div nz-col [nzSpan]="24">
-        <nz-card nzTitle="Prochains patients à recevoir" class="list-card">
+        <nz-card nzTitle="Prochains patients à recevoir :" class="list-card">
           <div class="patient-list">
             <div *ngFor="let patient of nextPatients" class="patient-card">
               <div class="patient-avatar">
@@ -457,7 +457,7 @@
     <!-- Accès rapide pour secrétaire -->
     <div nz-row [nzGutter]="16" class="action-row">
       <div nz-col [nzSpan]="24">
-        <nz-card nzTitle="Accès rapide" class="action-card">
+        <nz-card nzTitle="Accès rapide :" class="action-card">
           <div class="quick-actions">
             <a routerLink="/doc/patients/create" class="quick-action-btn secretary-btn">
               <i nz-icon nzType="user-add" nzTheme="outline"></i>

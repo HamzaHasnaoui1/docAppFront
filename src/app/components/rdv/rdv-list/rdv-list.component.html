@@ -1,1 +1,35 @@
 
+<nz-card nzTitle="Calendrier Hebdomadaire">
+  <div class="controls">
+    <button nz-button nzType="default" (click)="previousWeek()">
+      <i nz-icon nzType="left"></i> Semaine précédente
+    </button>
+    <h3>{{ weekStart | date:'d MMMM yyyy' }} - {{ weekEnd | date:'d MMMM yyyy' }}</h3>
+    <button nz-button nzType="default" (click)="nextWeek()">
+      Semaine suivante <i nz-icon nzType="right"></i>
+    </button>
+  </div>
+
+  <div class="week-view">
+    <div *ngFor="let day of weekDays" class="day-column">
+      <div class="day-header">
+        {{ day | date:'EEEE d' | titlecase }}
+      </div>
+      <div class="rdv-container">
+        <div *ngFor="let rdv of getDayRdvs(day)"
+             class="rdv-card"
+             [style.border-left]="'4px solid ' + getStatusColor(rdv.statusRDV)"
+             (click)="viewDetails(rdv)">
+          <div class="rdv-time">{{ formatTime(rdv.date) }}</div>
+          <div class="rdv-details">
+            <div class="patient">{{ rdv.patient?.nom || 'N/A' }}</div>
+            <div class="doctor">{{ rdv.medecin?.specialite || 'Spécialité inconnue' }}</div>
+          </div>
+          <nz-tag [nzColor]="getStatusColor(rdv.statusRDV)">
+            {{ getStatusLabel(rdv.statusRDV) }}
+          </nz-tag>
+        </div>
+      </div>
+    </div>
+  </div>
+</nz-card>

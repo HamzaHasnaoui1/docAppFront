@@ -21,8 +21,6 @@ import {NzDatePickerComponent} from 'ng-zorro-antd/date-picker';
 import {NzButtonComponent} from 'ng-zorro-antd/button';
 import {NzIconDirective} from 'ng-zorro-antd/icon';
 import {CommonModule} from '@angular/common';
-import {Patient} from '../../../models/patient.model';
-import {id} from 'date-fns/locale';
 
 @Component({
   selector: 'app-edit-rdv',
@@ -72,6 +70,12 @@ export class EditRdvComponent implements OnInit {
     this.loadRdv();
   }
 
+  formatDateTimeLocal(iso: string): string {
+    const date = new Date(iso);
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  }
+
   initForm() {
     this.rdvForm = this.fb.group({
       date: ['', Validators.required],
@@ -110,11 +114,11 @@ export class EditRdvComponent implements OnInit {
     this.rdvService.getRdvById(this.rdvId).subscribe({
       next: (rdv: RendezVous) => {
         this.patientId = rdv.patient?.id;
-        this.medecin = rdv.medecin?.nom || rdv.medecin?.nom || 'Médecin inconnu';
-        this.patient = rdv.patient?.nom || rdv.patient?.nom || 'Patient inconnu';
+        this.medecin = rdv.medecin?.nom || 'Médecin inconnu';
+        this.patient = rdv.patient?.nom || 'Patient inconnu';
 
         this.rdvForm.patchValue({
-          date: rdv.date,
+          date: this.formatDateTimeLocal(rdv.date),
           statusRDV: rdv.statusRDV,
           medecin: rdv.medecin?.id,
           patient: rdv.patient?.id,
@@ -132,7 +136,7 @@ export class EditRdvComponent implements OnInit {
 
           if (rdv.ordonnance.medicamentsPrescrits) {
             this.medicaments.clear();
-            rdv.ordonnance.medicamentsPrescrits.forEach((med, index) => {
+            rdv.ordonnance.medicamentsPrescrits.forEach((med) => {
               this.addMedicament(
                 med,
                 rdv.ordonnance?.posologies?.[med] || ''
@@ -156,7 +160,7 @@ export class EditRdvComponent implements OnInit {
       return;
     }
 
-    const formValue = this.rdvForm.getRawValue(); // Utilisez getRawValue() pour inclure les champs désactivés
+    const formValue = this.rdvForm.getRawValue();
     const medicamentsPrescrits = formValue.ordonnance.medicaments.map((m: any) => m.nom);
     const posologies = formValue.ordonnance.medicaments.reduce((acc: any, curr: any) => {
       if (curr.nom) acc[curr.nom] = curr.posologie;

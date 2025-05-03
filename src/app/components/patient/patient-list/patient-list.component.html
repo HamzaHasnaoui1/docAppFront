@@ -40,6 +40,8 @@
     </nz-list-item>
 
   </nz-list>
+  <nz-empty *ngIf="patients.length === 0" [nzNotFoundContent]="'Aucun patient trouvé'"></nz-empty>
+
   <div class="modern-pagination">
     <button nz-button nzShape="circle" (click)="prevPage()" [disabled]="currentPage === 0">
       <i nz-icon nzType="left" nzTheme="outline"></i>
@@ -62,7 +64,6 @@
     </button>
   </div>
 
-  <nz-empty *ngIf="patients.length === 0" nzNotFoundContent="Aucun patient trouvé"></nz-empty>
 </ng-container>
 
 <ng-template #error>

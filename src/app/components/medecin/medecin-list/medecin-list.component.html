@@ -49,6 +49,8 @@
       </tbody>
     </nz-table>
 
+    <nz-empty  *ngIf="medecins.length === 0" [nzNotFoundContent]="'Aucun médecin trouvé'"></nz-empty>
+
     <!-- Pagination moderne -->
     <div class="modern-pagination">
       <button nz-button nzShape="circle" (click)="prevPage()" [disabled]="currentPage === 0">
@@ -71,6 +73,7 @@
         <i nz-icon nzType="right" nzTheme="outline"></i>
       </button>
     </div>
+
   </ng-container>
 
   <ng-template #error>

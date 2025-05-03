@@ -1,3 +1,11 @@
+::ng-deep .ant-card-head-title {
+  color: #003b85 !important;
+}
+
+::ng-deep .dashboard-secretaire .ant-card-head-title {
+  color: #722ed1 !important;
+}
+
 .dashboard-container {
   padding: 16px;
   max-width: 1400px;

@@ -1,0 +1,50 @@
+<div class="login-container">
+  <div class="login-panel">
+    <div class="logo-container">
+      <img src="assets/images/logo.png" alt="Logo codexa" class="logo-image">
+    </div>
+
+    <nz-card nzTitle="Accédez à votre espace"  [nzBordered]="true">
+
+      <form nz-form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <nz-form-item>
+          <nz-form-control [nzErrorTip]="usernameErrorTpl">
+            <nz-input-group nzPrefixIcon="user">
+              <input formControlName="username" nz-input placeholder="Nom d'utilisateur" />
+            </nz-input-group>
+            <ng-template #usernameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                Veuillez saisir votre nom d'utilisateur
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-control [nzErrorTip]="passwordErrorTpl">
+            <nz-input-group nzPrefixIcon="lock">
+              <input type="password" formControlName="password" nz-input placeholder="Mot de passe" />
+            </nz-input-group>
+            <ng-template #passwordErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                Veuillez saisir votre mot de passe
+              </ng-container>
+              <ng-container *ngIf="control.hasError('minlength')">
+                Le mot de passe doit contenir au moins 6 caractères
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+        <button nz-button nzType="primary" [disabled]="loginForm.invalid" >
+          Se connecter
+        </button>
+      </form>
+
+    </nz-card>
+
+    <div class="footer-text">
+    &copy; Copyright {{ year }} - CODEXA Solution, All Rights Reserved.
+    </div>
+  </div>
+</div>

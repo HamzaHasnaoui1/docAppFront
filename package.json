@@ -10,7 +10,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^19.2.8",
+    "@angular/animations": "^19.2.6",
     "@angular/common": "^19.2.0",
     "@angular/compiler": "^19.2.0",
     "@angular/core": "^19.2.0",
@@ -23,7 +23,7 @@
     "angular-calendar": "^0.31.1",
     "angular-editor": "^0.0.3",
     "date-fns": "^4.1.0",
-    "ng-zorro-antd": "^19.2.1",
+    "ng-zorro-antd": "^19.2.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

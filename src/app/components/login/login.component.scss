@@ -1,3 +1,4 @@
+/*
 
 .login-container {
   display: flex;
@@ -9,6 +10,7 @@
 }
 
 .login-card {
+  background: #fff !important;
   width: 100%;
   max-width: 420px;
   border-radius: 12px;
@@ -83,7 +85,7 @@
   }
 }
 
-/* Responsive Design */
+!* Responsive Design *!
 @media (max-width: 480px) {
   .login-card {
     padding: 1.5rem;
@@ -103,3 +105,4 @@
     }
   }
 }
+*/

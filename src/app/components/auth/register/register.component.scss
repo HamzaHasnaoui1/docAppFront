@@ -1,0 +1,50 @@
+/* src/app/auth/register/register.component.scss */
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 20px 0;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+}
+
+.form-field {
+  margin-bottom: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.name-fields {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.half-width {
+  width: 50%;
+}
+
+.form-actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.login-link {
+  margin-top: 16px;
+  text-align: center;
+  width: 100%;
+}
+
+.spinner-button {
+  display: inline-block;
+  margin-right: 8px;
+}

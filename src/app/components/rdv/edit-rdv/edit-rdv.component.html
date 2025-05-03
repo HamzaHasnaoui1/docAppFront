@@ -105,14 +105,14 @@
           </nz-form-item>
         </div>
 
-        <div nz-col [nzSpan]="12">
+        <!--<div nz-col [nzSpan]="12">
           <nz-form-item>
             <nz-form-label nzFor="dateEmission">Date d'émission</nz-form-label>
             <nz-form-control>
               <nz-date-picker id="dateEmission" formControlName="dateEmission" class="full-width"></nz-date-picker>
             </nz-form-control>
           </nz-form-item>
-        </div>
+        </div>-->
 
       </div>
 
@@ -121,7 +121,7 @@
         <h3>Médicaments prescrits</h3>
         <div formArrayName="medicaments" class="medicaments-list">
           <div *ngFor="let med of medicaments.controls; let i = index" [formGroupName]="i" class="medicament-item">
-            <div nz-row [nzGutter]="16" nzAlign="middle">
+            <div nz-row [nzGutter]="16" nzAlign="top">
               <div nz-col [nzSpan]="10">
                 <nz-form-item>
                   <nz-form-control>
@@ -137,10 +137,15 @@
                 </nz-form-item>
               </div>
               <div nz-col [nzSpan]="4" class="text-right">
-                <button nz-button nzType="text" nzDanger (click)="removeMedicament(i)" nzShape="circle">
-                  <span nz-icon nzType="delete" nzTheme="outline"></span>
-                </button>
+                <nz-form-item>
+                  <nz-form-control>
+                    <button nz-button nzType="text" nzDanger (click)="removeMedicament(i)" nzShape="circle">
+                      <span nz-icon nzType="delete" nzTheme="outline"></span>
+                    </button>
+                  </nz-form-control>
+                </nz-form-item>
               </div>
+
             </div>
           </div>
         </div>

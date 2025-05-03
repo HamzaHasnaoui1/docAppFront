@@ -15,7 +15,7 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { RouterModule } from '@angular/router';
+import {Router, RouterModule} from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 // Services de l'application
@@ -102,7 +102,8 @@ export class DashboardComponent implements OnInit {
     private patientService: PatientService,
     private rdvService: RdvService,
     private medecinService: MedecinService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -438,5 +439,9 @@ export class DashboardComponent implements OnInit {
   // Changer de rôle (pour démonstration)
   toggleRole(): void {
     this.userRole = this.userRole === 'MEDECIN' ? 'SECRETAIRE' : 'MEDECIN';
+  }
+
+  navigateToDetails(patientId: number): void {
+    this.router.navigate(['/doc/patients/detail', patientId]);
   }
 }

@@ -6,6 +6,23 @@
       <li><a routerLink="patients" routerLinkActive="active">Patients</a></li>
       <li><a routerLink="medecin" routerLinkActive="active">Médecins</a></li>
       <li><a routerLink="rdv" routerLinkActive="active">Rendez-vous</a></li>
+
+      <li>
+        <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu">
+          <nz-icon nzType="user" />
+        </a>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item>
+              <i nz-icon nzType="setting"></i>
+              Profil</li>
+            <li nz-menu-item (click)="logout()">
+              <i nz-icon nzType="logout"></i>
+              Déconnexion
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+      </li>
     </ul>
   </nav>
 </header>

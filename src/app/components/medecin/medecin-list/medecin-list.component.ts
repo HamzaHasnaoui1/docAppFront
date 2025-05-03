@@ -27,32 +27,34 @@ import {NzInputGroupComponent} from "ng-zorro-antd/input";
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {SearchAddActionsComponent} from '../../../shared/search-add-actions/search-add-actions.component';
 import {NzOptionComponent, NzSelectComponent} from 'ng-zorro-antd/select';
+import {NzEmptyComponent} from "ng-zorro-antd/empty";
 
 @Component({
   selector: 'app-medecin-list',
-  imports: [
-    AsyncPipe,
-    CommonModule,
-    DatePipe,
-    NzTableModule,
-    NzTagModule,
-    NzButtonModule,
-    NzIconModule,
-    NzCardModule,
-    NzAlertModule,
-    NzSpaceModule,
-    NzPopconfirmDirective,
-    NzModalModule,
-    NzToolTipModule,
-    FormsModule,
-    NzInputGroupComponent,
-    ReactiveFormsModule,
-    NzModalModule,
-    SearchAddActionsComponent,
-    NzSelectComponent,
-    NzOptionComponent,
+    imports: [
+        AsyncPipe,
+        CommonModule,
+        DatePipe,
+        NzTableModule,
+        NzTagModule,
+        NzButtonModule,
+        NzIconModule,
+        NzCardModule,
+        NzAlertModule,
+        NzSpaceModule,
+        NzPopconfirmDirective,
+        NzModalModule,
+        NzToolTipModule,
+        FormsModule,
+        NzInputGroupComponent,
+        ReactiveFormsModule,
+        NzModalModule,
+        SearchAddActionsComponent,
+        NzSelectComponent,
+        NzOptionComponent,
+        NzEmptyComponent,
 
-  ],
+    ],
   templateUrl: './medecin-list.component.html',
   standalone: true,
   styleUrl: './medecin-list.component.scss'
