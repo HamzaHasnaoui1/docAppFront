@@ -30,6 +30,8 @@ import { Medecin } from '../../models/medecin.model';
 
 // RxJS
 import { forkJoin, of, catchError } from 'rxjs';
+import {NzProgressComponent} from 'ng-zorro-antd/progress';
+import {NzSpinComponent} from 'ng-zorro-antd/spin';
 
 // Interface pour les données de graphique
 interface ChartData {
@@ -58,7 +60,9 @@ interface ChartData {
     NzBadgeModule,
     NzSelectModule,
     RouterModule,
-    FormsModule
+    FormsModule,
+    NzProgressComponent,
+    NzSpinComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
@@ -237,68 +241,129 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  generateChartData(appointments: RendezVous[]): void {
-    // Données pour les rendez-vous par mois et revenus par mois (somme des prix des RDV)
-    const rdvsByMonth = new Map<string, number>();
-    const revenueByMonth = new Map<string, number>();
-
-    // Initialiser les 6 derniers mois
+// Initialise un tableau avec les 6 derniers mois
+  private initializeLastSixMonths(): {
+    name: string,
+    month: number,
+    year: number,
+    rdvCount: number,
+    revenue: number
+  }[] {
+    const result = [];
     const today = new Date();
+
     for (let i = 0; i < 6; i++) {
       const month = new Date(today.getFullYear(), today.getMonth() - i, 1);
-      const monthName = month.toLocaleString('default', { month: 'short' }) + ' ' + month.getFullYear();
+      const monthName = month.toLocaleString('fr-FR', { month: 'short' });
+      const yearShort = month.getFullYear().toString().substr(2, 2);
 
-      rdvsByMonth.set(monthName, 0);
-      revenueByMonth.set(monthName, 0);
+      result.push({
+        name: `${monthName} ${yearShort}`,
+        month: month.getMonth(),
+        year: month.getFullYear(),
+        rdvCount: 0,
+        revenue: 0
+      });
     }
 
-    // Compter les rdv et le revenu par mois
-    appointments.forEach((rdv: RendezVous) => {
-      const rdvDate = new Date(rdv.date);
-      const monthName = rdvDate.toLocaleString('default', { month: 'short' }) + ' ' + rdvDate.getFullYear();
+    return result;
+  }
 
-      if (rdvsByMonth.has(monthName)) {
-        // Compter le nombre de rendez-vous par mois
-        rdvsByMonth.set(monthName, rdvsByMonth.get(monthName)! + 1);
-        // Additionner les prix des rendez-vous pour le revenu mensuel
-        revenueByMonth.set(monthName, revenueByMonth.get(monthName)! + (rdv.prix || 0));
+
+  generateChartData(appointments: RendezVous[]): void {
+    // Créer des Maps pour stocker les données par mois
+    const rdvCountByMonth = new Map<string, number>();
+    const revenueByMonth = new Map<string, number>();
+
+    // Obtenir les 6 derniers mois dans l'ordre chronologique
+    const lastSixMonths = this.getLastSixMonths();
+
+    // Initialiser les maps avec des valeurs à zéro pour tous les mois
+    lastSixMonths.forEach(monthKey => {
+      rdvCountByMonth.set(monthKey.label, 0);
+      revenueByMonth.set(monthKey.label, 0);
+    });
+
+    // Parcourir les rendez-vous et additionner les valeurs
+    appointments.forEach(rdv => {
+      if (!rdv.date) return;
+
+      const rdvDate = new Date(rdv.date);
+      const monthYear = this.formatMonthYear(rdvDate);
+
+      if (rdvCountByMonth.has(monthYear)) {
+        rdvCountByMonth.set(monthYear, rdvCountByMonth.get(monthYear)! + 1);
+
+        // Ajouter le prix au revenu si disponible
+        if (rdv.prix && typeof rdv.prix === 'number' && !isNaN(rdv.prix)) {
+          revenueByMonth.set(monthYear, revenueByMonth.get(monthYear)! + rdv.prix);
+        }
       }
     });
 
-    // Calcul des valeurs maximales pour les graphiques
-    let maxRdvs = this.getMaxValue(rdvsByMonth);
-    let maxRevenue = this.getMaxValue(revenueByMonth);
+    // Trouver les valeurs max pour normaliser les hauteurs
+    const maxRdvCount = Math.max(1, ...Array.from(rdvCountByMonth.values()));
+    const maxRevenue = Math.max(1, ...Array.from(revenueByMonth.values()));
 
-    // Convertir en tableaux pour les graphiques avec hauteurs pré-calculées
-    this.rdvsByMonth = Array.from(rdvsByMonth.entries())
-      .reverse()
-      .map(([name, value]) => ({
-        name,
-        value,
-        // Assurer une hauteur minimale visible même pour de petites valeurs
-        height: maxRdvs > 0 ? Math.max(20, (value / maxRdvs) * 80) : 20
-      }));
-
-    this.revenueByMonth = Array.from(revenueByMonth.entries())
-      .reverse()
-      .map(([name, value]) => ({
-        name,
-        value,
-        // Assurer une hauteur minimale visible même pour de petites valeurs
-        height: maxRevenue > 0 ? Math.max(20, (value / maxRevenue) * 80) : 20
-      }));
-  }
-
-  // Méthode pour calculer la valeur maximale avec une gestion intelligente quand les valeurs sont petites
-  private getMaxValue(data: Map<string, number>): number {
-    let max = 0;
-    data.forEach(value => {
-      if (value > max) max = value;
+    // Convertir les Maps en tableaux pour l'affichage
+    this.rdvsByMonth = lastSixMonths.map(month => {
+      const value = rdvCountByMonth.get(month.label) || 0;
+      return {
+        name: month.label,
+        value: value,
+        height: value === 0 ? 0 : Math.max(5, Math.round((value / maxRdvCount) * 90))
+      };
     });
 
-    // Si la valeur maximale est très faible, on retourne quand même une valeur
-    // qui permettra de bien visualiser les barres
-    return max > 0 ? max : 1;
+    this.revenueByMonth = lastSixMonths.map(month => {
+      const value = revenueByMonth.get(month.label) || 0;
+      return {
+        name: month.label,
+        value: value,
+        height: value === 0 ? 0 : Math.max(5, Math.round((value / maxRevenue) * 90))
+      };
+    });
+
+    console.log('Rendez-vous par mois:', this.rdvsByMonth);
+    console.log('Revenus par mois:', this.revenueByMonth);
+  }
+
+  /**
+   * Retourne les 6 derniers mois dans l'ordre chronologique (du plus ancien au plus récent)
+   */
+  private getLastSixMonths(): { date: Date; label: string }[] {
+    const result = [];
+    const today = new Date();
+
+    // Générer les 6 derniers mois
+    for (let i = 5; i >= 0; i--) {
+      const monthDate = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      result.push({
+        date: monthDate,
+        label: this.formatMonthYear(monthDate)
+      });
+    }
+
+    return result;
+  }
+
+  /**
+   * Formatte un objet Date en chaîne "mois année" (ex: "jan 23")
+   */
+  private formatMonthYear(date: Date): string {
+    const months = ['jan', 'fév', 'mar', 'avr', 'mai', 'juin', 'juil', 'aoû', 'sep', 'oct', 'nov', 'déc'];
+    const month = months[date.getMonth()];
+    const year = date.getFullYear().toString().substr(2, 2);
+    return `${month} ${year}`;
+  }
+
+// Calcule la hauteur d'une barre avec une hauteur minimale
+  private calculateBarHeight(value: number, maxValue: number): number {
+    // Assurer une hauteur minimale de 10% et maximale de 90%
+    if (value === 0) return 0;
+    if (maxValue === 0) return 10;
+
+    return Math.max(10, Math.min(90, (value / maxValue * 80) + 10));
   }
 
   // Helper pour obtenir la classe CSS de la balise de statut RDV

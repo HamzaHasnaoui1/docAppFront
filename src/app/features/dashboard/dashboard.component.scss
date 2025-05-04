@@ -1,5 +1,7 @@
+// Enhanced dashboard.component.scss
 ::ng-deep .ant-card-head-title {
   color: #003b85 !important;
+  font-weight: 600 !important;
 }
 
 ::ng-deep .dashboard-secretaire .ant-card-head-title {
@@ -12,19 +14,43 @@
   margin: 0 auto;
 }
 
-/* Section titre de bienvenue */
+/* Section titre de bienvenue amélioré */
 .welcome-section {
   margin-bottom: 24px;
-  padding: 16px 24px;
-  border-radius: 8px;
+  padding: 24px;
+  border-radius: 12px;
   color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+  z-index: 0;
+  opacity: 0.15;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMTI4MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0iI2ZmZmZmZiI+PHBhdGggZD0iTTEyODAgMTQwVjBTOTkzLjQ2IDk2IDY0MCAxMzlTMS42NDA0NiAwIDAgMHYxNDB6Ii8+PC9nPjwvc3ZnPg==');
+  background-size: 100% 100%;
+  background-position: center;
 }
 
 .welcome-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.welcome-info {
+  flex: 1;
 }
 
 .medecin-welcome {
@@ -37,13 +63,15 @@
 
 .welcome-title {
   margin: 0;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .welcome-subtitle {
   margin: 8px 0 0;
   opacity: 0.9;
+  font-size: 16px;
 }
 
 .welcome-date {
@@ -54,9 +82,24 @@
 
 .toggle-role-btn {
   white-space: nowrap;
+  backdrop-filter: blur(5px);
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+  }
 }
 
-/* Cartes de statistiques */
+/* Animation du gradient */
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Cartes de statistiques améliorées */
 .stat-cards {
   margin-bottom: 24px;
 }
@@ -64,61 +107,125 @@
 .stat-card {
   height: 100%;
   transition: all 0.3s;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: none;
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  .ant-statistic-title {
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.65);
+  }
+
+  .ant-statistic-content {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .ant-progress {
+    margin-bottom: 12px;
+  }
+}
+
+.secretary-card {
+  border-left: 4px solid #722ed1;
+
+  &:hover {
+    border-left-width: 6px;
   }
 }
 
 .stat-icon {
-  font-size: 24px;
-  margin-right: 8px;
+  font-size: 28px;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgba(24, 144, 255, 0.1);
 }
 
 .patients-icon {
   color: #1890ff;
+  background-color: rgba(24, 144, 255, 0.1);
 }
 
 .consults-icon {
   color: #722ed1;
+  background-color: rgba(114, 46, 209, 0.1);
 }
 
 .month-icon {
   color: #fa8c16;
+  background-color: rgba(250, 140, 22, 0.1);
 }
 
 .upcoming-icon, .confirmed-icon {
   color: #52c41a;
+  background-color: rgba(82, 196, 26, 0.1);
 }
 
 .today-icon {
   color: #1890ff;
+  background-color: rgba(24, 144, 255, 0.1);
 }
 
 .pending-icon {
   color: #fa8c16;
+  background-color: rgba(250, 140, 22, 0.1);
 }
 
 .total-icon {
   color: #722ed1;
+  background-color: rgba(114, 46, 209, 0.1);
 }
 
 .stat-footer {
-  margin-top: 16px;
+  margin-top: 8px;
   text-align: right;
   padding-top: 8px;
   border-top: 1px solid #f0f0f0;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
+
+  a {
+    color: rgba(0, 0, 0, 0.65);
+
+    &:hover {
+      color: #1890ff;
+    }
+  }
 }
 
-/* Graphiques */
+/* Graphiques améliorés */
 .chart-row {
   margin-bottom: 24px;
 }
 
 .chart-card {
   height: 100%;
-  min-height: 340px;
+  min-height: 360px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  .chart-action {
+    color: rgba(0, 0, 0, 0.45);
+    font-size: 16px;
+
+    &:hover {
+      color: #1890ff;
+    }
+  }
 }
 
 .chart-container {
@@ -126,12 +233,13 @@
   padding: 16px 0;
 }
 
-/* Graphique à barres simplifié */
+/* Graphique à barres amélioré */
 .bar-chart {
   display: flex;
   justify-content: space-around;
   align-items: flex-end;
   height: 100%;
+  padding: 0 20px;
 }
 
 .bar-item {
@@ -140,23 +248,92 @@
   align-items: center;
   width: 100%;
   max-width: 60px;
+  position: relative;
 }
 
 .bar-value {
   font-size: 12px;
-  margin-bottom: 4px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: rgba(0, 0, 0, 0.65);
 }
 
 .bar {
   width: 75%;
   background-color: #1890ff;
   border-radius: 4px 4px 0 0;
-  transition: height 0.3s ease-in-out;
+  transition: height 0.5s cubic-bezier(0.23, 1, 0.32, 1);
   min-height: 4px;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
+  }
+
+  .bar-tooltip {
+    position: absolute;
+    visibility: hidden;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: rgba(0, 0, 0, 0.75) transparent transparent transparent;
+    }
+  }
+
+  &:hover .bar-tooltip {
+    visibility: visible;
+    opacity: 1;
+  }
 }
 
 .revenue-bar {
   background-color: #52c41a;
+}
+
+.minimal-bar {
+  min-height: 10px;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.3),
+        rgba(255, 255, 255, 0.3) 5px,
+        transparent 5px,
+        transparent 10px
+    );
+  }
 }
 
 .bar-label {
@@ -165,12 +342,13 @@
   white-space: nowrap;
   transform: rotate(-45deg);
   transform-origin: top left;
-  max-width: 50px;
+  max-width: 60px;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: rgba(0, 0, 0, 0.65);
 }
 
-/* Listes */
+/* Listes améliorées */
 .list-row, .tabs-row, .filter-row {
   margin-bottom: 24px;
 }
@@ -178,44 +356,126 @@
 .list-card {
   height: 100%;
   min-height: 380px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .filter-card {
-  padding: 8px 0;
+  padding: 8px 12px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .medecin-filter {
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-wrap: wrap;
+
+  .filter-icon {
+    color: #722ed1;
+    font-size: 18px;
+  }
 
   span {
     white-space: nowrap;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.65);
   }
 
   nz-select {
-    min-width: 200px;
+    min-width: 250px;
   }
 }
 
-.simple-table {
-  th, td {
-    padding: 12px 8px;
-  }
-}
-
-.standard-table {
-  th, td {
-    padding: 12px 8px;
-  }
-
-  i {
-    margin-right: 8px;
-    font-size: 16px;
+.simple-table, .secretary-table {
+  th {
+    background-color: #f8f9fa !important;
+    font-weight: 600 !important;
+    color: #495057 !important;
+    text-transform: uppercase !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.5px !important;
+    border-bottom: 2px solid #dee2e6 !important;
+    padding: 12px 16px !important;
+    white-space: nowrap !important;
+    text-align: center !important;
   }
 
   td {
-    vertical-align: middle;
+    border-bottom: 1px solid #f0f0f0 !important;
+    padding: 12px 16px;
+    text-align: center !important;
+    vertical-align: middle !important;
+  }
+
+  .rdv-row {
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: rgba(24, 144, 255, 0.05) !important;
+    }
+  }
+
+  .pending-row {
+    background-color: rgba(250, 140, 22, 0.05) !important;
+
+    &:hover {
+      background-color: rgba(250, 140, 22, 0.1) !important;
+    }
+  }
+}
+
+.patient-name, .doctor-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+
+  .patient-icon {
+    color: #1890ff;
+  }
+
+  .doctor-icon {
+    color: #722ed1;
+  }
+}
+
+.patient-name-large {
+  font-weight: 500;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.time-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: rgba(24, 144, 255, 0.1);
+  color: #1890ff;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+
+  a {
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.45);
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+
+    &:hover {
+      color: #1890ff;
+      background-color: rgba(24, 144, 255, 0.1);
+    }
   }
 }
 
@@ -224,25 +484,33 @@
   display: flex;
   justify-content: flex-end;
   margin-bottom: 16px;
+  margin-top: 16px;
 }
 
-/* Liste des patients */
-.patient-list {
+.tab-badge-title {
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+/* Liste des patients améliorée */
+.secretary-patient-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.patient-card {
+.secretary-patient-card {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
+  padding: 16px;
   background-color: #f9f9f9;
   border-radius: 8px;
   transition: all 0.3s;
+  border-left: 4px solid #722ed1;
 
   &:hover {
     background-color: #f0f0f0;
+    transform: translateX(4px);
   }
 }
 
@@ -250,15 +518,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
-  background-color: #e6f7ff;
+  width: 48px;
+  height: 48px;
+  background-color: rgba(114, 46, 209, 0.1);
   border-radius: 50%;
   margin-right: 16px;
 
   i {
-    font-size: 20px;
-    color: #1890ff;
+    font-size: 24px;
+    color: #722ed1;
   }
 }
 
@@ -266,36 +534,57 @@
   flex: 1;
 }
 
-.patient-name {
-  font-weight: 500;
-  margin-bottom: 4px;
-}
-
 .patient-details {
-  font-size: 12px;
+  font-size: 13px;
   color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  i {
+    font-size: 14px;
+  }
 }
 
 .patient-actions {
+  display: flex;
+  gap: 12px;
+
   a {
-    font-size: 16px;
+    font-size: 18px;
     color: rgba(0, 0, 0, 0.45);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.7);
 
     &:hover {
-      color: #1890ff;
+      color: #722ed1;
+      background-color: rgba(114, 46, 209, 0.1);
     }
   }
 }
 
-/* Accès rapide */
+/* Accès rapide amélioré */
 .action-row {
   margin-bottom: 24px;
+}
+
+.action-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .quick-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
+  justify-content: center;
+  padding: 8px;
 }
 
 .quick-action-btn {
@@ -303,29 +592,36 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 120px;
-  height: 100px;
+  width: 140px;
+  height: 120px;
   padding: 16px;
-  border-radius: 8px;
+  border-radius: 12px;
   background-color: #f5f5f5;
   transition: all 0.3s;
   text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 
   i {
-    font-size: 24px;
-    margin-bottom: 8px;
+    font-size: 32px;
+    margin-bottom: 12px;
     color: #1890ff;
+    transition: all 0.3s;
   }
 
   span {
     font-size: 14px;
+    font-weight: 500;
     color: rgba(0, 0, 0, 0.65);
   }
 
   &:hover {
     background-color: #e6f7ff;
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+
+    i {
+      transform: scale(1.1);
+    }
   }
 }
 
@@ -339,12 +635,16 @@
   }
 }
 
-/* Responsive design */
+/* Responsive design amélioré */
 @media (max-width: 768px) {
   .welcome-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
+  }
+
+  .welcome-info {
+    width: 100%;
   }
 
   .toggle-role-btn {
@@ -361,6 +661,7 @@
 
   .quick-action-btn {
     width: calc(50% - 8px);
+    height: 100px;
   }
 
   .medecin-filter {
@@ -378,38 +679,179 @@
   }
 
   .patient-card {
-    padding: 8px 12px;
+    padding: 12px;
   }
-}
-.bar {
-  width: 75%;
-  background-color: #1890ff;
-  border-radius: 4px 4px 0 0;
-  transition: height 0.3s ease-in-out;
-  min-height: 4px;
+
+  .stat-card {
+    height: auto;
+  }
+
+  .chart-card, .list-card {
+    min-height: auto;
+  }
+}// Ajoutez ce CSS à votre fichier dashboard.component.scss
+
+// Conteneur du graphique personnalisé
+.custom-chart-container {
+  height: 280px;
+  display: flex;
+  position: relative;
+  padding: 5px 10px 20px 30px;
+  margin-top: 20px;
 }
 
-.revenue-bar {
-  background-color: #52c41a;
+// Label de l'axe Y
+.y-axis-label {
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-90deg);
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
 }
 
-.minimal-bar {
-  min-height: 10px;
+// Conteneur des barres
+.chart-bars-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  width: 100%;
+  height: 100%;
+  padding-bottom: 20px;
   position: relative;
 }
 
-.minimal-bar::after {
+// Ligne de base horizontale
+.chart-bars-container::after {
   content: '';
   position: absolute;
-  top: 0;
   left: 0;
-  right: 0;
+  bottom: 20px;
+  width: 100%;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.09);
+}
+
+// Colonne du graphique (valeur + barre + label)
+.chart-bar-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(100% / 6);
   height: 100%;
-  background: repeating-linear-gradient(
-      45deg,
-      rgba(255, 255, 255, 0.3),
-      rgba(255, 255, 255, 0.3) 5px,
-      transparent 5px,
-      transparent 10px
-  );
+}
+
+// Valeur numérique au-dessus de la barre
+.chart-value {
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+// Wrapper pour la barre (pour alignement en bas)
+.chart-bar-wrapper {
+  display: flex;
+  align-items: flex-end;
+  height: calc(100% - 45px); // Hauteur moins l'espace pour valeur et label
+  width: 100%;
+  justify-content: center;
+}
+
+// Barre du graphique
+.chart-bar {
+  width: 30px;
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  transition: height 0.5s ease;
+  cursor: pointer;
+  min-height: 2px;
+}
+
+// Barre pour les rendez-vous
+.rdv-bar {
+  background: linear-gradient(to top, #1890ff, #69c0ff);
+  box-shadow: 0 2px 6px rgba(24, 144, 255, 0.2);
+}
+
+// Barre pour les revenus
+.revenue-bar {
+  background: linear-gradient(to top, #52c41a, #95de64);
+  box-shadow: 0 2px 6px rgba(82, 196, 26, 0.2);
+}
+
+// Barre vide (valeur 0)
+.empty-bar {
+  height: 0 !important;
+  min-height: 0 !important;
+  border-top: 1px dashed #d9d9d9;
+  background: none;
+  box-shadow: none;
+}
+
+// Infobulle au survol
+.chart-tooltip {
+  position: absolute;
+  visibility: hidden;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  text-align: center;
+  padding: 6px 10px;
+  border-radius: 4px;
+  z-index: 1;
+  bottom: 105%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+// Flèche de l'infobulle
+.chart-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.75) transparent transparent transparent;
+}
+
+// Afficher l'infobulle au survol
+.chart-bar:hover .chart-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+// Label sous la barre (mois)
+.chart-label {
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.65);
+  transform: rotate(-45deg);
+}
+
+// Message quand pas de données
+.empty-chart-message {
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Responsivité
+@media (max-width: 768px) {
+  .chart-bar {
+    width: 20px;
+  }
+
+  .chart-value {
+    font-size: 10px;
+  }
+
+  .chart-label {
+    font-size: 10px;
+  }
 }

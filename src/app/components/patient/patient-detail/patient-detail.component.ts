@@ -81,13 +81,10 @@ export class PatientDetailComponent implements OnInit {
   loadPatientData(): void {
     this.loading = true;
 
-    // Récupération du patient par son ID
     this.patientService.getPatientById(this.patientId).pipe(
       switchMap(patient => {
-        // Une fois le patient récupéré, on obtient tous les RDVs
         return this.rdvService.getRdvs().pipe(
           map(response => {
-            // Filtrer les RDVs pour ne garder que ceux du patient actuel
             const patientRdvs = response.rdvs.filter((rdv: { patient: { id: number; }; }) => rdv.patient.id === this.patientId);
             return { ...patient, rendezVousList: patientRdvs };
           })
@@ -153,7 +150,7 @@ export class PatientDetailComponent implements OnInit {
         this.rdvService.deleteRdv(rdv.id).subscribe({
           next: () => {
             this.message.success(`Rendez-vous supprimé avec succès`);
-            this.loadPatientData(); // Reload data to update the list
+            this.loadPatientData();
           },
           error: (err) => {
             this.message.error(`Erreur : ${err.message}`);

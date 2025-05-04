@@ -1,13 +1,12 @@
 <div class="dashboard-container">
-  <!-- En-tête avec changement de rôle pour test en développement -->
+  <!-- En-tête avec changement de rôle -->
   <div class="welcome-section" [ngClass]="userRole === 'MEDECIN' ? 'medecin-welcome' : 'secretaire-welcome'">
     <div class="welcome-header">
-      <div>
-        <h1 class="welcome-title">Tableau de bord {{ userRole === 'MEDECIN' ? 'Médecin' : 'Secrétaire' }}</h1>
+      <div class="welcome-info">
+        <h1 class="welcome-title">{{ userRole === 'MEDECIN' ? 'Tableau de bord médical' : 'Tableau de bord administratif' }}</h1>
         <p class="welcome-subtitle">Bienvenue, voici votre aperçu quotidien</p>
         <div class="welcome-date">{{ today | date: 'EEEE d MMMM yyyy' }}</div>
       </div>
-      <!-- Bouton pour changer de rôle (à supprimer en production) -->
       <button nz-button nzType="primary" (click)="toggleRole()" class="toggle-role-btn">
         <i nz-icon nzType="swap" nzTheme="outline"></i>
         Changer de rôle
@@ -15,472 +14,628 @@
     </div>
   </div>
 
-  <!-- DASHBOARD MÉDECIN -->
-  <div *ngIf="userRole === 'MEDECIN'" class="dashboard-medecin">
-    <!-- Cartes de statistiques principales -->
-    <div nz-row [nzGutter]="16" class="stat-cards">
-      <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-card nzHoverable class="stat-card">
-          <nz-statistic
-            [nzValue]="totalPatients"
-            [nzTitle]="'Patients totaux :'"
-            [nzLoading]="loadingPatients"
-            [nzPrefix]="userIcon">
-          </nz-statistic>
-          <ng-template #userIcon>
-            <i nz-icon nzType="user" nzTheme="outline" class="stat-icon patients-icon"></i>
-          </ng-template>
-          <div class="stat-footer">
-            <a routerLink="/doc/patients/list">Voir tous</a>
-          </div>
-        </nz-card>
+  <!-- Affichage du contenu selon le rôle -->
+  <nz-spin [nzSpinning]="loading" [nzTip]="'Chargement des données...'">
+    <!-- DASHBOARD MÉDECIN -->
+    <div *ngIf="userRole === 'MEDECIN'" class="dashboard-medecin">
+      <!-- Cartes de statistiques principales -->
+      <div nz-row [nzGutter]="[16, 16]" class="stat-cards">
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
+          <nz-card nzHoverable class="stat-card">
+            <nz-statistic
+              [nzValue]="totalPatients"
+              [nzTitle]="'Patients'"
+              [nzLoading]="loadingPatients"
+              [nzPrefix]="userIcon"
+              [nzValueStyle]="{ color: '#1890ff', fontSize: '24px' }">
+            </nz-statistic>
+            <ng-template #userIcon>
+              <i nz-icon nzType="user" nzTheme="outline" class="stat-icon patients-icon"></i>
+            </ng-template>
+            <nz-progress [nzPercent]="75" nzStatus="active" [nzShowInfo]="false"></nz-progress>
+            <div class="stat-footer">
+              <a routerLink="/doc/patients/list">Voir tous</a>
+            </div>
+          </nz-card>
+        </div>
+
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
+          <nz-card nzHoverable class="stat-card">
+            <nz-statistic
+              [nzValue]="totalAppointments"
+              [nzTitle]="'Consultations'"
+              [nzLoading]="loadingAppointments"
+              [nzPrefix]="consultIcon"
+              [nzValueStyle]="{ color: '#722ed1', fontSize: '24px' }">
+            </nz-statistic>
+            <ng-template #consultIcon>
+              <i nz-icon nzType="schedule" nzTheme="outline" class="stat-icon consults-icon"></i>
+            </ng-template>
+            <nz-progress [nzPercent]="60" nzStatus="active" [nzShowInfo]="false" [nzStrokeColor]="'#722ed1'"></nz-progress>
+            <div class="stat-footer">
+              <a routerLink="/doc/rdv/list">Voir toutes</a>
+            </div>
+          </nz-card>
+        </div>
+
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
+          <nz-card nzHoverable class="stat-card">
+            <nz-statistic
+              [nzValue]="patientsThisMonth"
+              [nzTitle]="'Patients ce mois'"
+              [nzLoading]="loadingPatients"
+              [nzPrefix]="monthIcon"
+              [nzValueStyle]="{ color: '#fa8c16', fontSize: '24px' }">
+            </nz-statistic>
+            <ng-template #monthIcon>
+              <i nz-icon nzType="calendar" nzTheme="outline" class="stat-icon month-icon"></i>
+            </ng-template>
+            <nz-progress [nzPercent]="45" nzStatus="active" [nzShowInfo]="false" [nzStrokeColor]="'#fa8c16'"></nz-progress>
+            <div class="stat-footer">
+              <span>{{ patientsThisMonth }} sur {{ totalPatients }}</span>
+            </div>
+          </nz-card>
+        </div>
+
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
+          <nz-card nzHoverable class="stat-card">
+            <nz-statistic
+              [nzValue]="upcomingAppointments"
+              [nzTitle]="'À venir'"
+              [nzLoading]="loadingAppointments"
+              [nzPrefix]="upcomingIcon"
+              [nzValueStyle]="{ color: '#52c41a', fontSize: '24px' }">
+            </nz-statistic>
+            <ng-template #upcomingIcon>
+              <i nz-icon nzType="clock-circle" nzTheme="outline" class="stat-icon upcoming-icon"></i>
+            </ng-template>
+            <nz-progress [nzPercent]="85" nzStatus="active" [nzShowInfo]="false" [nzStrokeColor]="'#52c41a'"></nz-progress>
+            <div class="stat-footer">
+              <a routerLink="/doc/rdv/list">Voir tous</a>
+            </div>
+          </nz-card>
+        </div>
       </div>
 
-      <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-card nzHoverable class="stat-card">
-          <nz-statistic
-            [nzValue]="totalAppointments"
-            [nzTitle]="'Consultations totales :'"
-            [nzLoading]="loadingAppointments"
-            [nzPrefix]="consultIcon">
-          </nz-statistic>
-          <ng-template #consultIcon>
-            <i nz-icon nzType="schedule" nzTheme="outline" class="stat-icon consults-icon"></i>
-          </ng-template>
-          <div class="stat-footer">
-            <a routerLink="/doc/rdv/list">Voir toutes</a>
-          </div>
-        </nz-card>
-      </div>
+      <!-- Dans le template (dashboard.component.html) -->
+      <!-- Remplacez les sections des graphiques par ceci: -->
 
-      <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-card nzHoverable class="stat-card">
-          <nz-statistic
-            [nzValue]="patientsThisMonth"
-            [nzTitle]="'Patients ce mois :'"
-            [nzLoading]="loadingPatients"
-            [nzPrefix]="monthIcon">
-          </nz-statistic>
-          <ng-template #monthIcon>
-            <i nz-icon nzType="calendar" nzTheme="outline" class="stat-icon month-icon"></i>
-          </ng-template>
-        </nz-card>
-      </div>
+      <!-- Dans le template pour les graphiques -->
+      <div nz-row [nzGutter]="[16, 16]" class="chart-row">
+        <!-- Graphique de Rendez-vous par mois -->
+        <div nz-col [nzXs]="24" [nzMd]="12">
+          <nz-card nzTitle="Rendez-vous par mois" class="chart-card" [nzExtra]="chartActions">
+            <ng-template #chartActions>
+              <a href="javascript:;" class="chart-action">
+                <i nz-icon nzType="download" nzTheme="outline"></i>
+              </a>
+            </ng-template>
 
-      <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-card nzHoverable class="stat-card">
-          <nz-statistic
-            [nzValue]="upcomingAppointments"
-            [nzTitle]="'Rendez-vous à venir :'"
-            [nzLoading]="loadingAppointments"
-            [nzPrefix]="upcomingIcon"
-            [nzValueStyle]="{ color: '#52c41a' }">
-          </nz-statistic>
-          <ng-template #upcomingIcon>
-            <i nz-icon nzType="clock-circle" nzTheme="outline" class="stat-icon upcoming-icon"></i>
-          </ng-template>
-          <div class="stat-footer">
-            <a routerLink="/doc/rdv/list">Voir tous</a>
-          </div>
-        </nz-card>
-      </div>
-    </div>
+            <div class="custom-chart-container">
+              <!-- Label de l'axe Y à gauche -->
+              <div class="y-axis-label">Nombre</div>
 
-    <!-- Graphiques de données -->
-    <div nz-row [nzGutter]="16" class="chart-row">
-      <div nz-col [nzXs]="24" [nzMd]="12">
-        <nz-card nzTitle="Rendez-vous par mois :" class="chart-card">
-          <div *ngIf="rdvsByMonth.length > 0" class="chart-container">
-            <!-- Graphique des rendez-vous par mois -->
-            <div class="bar-chart">
-              <div *ngFor="let item of rdvsByMonth" class="bar-item">
-                <div class="bar-value">{{ item.value }}</div>
-                <div
-                  class="bar"
-                  [ngClass]="{'minimal-bar': item.value < 2}"
-                  [style.height.%]="item.height">
+              <!-- Conteneur du graphique -->
+              <div class="chart-bars-container">
+                <div *ngFor="let item of rdvsByMonth" class="chart-bar-column">
+                  <!-- Affichage de la valeur au-dessus de la barre -->
+                  <div class="chart-value">{{ item.value }}</div>
+
+                  <!-- Barre du graphique avec hauteur dynamique -->
+                  <div class="chart-bar-wrapper">
+                    <div
+                      class="chart-bar rdv-bar"
+                      [style.height.%]="item.height"
+                      [class.empty-bar]="item.value === 0">
+                      <!-- Infobulle au survol -->
+                      <div class="chart-tooltip">
+                        {{ item.name }}: {{ item.value }} rendez-vous
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Label de la barre (mois) -->
+                  <div class="chart-label">{{ item.name }}</div>
                 </div>
-                <div class="bar-label">{{ item.name }}</div>
               </div>
             </div>
-          </div>
-          <nz-empty *ngIf="rdvsByMonth.length === 0"></nz-empty>
-        </nz-card>
-      </div>
 
-      <div nz-col [nzXs]="24" [nzMd]="12">
-        <nz-card nzTitle="Revenus par mois (DH) :" class="chart-card">
-          <div *ngIf="revenueByMonth.length > 0" class="chart-container">
-            <!-- Graphique des revenus par mois -->
-            <div class="bar-chart">
-              <div *ngFor="let item of revenueByMonth" class="bar-item">
-                <div class="bar-value">{{ item.value | number:'1.0-0' }}</div>
-                <div
-                  class="bar revenue-bar"
-                  [ngClass]="{'minimal-bar': item.value < 100}"
-                  [style.height.%]="item.height">
+            <div *ngIf="rdvsByMonth.length === 0" class="empty-chart-message">
+              <nz-empty nzNotFoundImage="simple"></nz-empty>
+            </div>
+          </nz-card>
+        </div>
+
+        <!-- Graphique de Revenus par mois -->
+        <div nz-col [nzXs]="24" [nzMd]="12">
+          <nz-card nzTitle="Revenus par mois (DH)" class="chart-card" [nzExtra]="revenueActions">
+            <ng-template #revenueActions>
+              <a href="javascript:;" class="chart-action">
+                <i nz-icon nzType="download" nzTheme="outline"></i>
+              </a>
+            </ng-template>
+
+            <div class="custom-chart-container">
+              <!-- Label de l'axe Y à gauche -->
+              <div class="y-axis-label">DH</div>
+
+              <!-- Conteneur du graphique -->
+              <div class="chart-bars-container">
+                <div *ngFor="let item of revenueByMonth" class="chart-bar-column">
+                  <!-- Affichage de la valeur au-dessus de la barre -->
+                  <div class="chart-value">{{ item.value | number:'1.0-0' }}</div>
+
+                  <!-- Barre du graphique avec hauteur dynamique -->
+                  <div class="chart-bar-wrapper">
+                    <div
+                      class="chart-bar revenue-bar"
+                      [style.height.%]="item.height"
+                      [class.empty-bar]="item.value === 0">
+                      <!-- Infobulle au survol -->
+                      <div class="chart-tooltip">
+                        {{ item.name }}: {{ item.value | number:'1.0-0' }} DH
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Label de la barre (mois) -->
+                  <div class="chart-label">{{ item.name }}</div>
                 </div>
-                <div class="bar-label">{{ item.name }}</div>
               </div>
             </div>
-          </div>
-          <nz-empty *ngIf="revenueByMonth.length === 0"></nz-empty>
-        </nz-card>
-      </div>
-    </div>
 
-    <!-- Listes de données -->
-    <div nz-row [nzGutter]="16" class="list-row">
-      <div nz-col [nzXs]="24" [nzMd]="12">
-        <nz-card nzTitle="Patients fréquents :" [nzExtra]="extraFrequentPatients" class="list-card">
-          <ng-template #extraFrequentPatients>
-            <a routerLink="/doc/patients/list">Tous les patients</a>
-          </ng-template>
-
-          <nz-table
-            #frequentPatientsTable
-            [nzData]="frequentPatients"
-            [nzShowPagination]="false"
-            [nzFrontPagination]="false"
-            [nzLoading]="loadingPatients"
-            class="simple-table">
-            <thead>
-            <tr>
-              <th>Nom</th>
-              <th>Consultations</th>
-              <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let item of frequentPatientsTable.data">
-              <td>{{ item.patient.titre || '' }} {{ item.patient.nom }}</td>
-              <td>{{ item.count }}</td>
-              <td>
-                <a (click)="navigateToDetails(item.patient.id)" nz-tooltip nzTooltipTitle="Voir le dossier medical">
-                  <i nz-icon nzType="folder-open" nzTheme="outline"></i>
-                </a>
-              </td>
-            </tr>
-            </tbody>
-          </nz-table>
-          <nz-empty *ngIf="frequentPatients.length === 0 && !loadingPatients"></nz-empty>
-        </nz-card>
+            <div *ngIf="revenueByMonth.length === 0" class="empty-chart-message">
+              <nz-empty nzNotFoundImage="simple"></nz-empty>
+            </div>
+          </nz-card>
+        </div>
       </div>
 
-      <div nz-col [nzXs]="24" [nzMd]="12">
-        <nz-card nzTitle="Rendez-vous d'aujourd'hui :" [nzExtra]="extraToday" class="list-card">
-          <ng-template #extraToday>
-            <a routerLink="/doc/rdv/list">Tous les rendez-vous</a>
-          </ng-template>
+      <!-- Listes de données améliorées -->
+      <div nz-row [nzGutter]="[16, 16]" class="list-row">
+        <div nz-col [nzXs]="24" [nzMd]="12">
+          <nz-card nzTitle="Patients fréquents" [nzExtra]="extraFrequentPatients" class="list-card">
+            <ng-template #extraFrequentPatients>
+              <a routerLink="/doc/patients/list">Tous les patients</a>
+            </ng-template>
 
-          <nz-table
-            #todayAppointmentsTable
-            [nzData]="todayAppointments"
-            [nzShowPagination]="false"
-            [nzFrontPagination]="false"
-            [nzLoading]="loadingAppointments"
-            class="simple-table">
-            <thead>
-            <tr>
-              <th>Heure</th>
-              <th>Patient</th>
-              <th>Statut</th>
-              <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let rdv of todayAppointmentsTable.data">
-              <td>{{ rdv.date | date:'HH:mm' }}</td>
-              <td>{{ rdv.patient?.nom || 'N/A' }}</td>
-              <td>
-                <nz-tag [nzColor]="getStatusClass(rdv.statusRDV)">
-                  {{ getStatusLabel(rdv.statusRDV) }}
-                </nz-tag>
-              </td>
-              <td>
-                <a [routerLink]="['/doc/rdv/edit', rdv.id]" nz-tooltip nzTooltipTitle="Modifier">
-                  <i nz-icon nzType="edit" nzTheme="outline"></i>
-                </a>
-              </td>
-            </tr>
-            </tbody>
-          </nz-table>
-          <nz-empty *ngIf="todayAppointments.length === 0 && !loadingAppointments"></nz-empty>
-        </nz-card>
-      </div>
-    </div>
+            <nz-table
+              #frequentPatientsTable
+              [nzData]="frequentPatients"
+              [nzShowPagination]="false"
+              [nzFrontPagination]="false"
+              [nzLoading]="loadingPatients"
+              class="simple-table">
+              <thead>
+              <tr>
+                <th>Patient</th>
+                <th>Consultations</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let item of frequentPatientsTable.data">
+                <td>
+                  <div class="patient-name">
+                    <i nz-icon nzType="user" nzTheme="outline" class="patient-icon"></i>
+                    {{ item.patient.titre || '' }} {{ item.patient.nom }}
+                  </div>
+                </td>
+                <td>
+                  <nz-badge [nzCount]="item.count" [nzStyle]="{ backgroundColor: '#1890ff' }"></nz-badge>
+                </td>
+                <td>
+                  <a (click)="navigateToDetails(item.patient.id)" nz-tooltip nzTooltipTitle="Voir le dossier">
+                    <i nz-icon nzType="folder-open" nzTheme="outline"></i>
+                  </a>
+                </td>
+              </tr>
+              </tbody>
+            </nz-table>
+            <nz-empty *ngIf="frequentPatients.length === 0 && !loadingPatients"></nz-empty>
+          </nz-card>
+        </div>
 
-    <!-- Accès rapide -->
-    <div nz-row [nzGutter]="16" class="action-row">
-      <div nz-col [nzSpan]="24">
-        <nz-card nzTitle="Accès rapide :" class="action-card">
-          <div class="quick-actions">
-            <a routerLink="/doc/patients/create" class="quick-action-btn">
-              <i nz-icon nzType="user-add" nzTheme="outline"></i>
-              <span>Nouveau patient</span>
-            </a>
+        <div nz-col [nzXs]="24" [nzMd]="12">
+          <nz-card nzTitle="Rendez-vous d'aujourd'hui" [nzExtra]="extraToday" class="list-card">
+            <ng-template #extraToday>
+              <a routerLink="/doc/rdv/list">Tous les rendez-vous</a>
+            </ng-template>
 
-            <a routerLink="/doc/rdv/create" class="quick-action-btn">
-              <i nz-icon nzType="calendar" nzTheme="outline"></i>
-              <span>Nouveau rendez-vous</span>
-            </a>
-
-            <a routerLink="/doc/ordonnance/create" class="quick-action-btn">
-              <i nz-icon nzType="medicine-box" nzTheme="outline"></i>
-              <span>Nouvelle ordonnance</span>
-            </a>
-
-            <a routerLink="/doc/patients/list" class="quick-action-btn">
-              <i nz-icon nzType="team" nzTheme="outline"></i>
-              <span>Liste patients</span>
-            </a>
-          </div>
-        </nz-card>
-      </div>
-    </div>
-  </div>
-
-  <!-- DASHBOARD SECRÉTAIRE -->
-  <div *ngIf="userRole === 'SECRETAIRE'" class="dashboard-secretaire">
-    <!-- Cartes de statistiques principales pour secrétaire -->
-    <div nz-row [nzGutter]="16" class="stat-cards">
-      <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-card nzHoverable class="stat-card">
-          <nz-statistic
-            [nzValue]="todayAppointmentsCount"
-            [nzTitle]="'Rendez-vous aujourd\'hui :'"
-            [nzLoading]="loadingAppointments"
-            [nzPrefix]="todayIcon">
-          </nz-statistic>
-          <ng-template #todayIcon>
-            <i nz-icon nzType="calendar" nzTheme="outline" class="stat-icon today-icon"></i>
-          </ng-template>
-          <div class="stat-footer">
-            <a routerLink="/doc/rdv/list">Voir tous</a>
-          </div>
-        </nz-card>
-      </div>
-
-      <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-card nzHoverable class="stat-card">
-          <nz-statistic
-            [nzValue]="pendingAppointmentsCount"
-            [nzTitle]="'En attente de confirmation :'"
-            [nzLoading]="loadingAppointments"
-            [nzPrefix]="pendingIcon"
-            [nzValueStyle]="{ color: '#fa8c16' }">
-          </nz-statistic>
-          <ng-template #pendingIcon>
-            <i nz-icon nzType="clock-circle" nzTheme="outline" class="stat-icon pending-icon"></i>
-          </ng-template>
-        </nz-card>
-      </div>
-
-      <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-card nzHoverable class="stat-card">
-          <nz-statistic
-            [nzValue]="confirmedAppointmentsCount"
-            [nzTitle]="'Rendez-vous confirmés :'"
-            [nzLoading]="loadingAppointments"
-            [nzPrefix]="confirmedIcon"
-            [nzValueStyle]="{ color: '#52c41a' }">
-          </nz-statistic>
-          <ng-template #confirmedIcon>
-            <i nz-icon nzType="check-circle" nzTheme="outline" class="stat-icon confirmed-icon"></i>
-          </ng-template>
-        </nz-card>
-      </div>
-
-      <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-card nzHoverable class="stat-card">
-          <nz-statistic
-            [nzValue]="totalPatients"
-            [nzTitle]="'Nombre total de patients :'"
-            [nzLoading]="loadingPatients"
-            [nzPrefix]="totalIcon">
-          </nz-statistic>
-          <ng-template #totalIcon>
-            <i nz-icon nzType="team" nzTheme="outline" class="stat-icon total-icon"></i>
-          </ng-template>
-          <div class="stat-footer">
-            <a routerLink="/doc/patients/list">Voir tous</a>
-          </div>
-        </nz-card>
-      </div>
-    </div>
-
-    <!-- Filtrage par médecin -->
-    <div nz-row [nzGutter]="16" class="filter-row">
-      <div nz-col [nzSpan]="24">
-        <nz-card class="filter-card">
-          <div class="medecin-filter">
-            <span>Filtrer par médecin:</span>
-            <nz-select
-              [(ngModel)]="selectedMedecinId"
-              (ngModelChange)="filterByMedecin()"
-              nzPlaceHolder="Sélectionner un médecin"
-              [nzAllowClear]="true">
-              <nz-option *ngFor="let medecin of medecinsAvailable"
-                         [nzValue]="medecin.id"
-                         [nzLabel]="'Dr. ' + medecin.nom">
-              </nz-option>
-            </nz-select>
-          </div>
-        </nz-card>
-      </div>
-    </div>
-
-    <!-- Tableau des RDV d'aujourd'hui et en attente -->
-    <div nz-row [nzGutter]="16" class="tabs-row">
-      <div nz-col [nzSpan]="24">
-        <nz-card>
-          <nz-tabset>
-            <nz-tab nzTitle="Rendez-vous d'aujourd'hui :">
-              <div class="tab-actions">
-                <button nz-button nzType="primary" (click)="exportTodayAppointments()">
-                  <i nz-icon nzType="export" nzTheme="outline"></i>
-                  Exporter en CSV
-                </button>
-              </div>
-
-              <nz-table
-                #secretarytodayAppointmentsTable
-                [nzData]="todayAppointments"
-                [nzShowPagination]="todayAppointments.length > 10"
-                [nzPageSize]="10"
-                [nzLoading]="loadingAppointments"
-                class="standard-table">
-                <thead>
-                <tr>
-                  <th>Heure</th>
-                  <th>Patient</th>
-                  <th>Médecin</th>
-                  <th>Statut</th>
-                  <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let rdv of secretarytodayAppointmentsTable.data">
-                  <td>{{ rdv.date | date:'HH:mm' }}</td>
-                  <td>{{ rdv.patient?.titre || '' }} {{ rdv.patient?.nom || 'N/A' }}</td>
-                  <td>Dr. {{ rdv.medecin?.nom || 'N/A' }}</td>
-                  <td>
-                    <nz-tag [nzColor]="getStatusClass(rdv.statusRDV)">
-                      {{ getStatusLabel(rdv.statusRDV) }}
-                    </nz-tag>
-                  </td>
-                  <td>
+            <nz-table
+              #todayAppointmentsTable
+              [nzData]="todayAppointments"
+              [nzShowPagination]="false"
+              [nzFrontPagination]="false"
+              [nzLoading]="loadingAppointments"
+              class="simple-table">
+              <thead>
+              <tr>
+                <th>Heure</th>
+                <th>Patient</th>
+                <th>Statut</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let rdv of todayAppointmentsTable.data">
+                <td>
+                  <span class="time-badge">{{ rdv.date | date:'HH:mm' }}</span>
+                </td>
+                <td>
+                  <div class="patient-name">
+                    <i nz-icon nzType="user" nzTheme="outline" class="patient-icon"></i>
+                    {{ rdv.patient?.nom || 'N/A' }}
+                  </div>
+                </td>
+                <td>
+                  <nz-tag [nzColor]="getStatusClass(rdv.statusRDV)">
+                    {{ getStatusLabel(rdv.statusRDV) }}
+                  </nz-tag>
+                </td>
+                <td>
+                  <div class="action-buttons">
                     <a [routerLink]="['/doc/rdv/edit', rdv.id]" nz-tooltip nzTooltipTitle="Modifier">
                       <i nz-icon nzType="edit" nzTheme="outline"></i>
                     </a>
-                    <a [routerLink]="['/doc/patients/edit', rdv.patient?.id]" nz-tooltip nzTooltipTitle="Voir patient">
-                      <i nz-icon nzType="user" nzTheme="outline"></i>
+                    <a [routerLink]="['/doc/patients/detail', rdv.patient?.id]" nz-tooltip nzTooltipTitle="Dossier">
+                      <i nz-icon nzType="profile" nzTheme="outline"></i>
                     </a>
-                  </td>
-                </tr>
-                </tbody>
-              </nz-table>
-              <nz-empty *ngIf="todayAppointments.length === 0 && !loadingAppointments"></nz-empty>
-            </nz-tab>
-
-            <nz-tab nzTitle="En attente de confirmation :">
-              <nz-table
-                #pendingAppointmentsTable
-                [nzData]="pendingAppointments"
-                [nzShowPagination]="pendingAppointments.length > 10"
-                [nzPageSize]="10"
-                [nzLoading]="loadingAppointments"
-                class="standard-table">
-                <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Heure</th>
-                  <th>Patient</th>
-                  <th>Médecin</th>
-                  <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let rdv of pendingAppointmentsTable.data">
-                  <td>{{ rdv.date | date:'dd/MM/yyyy' }}</td>
-                  <td>{{ rdv.date | date:'HH:mm' }}</td>
-                  <td>{{ rdv.patient?.titre || '' }} {{ rdv.patient?.nom || 'N/A' }}</td>
-                  <td>Dr. {{ rdv.medecin?.nom || 'N/A' }}</td>
-                  <td>
-                    <a [routerLink]="['/doc/rdv/edit', rdv.id]" nz-tooltip nzTooltipTitle="Modifier">
-                      <i nz-icon nzType="edit" nzTheme="outline"></i>
-                    </a>
-                    <a href="javascript:void(0)" nz-tooltip nzTooltipTitle="Confirmer" (click)="confirmAppointment(rdv)">
-                      <i nz-icon nzType="check-circle" nzTheme="outline" style="color: #52c41a;"></i>
-                    </a>
-                    <a [routerLink]="['/doc/patients/edit', rdv.patient?.id]" nz-tooltip nzTooltipTitle="Voir patient">
-                      <i nz-icon nzType="user" nzTheme="outline"></i>
-                    </a>
-                  </td>
-                </tr>
-                </tbody>
-              </nz-table>
-              <nz-empty *ngIf="pendingAppointments.length === 0 && !loadingAppointments"></nz-empty>
-            </nz-tab>
-          </nz-tabset>
-        </nz-card>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </nz-table>
+            <nz-empty *ngIf="todayAppointments.length === 0 && !loadingAppointments" [nzNotFoundContent]="'Pas de rendez-vous aujourdhui'"></nz-empty>
+          </nz-card>
+        </div>
       </div>
-    </div>
 
-    <!-- Liste des prochains patients -->
-    <div nz-row [nzGutter]="16" class="list-row">
-      <div nz-col [nzSpan]="24">
-        <nz-card nzTitle="Prochains patients à recevoir :" class="list-card">
-          <div class="patient-list">
-            <div *ngFor="let patient of nextPatients" class="patient-card">
-              <div class="patient-avatar">
-                <i nz-icon nzType="user" nzTheme="outline"></i>
-              </div>
-              <div class="patient-info">
-                <div class="patient-name">{{ patient?.titre || '' }} {{ patient?.nom || 'N/A' }}</div>
-                <div class="patient-details">
-                  <span *ngIf="patient?.numeroTelephone">Tél: {{ patient?.numeroTelephone }}</span>
-                </div>
-              </div>
-              <div class="patient-actions">
-                <a [routerLink]="['/doc/patients/edit', patient?.id]" nz-tooltip nzTooltipTitle="Voir dossier">
-                  <i nz-icon nzType="folder-open" nzTheme="outline"></i>
-                </a>
-              </div>
+      <!-- Accès rapide amélioré -->
+      <div nz-row [nzGutter]="16" class="action-row">
+        <div nz-col [nzSpan]="24">
+          <nz-card nzTitle="Accès rapide" class="action-card">
+            <div class="quick-actions">
+              <a routerLink="/doc/patients/create" class="quick-action-btn">
+                <i nz-icon nzType="user-add" nzTheme="outline"></i>
+                <span>Nouveau patient</span>
+              </a>
+
+              <a routerLink="/doc/rdv/create" class="quick-action-btn">
+                <i nz-icon nzType="calendar" nzTheme="outline"></i>
+                <span>Nouveau rendez-vous</span>
+              </a>
+
+              <a routerLink="/doc/ordonnance/create" class="quick-action-btn">
+                <i nz-icon nzType="medicine-box" nzTheme="outline"></i>
+                <span>Nouvelle ordonnance</span>
+              </a>
+
+              <a routerLink="/doc/patients/list" class="quick-action-btn">
+                <i nz-icon nzType="team" nzTheme="outline"></i>
+                <span>Liste patients</span>
+              </a>
+
+              <a routerLink="/doc/medecin/list" class="quick-action-btn">
+                <i nz-icon nzType="medicine-box" nzTheme="outline"></i>
+                <span>Liste médecins</span>
+              </a>
             </div>
-            <nz-empty *ngIf="nextPatients.length === 0 && !loadingPatients"></nz-empty>
-          </div>
-        </nz-card>
+          </nz-card>
+        </div>
       </div>
     </div>
 
-    <!-- Accès rapide pour secrétaire -->
-    <div nz-row [nzGutter]="16" class="action-row">
-      <div nz-col [nzSpan]="24">
-        <nz-card nzTitle="Accès rapide :" class="action-card">
-          <div class="quick-actions">
-            <a routerLink="/doc/patients/create" class="quick-action-btn secretary-btn">
-              <i nz-icon nzType="user-add" nzTheme="outline"></i>
-              <span>Nouveau patient</span>
-            </a>
+    <!-- DASHBOARD SECRÉTAIRE -->
+    <div *ngIf="userRole === 'SECRETAIRE'" class="dashboard-secretaire">
+      <!-- Cartes de statistiques principales pour secrétaire -->
+      <div nz-row [nzGutter]="[16, 16]" class="stat-cards">
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
+          <nz-card nzHoverable class="stat-card secretary-card">
+            <nz-statistic
+              [nzValue]="todayAppointmentsCount"
+              [nzTitle]="'Aujourdhui'"
+              [nzLoading]="loadingAppointments"
+              [nzPrefix]="todayIcon"
+              [nzValueStyle]="{ color: '#722ed1', fontSize: '24px' }">
+            </nz-statistic>
+            <ng-template #todayIcon>
+              <i nz-icon nzType="calendar" nzTheme="outline" class="stat-icon today-icon"></i>
+            </ng-template>
+            <nz-progress [nzPercent]="todayAppointmentsCount > 0 ? 100 : 0" nzStatus="active" [nzShowInfo]="false" [nzStrokeColor]="'#722ed1'"></nz-progress>
+            <div class="stat-footer">
+              <a routerLink="/doc/rdv/list">Voir tous</a>
+            </div>
+          </nz-card>
+        </div>
 
-            <a routerLink="/doc/rdv/create" class="quick-action-btn secretary-btn">
-              <i nz-icon nzType="calendar" nzTheme="outline"></i>
-              <span>Nouveau rendez-vous</span>
-            </a>
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
+          <nz-card nzHoverable class="stat-card secretary-card">
+            <nz-statistic
+              [nzValue]="pendingAppointmentsCount"
+              [nzTitle]="'En attente'"
+              [nzLoading]="loadingAppointments"
+              [nzPrefix]="pendingIcon"
+              [nzValueStyle]="{ color: '#fa8c16', fontSize: '24px' }">
+            </nz-statistic>
+            <ng-template #pendingIcon>
+              <i nz-icon nzType="clock-circle" nzTheme="outline" class="stat-icon pending-icon"></i>
+            </ng-template>
+            <nz-progress [nzPercent]="pendingAppointmentsCount > 0 ? 70 : 0" nzStatus="active" [nzShowInfo]="false" [nzStrokeColor]="'#fa8c16'"></nz-progress>
+            <div class="stat-footer">
+              <span>Nécessite attention</span>
+            </div>
+          </nz-card>
+        </div>
 
-            <a routerLink="/doc/medecin/list" class="quick-action-btn secretary-btn">
-              <i nz-icon nzType="medicine-box" nzTheme="outline"></i>
-              <span>Liste médecins</span>
-            </a>
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
+          <nz-card nzHoverable class="stat-card secretary-card">
+            <nz-statistic
+              [nzValue]="confirmedAppointmentsCount"
+              [nzTitle]="'Confirmés'"
+              [nzLoading]="loadingAppointments"
+              [nzPrefix]="confirmedIcon"
+              [nzValueStyle]="{ color: '#52c41a', fontSize: '24px' }">
+            </nz-statistic>
+            <ng-template #confirmedIcon>
+              <i nz-icon nzType="check-circle" nzTheme="outline" class="stat-icon confirmed-icon"></i>
+            </ng-template>
+            <nz-progress [nzPercent]="confirmedAppointmentsCount > 0 ? 90 : 0" nzStatus="active" [nzShowInfo]="false" [nzStrokeColor]="'#52c41a'"></nz-progress>
+            <div class="stat-footer">
+              <span>Prêt pour la journée</span>
+            </div>
+          </nz-card>
+        </div>
 
-            <a routerLink="/doc/patients/list" class="quick-action-btn secretary-btn">
-              <i nz-icon nzType="team" nzTheme="outline"></i>
-              <span>Liste patients</span>
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
+          <nz-card nzHoverable class="stat-card secretary-card">
+            <nz-statistic
+              [nzValue]="totalPatients"
+              [nzTitle]="'Total Patients'"
+              [nzLoading]="loadingPatients"
+              [nzPrefix]="totalIcon"
+              [nzValueStyle]="{ color: '#722ed1', fontSize: '24px' }">
+            </nz-statistic>
+            <ng-template #totalIcon>
+              <i nz-icon nzType="team" nzTheme="outline" class="stat-icon total-icon"></i>
+            </ng-template>
+            <nz-progress [nzPercent]="80" nzStatus="active" [nzShowInfo]="false" [nzStrokeColor]="'#722ed1'"></nz-progress>
+            <div class="stat-footer">
+              <a routerLink="/doc/patients/list">Voir tous</a>
+            </div>
+          </nz-card>
+        </div>
+      </div>
+
+      <!-- Filtrage par médecin amélioré -->
+      <div nz-row [nzGutter]="16" class="filter-row">
+        <div nz-col [nzSpan]="24">
+          <nz-card class="filter-card">
+            <div class="medecin-filter">
+              <i nz-icon nzType="filter" nzTheme="outline" class="filter-icon"></i>
+              <span>Filtrer par médecin:</span>
+              <nz-select
+                [(ngModel)]="selectedMedecinId"
+                (ngModelChange)="filterByMedecin()"
+                nzPlaceHolder="Sélectionner un médecin"
+                [nzAllowClear]="true">
+                <nz-option *ngFor="let medecin of medecinsAvailable"
+                           [nzValue]="medecin.id"
+                           [nzLabel]="'Dr. ' + medecin.nom">
+                </nz-option>
+              </nz-select>
+              <button
+                nz-button
+                nzType="default"
+                *ngIf="selectedMedecinId"
+                (click)="selectedMedecinId = null; filterByMedecin()">
+                <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+                Réinitialiser
+              </button>
+            </div>
+          </nz-card>
+        </div>
+      </div>
+
+      <!-- Tableau des RDV d'aujourd'hui et en attente -->
+      <div nz-row [nzGutter]="16" class="tabs-row">
+        <div nz-col [nzSpan]="24">
+          <nz-card nzBorderless>
+            <nz-tabset nzType="card">
+              <nz-tab nzTitle="Rendez-vous d'aujourd'hui">
+                <div class="tab-actions">
+                  <nz-badge [nzCount]="todayAppointments.length" [nzStyle]="{ backgroundColor: '#1890ff' }">
+                    <button nz-button nzType="primary" (click)="exportTodayAppointments()">
+                      <i nz-icon nzType="export" nzTheme="outline"></i>
+                      Exporter en CSV
+                    </button>
+                  </nz-badge>
+                </div>
+
+                <nz-table
+                  #secretarytodayAppointmentsTable
+                  [nzData]="todayAppointments"
+                  [nzShowPagination]="todayAppointments.length > 10"
+                  [nzPageSize]="10"
+                  [nzLoading]="loadingAppointments"
+                  class="secretary-table">
+                  <thead>
+                  <tr>
+                    <th>Heure</th>
+                    <th>Patient</th>
+                    <th>Médecin</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let rdv of secretarytodayAppointmentsTable.data" class="rdv-row">
+                    <td>
+                      <span class="time-badge">{{ rdv.date | date:'HH:mm' }}</span>
+                    </td>
+                    <td>
+                      <div class="patient-name">
+                        <i nz-icon nzType="user" nzTheme="outline" class="patient-icon"></i>
+                        {{ rdv.patient?.titre || '' }} {{ rdv.patient?.nom || 'N/A' }}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="doctor-name">
+                        <i nz-icon nzType="medicine-box" nzTheme="outline" class="doctor-icon"></i>
+                        Dr. {{ rdv.medecin?.nom || 'N/A' }}
+                      </div>
+                    </td>
+                    <td>
+                      <nz-tag [nzColor]="getStatusClass(rdv.statusRDV)">
+                        {{ getStatusLabel(rdv.statusRDV) }}
+                      </nz-tag>
+                    </td>
+                    <td>
+                      <div class="action-buttons">
+                        <a [routerLink]="['/doc/rdv/edit', rdv.id]" nz-tooltip nzTooltipTitle="Modifier">
+                          <i nz-icon nzType="edit" nzTheme="outline"></i>
+                        </a>
+                        <a [routerLink]="['/doc/patients/detail', rdv.patient?.id]" nz-tooltip nzTooltipTitle="Patient">
+                          <i nz-icon nzType="user" nzTheme="outline"></i>
+                        </a>
+                        <a href="javascript:;" nz-tooltip nzTooltipTitle="Appeler" *ngIf="rdv.patient?.numeroTelephone">
+                          <i nz-icon nzType="phone" nzTheme="outline"></i>
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                  </tbody>
+                </nz-table>
+                <nz-empty *ngIf="todayAppointments.length === 0 && !loadingAppointments" [nzNotFoundContent]="'Aucun rendez-vous pour aujourdhui'"></nz-empty>
+              </nz-tab>
+
+              <nz-tab nzTitle="En attente de confirmation">
+                <nz-badge [nzCount]="pendingAppointments.length" [nzStyle]="{ backgroundColor: '#fa8c16' }">
+                  <span class="tab-badge-title">Rendez-vous à confirmer</span>
+                </nz-badge>
+
+                <nz-table
+                  #pendingAppointmentsTable
+                  [nzData]="pendingAppointments"
+                  [nzShowPagination]="pendingAppointments.length > 10"
+    [nzPageSize]="10"
+    [nzLoading]="loadingAppointments"
+    class="secretary-table">
+    <thead>
+    <tr>
+      <th>Date</th>
+      <th>Heure</th>
+      <th>Patient</th>
+      <th>Médecin</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let rdv of pendingAppointmentsTable.data" class="rdv-row pending-row">
+      <td>{{ rdv.date | date:'dd/MM/yyyy' }}</td>
+      <td>
+        <span class="time-badge">{{ rdv.date | date:'HH:mm' }}</span>
+      </td>
+      <td>
+        <div class="patient-name">
+          <i nz-icon nzType="user" nzTheme="outline" class="patient-icon"></i>
+          {{ rdv.patient?.titre || '' }} {{ rdv.patient?.nom || 'N/A' }}
+        </div>
+      </td>
+      <td>
+        <div class="doctor-name">
+          <i nz-icon nzType="medicine-box" nzTheme="outline" class="doctor-icon"></i>
+          Dr. {{ rdv.medecin?.nom || 'N/A' }}
+        </div>
+      </td>
+      <td>
+        <div class="action-buttons">
+          <a [routerLink]="['/doc/rdv/edit', rdv.id]" nz-tooltip nzTooltipTitle="Modifier">
+            <i nz-icon nzType="edit" nzTheme="outline"></i>
+          </a>
+          <a href="javascript:void(0)" nz-tooltip nzTooltipTitle="Confirmer" (click)="confirmAppointment(rdv)">
+            <i nz-icon nzType="check-circle" nzTheme="outline" style="color: #52c41a;"></i>
+          </a>
+          <a [routerLink]="['/doc/patients/detail', rdv.patient?.id]" nz-tooltip nzTooltipTitle="Patient">
+            <i nz-icon nzType="user" nzTheme="outline"></i>
+          </a>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </nz-table>
+  <nz-empty *ngIf="pendingAppointments.length === 0 && !loadingAppointments" [nzNotFoundContent]="'Aucun rendez-vous en attente'"></nz-empty>
+</nz-tab>
+</nz-tabset>
+</nz-card>
+</div>
+</div>
+
+<!-- Liste des prochains patients avec nouveau design -->
+<div nz-row [nzGutter]="16" class="list-row">
+  <div nz-col [nzSpan]="24">
+    <nz-card nzTitle="Prochains patients à recevoir" class="list-card">
+      <div class="secretary-patient-list">
+        <div *ngFor="let patient of nextPatients" class="secretary-patient-card">
+          <div class="patient-avatar">
+            <i nz-icon nzType="user" nzTheme="outline"></i>
+          </div>
+          <div class="patient-info">
+            <div class="patient-name-large">{{ patient?.titre || '' }} {{ patient?.nom || 'N/A' }}</div>
+            <div class="patient-details">
+                        <span *ngIf="patient?.numeroTelephone">
+                          <i nz-icon nzType="phone" nzTheme="outline"></i> {{ patient?.numeroTelephone }}
+                        </span>
+            </div>
+          </div>
+          <div class="patient-actions">
+            <a [routerLink]="['/doc/patients/detail', patient?.id]" nz-tooltip nzTooltipTitle="Dossier">
+              <i nz-icon nzType="folder-open" nzTheme="outline"></i>
+            </a>
+            <a href="javascript:void(0)" nz-tooltip nzTooltipTitle="Appeler" *ngIf="patient?.numeroTelephone">
+              <i nz-icon nzType="phone" nzTheme="outline"></i>
             </a>
           </div>
-        </nz-card>
+        </div>
+        <nz-empty *ngIf="nextPatients.length === 0 && !loadingPatients" [nzNotFoundContent]="'Aucun patient à venir aujourd\'hui'"></nz-empty>
       </div>
-    </div>
+    </nz-card>
   </div>
+</div>
+
+<!-- Accès rapide amélioré pour secrétaire -->
+<div nz-row [nzGutter]="16" class="action-row">
+  <div nz-col [nzSpan]="24">
+    <nz-card nzTitle="Accès rapide" class="action-card">
+      <div class="quick-actions">
+        <a routerLink="/doc/patients/create" class="quick-action-btn secretary-btn">
+          <i nz-icon nzType="user-add" nzTheme="outline"></i>
+          <span>Nouveau patient</span>
+        </a>
+
+        <a routerLink="/doc/rdv/create" class="quick-action-btn secretary-btn">
+          <i nz-icon nzType="calendar" nzTheme="outline"></i>
+          <span>Nouveau rendez-vous</span>
+        </a>
+
+        <a routerLink="/doc/medecin/list" class="quick-action-btn secretary-btn">
+          <i nz-icon nzType="medicine-box" nzTheme="outline"></i>
+          <span>Liste médecins</span>
+        </a>
+
+        <a routerLink="/doc/patients/list" class="quick-action-btn secretary-btn">
+          <i nz-icon nzType="team" nzTheme="outline"></i>
+          <span>Liste patients</span>
+        </a>
+
+        <a routerLink="/doc/notification/create" class="quick-action-btn secretary-btn">
+          <i nz-icon nzType="notification" nzTheme="outline"></i>
+          <span>Envoyer notification</span>
+        </a>
+      </div>
+    </nz-card>
+  </div>
+</div>
+</div>
+</nz-spin>
 </div>
