@@ -102,11 +102,14 @@
             </td>
             <td class="action-cell">
               <nz-space nzSize="small">
-                <button *nzSpaceItem nz-button nzType="text" nz-tooltip="Modifier" (click)="onEditRdv(rdv)">
+                <button *nzSpaceItem nz-button nzType="text" nz-tooltip nzTooltipTitle="Modifier" (click)="onEditRdv(rdv)">
                   <i nz-icon nzType="edit" nzTheme="outline"></i>
                 </button>
-                <button *nzSpaceItem nz-button nzType="text" nz-tooltip="Supprimer" nzDanger (click)="onDeleteRdv(rdv)">
+                <button *nzSpaceItem nz-button nzType="text" nz-tooltip nzTooltipTitle="Supprimer" nzDanger (click)="onDeleteRdv(rdv)">
                   <i nz-icon nzType="delete" nzTheme="outline"></i>
+                </button>
+                <button *nzSpaceItem nz-button nzType="text" nz-tooltip nzTooltipTitle="Facture" (click)="generateFacture(rdv); $event.stopPropagation()">
+                  <i nz-icon nzType="file-text" nzTheme="outline"></i>
                 </button>
               </nz-space>
             </td>

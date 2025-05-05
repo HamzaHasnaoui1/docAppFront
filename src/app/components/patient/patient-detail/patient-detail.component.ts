@@ -28,6 +28,8 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzEmptyComponent } from 'ng-zorro-antd/empty';
 import { NzDescriptionsComponent, NzDescriptionsItemComponent } from 'ng-zorro-antd/descriptions';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
+import {PdfService} from '../../../service/pdf.service';
+import {NzCheckboxGroupComponent, NzCheckboxWrapperComponent} from 'ng-zorro-antd/checkbox';
 
 @Component({
   selector: 'app-patient-detail',
@@ -52,7 +54,9 @@ import { NzSpinComponent } from 'ng-zorro-antd/spin';
     NzEmptyComponent,
     NzDescriptionsItemComponent,
     NzDescriptionsComponent,
-    NzSpinComponent
+    NzSpinComponent,
+    NzCheckboxWrapperComponent,
+    NzCheckboxGroupComponent
   ],
   styleUrl: './patient-detail.component.scss'
 })
@@ -61,6 +65,7 @@ export class PatientDetailComponent implements OnInit {
   loading = true;
   errorMessage = '';
   patientId: number = 0;
+  includeTva: boolean = false;
 
   constructor(
     private patientService: PatientService,
@@ -68,7 +73,8 @@ export class PatientDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private message: NzMessageService,
-    private modal: NzModalService
+    private modal: NzModalService,
+    private pdfService: PdfService
   ) {}
 
   ngOnInit(): void {
@@ -198,5 +204,26 @@ export class PatientDetailComponent implements OnInit {
     this.router.navigate(['/doc/rdv/create'], {
       queryParams: { patientId: this.patientId }
     });
+  }
+
+  // Add these methods to the PatientDetailComponent class
+  /**
+   * Handle TVA checkbox change
+   */
+  onTvaChange(e: any): void {
+    this.includeTva = e.some((item: any) => item === 'tva');
+  }
+
+  /**
+   * Generate a PDF invoice for the selected appointment
+   */
+  generateFacture(rdv: RendezVous): void {
+    try {
+      this.pdfService.generateFacturePdf(rdv, this.includeTva);
+      this.message.success('Facture générée avec succès');
+    } catch (error) {
+      this.message.error('Erreur lors de la génération de la facture');
+      console.error(error);
+    }
   }
 }
