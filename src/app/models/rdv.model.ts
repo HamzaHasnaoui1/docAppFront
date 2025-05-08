@@ -1,18 +1,18 @@
 import { Medecin } from './medecin.model';
 import { Patient } from './patient.model';
-import {Ordonnance} from './ordonnance.model';
+import { Ordonnance } from './ordonnance.model';
 
 export interface RendezVous {
   id: number;
   date: string;
-  startTime: string;
-  endTime: string;
+  dateFin: string;
   statusRDV: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'DONE';
   patient: Patient;
   medecin: Medecin;
   ordonnance?: Ordonnance;
   rapport: string;
-  prix: number;}
+  prix: number;
+}
 
 export const RDV_STATUS_CONFIG = {
   PENDING: { color: 'orange', label: 'En attente' },

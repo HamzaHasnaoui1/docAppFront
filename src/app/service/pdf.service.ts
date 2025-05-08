@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import jsPDF from 'jspdf';
 import { Ordonnance } from '../models/ordonnance.model';
 import { RendezVous } from '../models/rdv.model';
+import { OrdonnanceMedicament } from '../models/OrdonnanceMedicament.model';
 
 @Injectable({
   providedIn: 'root'
@@ -41,8 +42,9 @@ export class PdfService {
 
     // Date information
     const currentDate = new Date().toLocaleDateString('fr-FR');
+    const emissionDate = ordonnance.dateEmission ? this.formatDate(ordonnance.dateEmission) : currentDate;
     doc.setFont('helvetica', 'normal');
-    doc.text(`Date: ${currentDate}`, 150, 40, { align: 'right' });
+    doc.text(`Date: ${emissionDate}`, 150, 40, { align: 'right' });
 
     // Patient information
     doc.line(15, 65, 195, 65);
@@ -60,22 +62,34 @@ export class PdfService {
 
     // Add medications
     let yPos = 110;
-    if (ordonnance.medicamentsPrescrits && ordonnance.medicamentsPrescrits.length > 0) {
-      for (let i = 0; i < ordonnance.medicamentsPrescrits.length; i++) {
-        const med = ordonnance.medicamentsPrescrits[i];
-        const posologie = ordonnance.posologies?.[med] || '';
+    if (ordonnance.medicaments && ordonnance.medicaments.length > 0) {
+      for (let i = 0; i < ordonnance.medicaments.length; i++) {
+        const med = ordonnance.medicaments[i];
 
         doc.setFont('helvetica', 'bold');
-        doc.text(`${i + 1}. ${med}`, 20, yPos);
+        doc.text(`${i + 1}. ${med.medicament.nom}`, 20, yPos);
         yPos += 5;
 
-        if (posologie) {
-          doc.setFont('helvetica', 'normal');
-          doc.text(`   Posologie: ${posologie}`, 20, yPos);
-          yPos += 10;
-        } else {
+        doc.setFont('helvetica', 'normal');
+        doc.text(`   Posologie: ${med.posologie}`, 20, yPos);
+        yPos += 5;
+
+        if (med.duree) {
+          doc.text(`   Durée: ${med.duree}`, 20, yPos);
           yPos += 5;
         }
+
+        if (med.frequence) {
+          doc.text(`   Fréquence: ${med.frequence}`, 20, yPos);
+          yPos += 5;
+        }
+
+        if (med.instructions) {
+          doc.text(`   Instructions: ${med.instructions}`, 20, yPos);
+          yPos += 5;
+        }
+
+        yPos += 5; // Extra space between medications
       }
     } else if (ordonnance.contenu) {
       // If no structured medications, use the content field
@@ -117,7 +131,7 @@ export class PdfService {
     }
 
     // Save the PDF
-    doc.save(`ordonnance_${patient.nom}_${new Date().toISOString().split('T')[0]}.pdf`);
+    doc.save(`ordonnance_${patient.nom}_${currentDate.replace(/\//g, '-')}.pdf`);
   }
 
   /**
@@ -268,7 +282,7 @@ export class PdfService {
   /**
    * Format a date to a readable format
    */
-  private formatDate(date: string | Date): string {
+  private formatDate(date: string | Date | undefined): string {
     if (!date) return 'N/A';
     try {
       const d = new Date(date);

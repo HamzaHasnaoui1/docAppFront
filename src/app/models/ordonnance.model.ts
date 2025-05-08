@@ -1,12 +1,12 @@
-import {RendezVous} from './rdv.model';
+import { RendezVous } from './rdv.model';
+import {OrdonnanceMedicament} from './OrdonnanceMedicament.model';
 
 export interface Ordonnance {
   id?: number;
   contenu?: string;
-  dateEmission?: string; // format ISO string (ex: "2025-04-30")
+  dateEmission?: string;
   archivee?: boolean;
   rendezVous?: RendezVous;
-  medicamentsPrescrits?: string[];
-  posologies?: { [medicamentNom: string]: string };
   remarques?: string;
+  medicaments?: OrdonnanceMedicament[];
 }

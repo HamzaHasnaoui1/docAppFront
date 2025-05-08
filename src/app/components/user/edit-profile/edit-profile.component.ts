@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import {UserService} from '../../../service/user.service';
-import {AuthService} from '../../auth/auth.service';
-import {NzCardComponent} from 'ng-zorro-antd/card';
-import {CommonModule} from '@angular/common';
-import {NzSelectModule} from 'ng-zorro-antd/select';
-import {NzRadioComponent, NzRadioGroupComponent} from 'ng-zorro-antd/radio';
-import {AngularEditorModule} from '@kolkov/angular-editor';
-import {NzButtonModule} from 'ng-zorro-antd/button';
-import {NzInputModule} from 'ng-zorro-antd/input';
-import {NzFormModule} from 'ng-zorro-antd/form';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {NzIconDirective} from 'ng-zorro-antd/icon';
+import { UserService } from '../../../service/user.service';
+import { AuthService } from '../../auth/auth.service';
+import { NzCardComponent } from 'ng-zorro-antd/card';
+import { CommonModule } from '@angular/common';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzRadioComponent, NzRadioGroupComponent } from 'ng-zorro-antd/radio';
+import { AngularEditorModule } from '@kolkov/angular-editor';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'app-edit-profile',
@@ -104,6 +104,4 @@ export class EditProfileComponent implements OnInit {
   onCancel(): void {
     this.router.navigate(['/doc/dashboard']);
   }
-
 }
-

@@ -97,10 +97,12 @@ export class PatientListComponent implements OnInit {
   errorMessage = '';
   currentPage = 0;
   totalPages = 0;
+  pageSize = 10; // taille par page configurable
   deletedIds: number[] = [];
   searchTerm$ = new Subject<string>();
   totalPagesArray: number[] = [];
   loading: boolean = true;
+  searchKeyword: string = '';
 
   constructor(
     private patientService: PatientService,
@@ -113,7 +115,7 @@ export class PatientListComponent implements OnInit {
   ngOnInit(): void {
     this.setupSearch();
     this.loadPage(0);
-    this.loading=false
+    this.loading = false;
   }
 
   combinePatientWithRdvs(patients: Patient[], rdvs: RendezVous[]): Patient[] {
@@ -127,38 +129,18 @@ export class PatientListComponent implements OnInit {
     this.searchTerm$.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap(keyword => {
-        return forkJoin([
-          this.patientService.getPatients(0, keyword),
-          this.rdvService.getRdvs()
-        ]).pipe(
-          map(([patientsResponse, rdvsResponse]) => {
-            const combinedPatients = this.combinePatientWithRdvs(patientsResponse.patients, rdvsResponse.rdvs);
-            return {
-              patients: combinedPatients,
-              totalPages: patientsResponse.totalPages,
-              currentPage: patientsResponse.currentPage
-            };
-          }),
-          catchError(err => {
-            this.errorMessage = err.message;
-            return of({ patients: [], totalPages: 0, currentPage: 0 });
-          })
-        );
-      })
-    ).subscribe(response => {
-      this.patients$ = of(response.patients);
-      this.totalPages = response.totalPages;
-      this.currentPage = response.currentPage;
+    ).subscribe(keyword => {
+      this.searchKeyword = keyword;
+      this.loadPage(0, keyword);
     });
   }
 
-  loadPage(page: number): void {
+  loadPage(page: number, keyword: string = this.searchKeyword): void {
     this.loading = true;
     this.errorMessage = '';
 
     forkJoin([
-      this.patientService.getPatients(page),
+      this.patientService.getPatients(page, keyword, this.pageSize),
       this.rdvService.getRdvs()
     ]).pipe(
       map(([patientsResponse, rdvsResponse]) => {
@@ -178,7 +160,7 @@ export class PatientListComponent implements OnInit {
       this.totalPages = response.totalPages;
       this.currentPage = response.currentPage;
       this.initPagesArray();
-      this.loading = false; // fin du chargement
+      this.loading = false;
     });
   }
 

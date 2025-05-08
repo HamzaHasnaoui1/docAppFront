@@ -1,82 +1,80 @@
 <nz-card nzHoverable>
-  <ng-container *ngIf="medecins$ | async as medecins; else error">
-    <div class="search-add-container">
-      <app-search-add-actions
-        searchPlaceholder="Rechercher un medecin"
-        addButtonText="Ajouter un medecin"
-        (searchChange)="onSearch($event)"
-        (addClick)="onAdd()">
-      </app-search-add-actions>
-    </div>
+  <nz-spin [nzSpinning]="isLoading" [nzTip]="'Chargement des données...'">
+    <ng-container *ngIf="medecins$ | async as medecins">
+      <div class="search-add-container">
+        <app-search-add-actions
+          searchPlaceholder="Rechercher un medecin"
+          addButtonText="Ajouter un medecin"
+          (searchChange)="onSearch($event)"
+          (addClick)="onAdd()">
+        </app-search-add-actions>
+      </div>
 
-    <nz-table
-      #medecinTable
-      [nzData]="medecins"
-      nzBordered
-      nzSize="middle"
-      [nzScroll]="{ x: '1000px' }"
-    >
-      <thead>
-      <tr>
-        <th nzWidth="80px">ID</th>
-        <th nzWidth="150px">Nom</th>
-        <th nzWidth="120px">Specialiste</th>
-        <th nzWidth="50px">Téléphone</th>
-        <th nzWidth="150px">Email</th>
-        <th nzWidth="150px">Action</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let m of medecinTable.data">
-        <td>{{ m.id }}</td>
-        <td><strong>{{ m.nom }}</strong></td>
-        <td>{{ m.specialite }}</td>
-        <td class="center-cell">
-          <button nz-button nz-tooltip nzTooltipTitle="Voir le Numero" nzType="link" (click)="showPhoneModal(m)">
-            <i nz-icon nzType="phone"></i>
-          </button>
-        </td>        <td>{{ m.email }}</td>
-        <td>
-          <button nz-button nz-tooltip nzTooltipTitle="Modifier" nzType="link" (click)="onEdit(m)">
-            <i nz-icon nzType="edit"></i>
-          </button>
+      <nz-table
+        #medecinTable
+        [nzData]="medecins"
+        nzBordered
+        nzSize="middle"
+        [nzScroll]="{ x: '1000px' }"
+      >
+        <thead>
+        <tr>
+          <th nzWidth="80px">ID</th>
+          <th nzWidth="150px">Nom</th>
+          <th nzWidth="120px">Specialiste</th>
+          <th nzWidth="50px">Téléphone</th>
+          <th nzWidth="150px">Email</th>
+          <th nzWidth="150px">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let m of medecinTable.data">
+          <td>{{ m.id }}</td>
+          <td><strong>{{ m.nom }}</strong></td>
+          <td>{{ m.specialite }}</td>
+          <td class="center-cell">
+            <button nz-button nz-tooltip nzTooltipTitle="Voir le Numero" nzType="link" (click)="showPhoneModal(m)">
+              <i nz-icon nzType="phone"></i>
+            </button>
+          </td>
+          <td>{{ m.email }}</td>
+          <td>
+            <button nz-button nz-tooltip nzTooltipTitle="Modifier" nzType="link" (click)="onEdit(m)">
+              <i nz-icon nzType="edit"></i>
+            </button>
 
-          <button nz-button nz-tooltip nzTooltipTitle="Supprimer" nzType="link" nzDanger (click)="onDelete(m)">
-            <i nz-icon nzType="delete"></i>
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </nz-table>
+            <button nz-button nz-tooltip nzTooltipTitle="Supprimer" nzType="link" nzDanger (click)="onDelete(m)">
+              <i nz-icon nzType="delete"></i>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </nz-table>
 
-    <nz-empty  *ngIf="medecins.length === 0" [nzNotFoundContent]="'Aucun médecin trouvé'"></nz-empty>
+      <nz-empty *ngIf="medecins.length === 0 && !isLoading" [nzNotFoundContent]="'Aucun médecin trouvé'"></nz-empty>
 
-    <!-- Pagination moderne -->
-    <div class="modern-pagination">
-      <button nz-button nzShape="circle" (click)="prevPage()" [disabled]="currentPage === 0">
-        <i nz-icon nzType="left" nzTheme="outline"></i>
-      </button>
-      <nz-select
-        class="page-selector"
-        [ngModel]="currentPage + 1"
-        (ngModelChange)="goToPage($event - 1)"
-        nzShowSearch
-        nzAllowClear>
-        <nz-option
-          *ngFor="let page of totalPagesArray"
-          [nzLabel]="'Page ' + page"
-          [nzValue]="page">
-        </nz-option>
-      </nz-select>
-      <span class="page-info">sur {{ totalPages }}</span>
-      <button nz-button nzShape="circle" (click)="nextPage()" [disabled]="currentPage === totalPages - 1">
-        <i nz-icon nzType="right" nzTheme="outline"></i>
-      </button>
-    </div>
-
-  </ng-container>
-
-  <ng-template #error>
-    <nz-alert nzType="error" [nzMessage]="errorMessage" nzShowIcon></nz-alert>
-  </ng-template>
+      <!-- Pagination moderne -->
+      <div class="modern-pagination" *ngIf="!isLoading && totalPages > 0">
+        <button nz-button nzShape="circle" (click)="prevPage()" [disabled]="currentPage === 0">
+          <i nz-icon nzType="left" nzTheme="outline"></i>
+        </button>
+        <nz-select
+          class="page-selector"
+          [ngModel]="currentPage + 1"
+          (ngModelChange)="goToPage($event - 1)"
+          nzShowSearch
+          nzAllowClear>
+          <nz-option
+            *ngFor="let page of totalPagesArray"
+            [nzLabel]="'Page ' + page"
+            [nzValue]="page">
+          </nz-option>
+        </nz-select>
+        <span class="page-info">sur {{ totalPages }}</span>
+        <button nz-button nzShape="circle" (click)="nextPage()" [disabled]="currentPage === totalPages - 1">
+          <i nz-icon nzType="right" nzTheme="outline"></i>
+        </button>
+      </div>
+    </ng-container>
+  </nz-spin>
 </nz-card>

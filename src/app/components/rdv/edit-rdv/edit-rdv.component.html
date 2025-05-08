@@ -35,7 +35,7 @@
             <nz-form-control>
               <nz-form-text>
                 {{ medecin }}
-                <input type="hidden" formControlName="medecin" /> <!-- Champ caché pour la valeur ID -->
+                <input type="hidden" formControlName="medecin" />
               </nz-form-text>
             </nz-form-control>
           </nz-form-item>
@@ -47,7 +47,7 @@
             <nz-form-control>
               <nz-form-text>
                 {{ patient }}
-                <input type="hidden" formControlName="patient" /> <!-- Champ caché pour la valeur ID -->
+                <input type="hidden" formControlName="patient" />
               </nz-form-text>
             </nz-form-control>
           </nz-form-item>
@@ -57,7 +57,7 @@
       <div nz-row [nzGutter]="16">
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzFor="prix">Prix </nz-form-label>
+            <nz-form-label nzFor="prix">Prix</nz-form-label>
             <nz-form-control>
               <nz-input-number id="prix" formControlName="prix" [nzMin]="0" [nzStep]="10" class="full-width"></nz-input-number>
             </nz-form-control>
@@ -72,7 +72,6 @@
           </nz-form-item>
         </div>
       </div>
-
     </nz-card>
 
     <!-- Section Rapport médical -->
@@ -104,16 +103,6 @@
             </nz-form-control>
           </nz-form-item>
         </div>
-
-        <!--<div nz-col [nzSpan]="12">
-          <nz-form-item>
-            <nz-form-label nzFor="dateEmission">Date d'émission</nz-form-label>
-            <nz-form-control>
-              <nz-date-picker id="dateEmission" formControlName="dateEmission" class="full-width"></nz-date-picker>
-            </nz-form-control>
-          </nz-form-item>
-        </div>-->
-
       </div>
 
       <!-- Section Médicaments -->
@@ -122,21 +111,47 @@
         <div formArrayName="medicaments" class="medicaments-list">
           <div *ngFor="let med of medicaments.controls; let i = index" [formGroupName]="i" class="medicament-item">
             <div nz-row [nzGutter]="16" nzAlign="top">
-              <div nz-col [nzSpan]="10">
+              <div nz-col [nzSpan]="6">
                 <nz-form-item>
+                  <nz-form-label nzRequired>Médicament</nz-form-label>
                   <nz-form-control>
-                    <input nz-input formControlName="nom" placeholder="Nom du médicament" class="full-width" />
+                    <input nz-input formControlName="medicament" placeholder="Nom du médicament" class="full-width" />
                   </nz-form-control>
                 </nz-form-item>
               </div>
-              <div nz-col [nzSpan]="10">
+              <div nz-col [nzSpan]="4">
                 <nz-form-item>
+                  <nz-form-label nzRequired>Posologie</nz-form-label>
                   <nz-form-control>
-                    <input nz-input formControlName="posologie" placeholder="Posologie (ex: 1 comprimé/jour)" class="full-width" />
+                    <input nz-input formControlName="posologie" placeholder="ex: 1 comprimé" class="full-width" />
                   </nz-form-control>
                 </nz-form-item>
               </div>
-              <div nz-col [nzSpan]="4" class="text-right">
+              <div nz-col [nzSpan]="4">
+                <nz-form-item>
+                  <nz-form-label>Durée</nz-form-label>
+                  <nz-form-control>
+                    <input nz-input formControlName="duree" placeholder="ex: 7 jours" class="full-width" />
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+              <div nz-col [nzSpan]="4">
+                <nz-form-item>
+                  <nz-form-label>Fréquence</nz-form-label>
+                  <nz-form-control>
+                    <input nz-input formControlName="frequence" placeholder="ex: 2 fois/jour" class="full-width" />
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+              <div nz-col [nzSpan]="4">
+                <nz-form-item>
+                  <nz-form-label>Instructions</nz-form-label>
+                  <nz-form-control>
+                    <input nz-input formControlName="instructions" placeholder="Instructions" class="full-width" />
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+              <div nz-col [nzSpan]="2" class="text-right">
                 <nz-form-item>
                   <nz-form-control>
                     <button nz-button nzType="text" nzDanger (click)="removeMedicament(i)" nzShape="circle">
@@ -145,7 +160,6 @@
                   </nz-form-control>
                 </nz-form-item>
               </div>
-
             </div>
           </div>
         </div>
@@ -155,7 +169,7 @@
       </div>
     </nz-card>
 
-    <div class="form-actions" >
+    <div class="form-actions">
       <button nz-button type="button" (click)="onCancel()" style="margin-right: 8px">Annuler</button>
       <button nz-button nzType="primary" [disabled]="rdvForm.invalid">Enregistrer</button>
     </div>

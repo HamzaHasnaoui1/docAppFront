@@ -1,26 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule} from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RdvService } from '../../../service/rdv.service';
-import { RendezVous } from '../../../models/rdv.model';
+import { CommonModule } from '@angular/common';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import {
-  NzFormDirective,
-  NzFormItemComponent,
-  NzFormLabelComponent,
-  NzFormModule,
-  NzFormTextComponent
+  NzFormDirective, NzFormItemComponent, NzFormLabelComponent,
+  NzFormModule, NzFormTextComponent
 } from 'ng-zorro-antd/form';
-import {NzColDirective, NzRowDirective} from 'ng-zorro-antd/grid';
-import {NzCardComponent} from 'ng-zorro-antd/card';
-import {NzOptionComponent, NzSelectComponent} from 'ng-zorro-antd/select';
-import {NzInputNumberComponent} from 'ng-zorro-antd/input-number';
-import {NzSwitchComponent} from 'ng-zorro-antd/switch';
-import {NzInputDirective} from 'ng-zorro-antd/input';
-import {NzDatePickerComponent} from 'ng-zorro-antd/date-picker';
-import {NzButtonComponent} from 'ng-zorro-antd/button';
-import {NzIconDirective} from 'ng-zorro-antd/icon';
-import {CommonModule} from '@angular/common';
+import { NzColDirective, NzRowDirective } from 'ng-zorro-antd/grid';
+import { NzCardComponent } from 'ng-zorro-antd/card';
+import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
+import { NzInputNumberComponent } from 'ng-zorro-antd/input-number';
+import { NzSwitchComponent } from 'ng-zorro-antd/switch';
+import { NzInputDirective } from 'ng-zorro-antd/input';
+import { NzDatePickerComponent } from 'ng-zorro-antd/date-picker';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
+
+import { RdvService } from '../../../service/rdv.service';
+import { RendezVous } from '../../../models/rdv.model';
+import { Medicament } from '../../../models/Medicament.model';
+import { OrdonnanceMedicament } from '../../../models/OrdonnanceMedicament.model';
 
 @Component({
   selector: 'app-edit-rdv',
@@ -78,17 +78,16 @@ export class EditRdvComponent implements OnInit {
 
   initForm() {
     this.rdvForm = this.fb.group({
-      date: ['', Validators.required],
+      date: [null, Validators.required],
       statusRDV: ['PENDING', Validators.required],
-      medecin: [{value: '', disabled: true}, Validators.required],
-      patient: [{value: '', disabled: true}, Validators.required],
+      medecin: [null, Validators.required],
+      patient: [null, Validators.required],
+      prix: [0],
+      archivee: [false],
       rapport: [''],
-      prix: [0, [Validators.min(0)]],
       ordonnance: this.fb.group({
         contenu: [''],
         remarques: [''],
-        dateEmission: [null],
-        archivee: [false],
         medicaments: this.fb.array([])
       })
     });
@@ -98,10 +97,13 @@ export class EditRdvComponent implements OnInit {
     return this.rdvForm.get('ordonnance.medicaments') as FormArray;
   }
 
-  addMedicament(nom: string = '', posologie: string = '') {
+  addMedicament(medicament?: Medicament, posologie: string = '', duree: string = '', frequence: string = '', instructions: string = '') {
     this.medicaments.push(this.fb.group({
-      nom: [nom, Validators.required],
-      posologie: [posologie, Validators.required]
+      medicament: [medicament, Validators.required],
+      posologie: [posologie, Validators.required],
+      duree: [duree],
+      frequence: [frequence],
+      instructions: [instructions]
     }));
   }
 
@@ -134,12 +136,15 @@ export class EditRdvComponent implements OnInit {
             archivee: rdv.ordonnance.archivee ?? false
           });
 
-          if (rdv.ordonnance.medicamentsPrescrits) {
+          if (rdv.ordonnance.medicaments) {
             this.medicaments.clear();
-            rdv.ordonnance.medicamentsPrescrits.forEach((med) => {
+            rdv.ordonnance.medicaments.forEach((med: OrdonnanceMedicament) => {
               this.addMedicament(
-                med,
-                rdv.ordonnance?.posologies?.[med] || ''
+                med.medicament,
+                med.posologie,
+                med.duree,
+                med.frequence,
+                med.instructions
               );
             });
           }
@@ -161,22 +166,28 @@ export class EditRdvComponent implements OnInit {
     }
 
     const formValue = this.rdvForm.getRawValue();
-    const medicamentsPrescrits = formValue.ordonnance.medicaments.map((m: any) => m.nom);
-    const posologies = formValue.ordonnance.medicaments.reduce((acc: any, curr: any) => {
-      if (curr.nom) acc[curr.nom] = curr.posologie;
-      return acc;
-    }, {});
 
     const rdv: RendezVous = {
       id: this.rdvId,
-      ...formValue,
+      date: formValue.date,
+      dateFin: formValue.date,
+      statusRDV: formValue.statusRDV,
       medecin: { id: formValue.medecin } as any,
       patient: { id: formValue.patient } as any,
+      rapport: formValue.rapport,
+      prix: formValue.prix,
       ordonnance: {
-        ...formValue.ordonnance,
-        medicamentsPrescrits,
-        posologies,
-        medicaments: undefined
+        contenu: formValue.ordonnance.contenu,
+        remarques: formValue.ordonnance.remarques,
+        dateEmission: formValue.ordonnance.dateEmission,
+        archivee: formValue.ordonnance.archivee,
+        medicaments: formValue.ordonnance.medicaments.map((m: any) => ({
+          medicament: m.medicament,
+          posologie: m.posologie,
+          duree: m.duree,
+          frequence: m.frequence,
+          instructions: m.instructions
+        }))
       }
     };
 
