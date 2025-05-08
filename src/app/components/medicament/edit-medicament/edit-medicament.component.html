@@ -1,0 +1,65 @@
+<nz-card nzTitle="Modifier Médicament" nzHoverable class="form-card">
+  <form [formGroup]="medicamentForm" (ngSubmit)="onSubmit()" nz-form nzLayout="vertical">
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="nom" nzRequired>Nom</nz-form-label>
+          <nz-form-control>
+            <input nz-input id="nom" formControlName="nom" placeholder="Nom du médicament" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="categorie">Catégorie</nz-form-label>
+          <nz-form-control>
+            <input nz-input id="categorie" formControlName="categorie" placeholder="Catégorie du médicament" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="fabricant">Fabricant</nz-form-label>
+          <nz-form-control>
+            <input nz-input id="fabricant" formControlName="fabricant" placeholder="Fabricant" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label nzFor="dosageStandard">Dosage</nz-form-label>
+          <nz-form-control>
+            <input nz-input id="dosageStandard" formControlName="dosageStandard" placeholder="Dosage standard" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <nz-form-item>
+      <nz-form-label nzFor="description">Description</nz-form-label>
+      <nz-form-control>
+        <textarea nz-input rows="3" id="description" formControlName="description" placeholder="Description du médicament"></textarea>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzFor="actif">Actif</nz-form-label>
+      <nz-form-control>
+        <nz-radio-group formControlName="actif">
+          <label nz-radio [nzValue]="true">Oui</label>
+          <label nz-radio [nzValue]="false">Non</label>
+        </nz-radio-group>
+      </nz-form-control>
+    </nz-form-item>
+
+    <div class="form-actions">
+      <button nz-button type="button" (click)="onCancel()" style="margin-right: 8px">Annuler</button>
+      <button nz-button nzType="primary" [disabled]="medicamentForm.invalid">Enregistrer</button>
+    </div>
+  </form>
+</nz-card>

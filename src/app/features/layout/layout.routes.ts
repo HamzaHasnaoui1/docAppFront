@@ -44,6 +44,10 @@ export const LAYOUT_ROUTES: Routes = [
         loadChildren: () => import('../../components/user/user.routes').then(m => m.USER_ROUTES),
       },
       {
+        path: 'medicament',
+        loadChildren: () => import('../../components/medicament/medicament.routes').then(m => m.MEDICAMENT_ROUTES),
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full',

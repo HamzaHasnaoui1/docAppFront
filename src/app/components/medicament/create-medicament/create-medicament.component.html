@@ -1,0 +1,103 @@
+<nz-card nzTitle="Créer Médicament" nzHoverable class="form-card">
+  <form [formGroup]="medicamentForm" (ngSubmit)="onSubmit()" nz-form nzLayout="vertical">
+
+    <!-- Section Informations de base -->
+    <nz-card nzTitle="Informations du médicament" nzType="inner" class="section-card">
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzFor="nom" nzRequired>Nom</nz-form-label>
+            <nz-form-control [nzErrorTip]="'Le nom est requis'">
+              <input nz-input id="nom" formControlName="nom" placeholder="Nom du médicament" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzFor="description" nzRequired>Description</nz-form-label>
+            <nz-form-control [nzErrorTip]="'La description est requise'">
+              <input nz-input id="description" formControlName="description" placeholder="Description" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzFor="categorie" nzRequired>Catégorie</nz-form-label>
+            <nz-form-control [nzErrorTip]="'La catégorie est requise'">
+              <input nz-input id="categorie" formControlName="categorie" placeholder="Catégorie" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzFor="fabricant" nzRequired>Fabricant</nz-form-label>
+            <nz-form-control [nzErrorTip]="'Le fabricant est requis'">
+              <input nz-input id="fabricant" formControlName="fabricant" placeholder="Fabricant" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzFor="dosageStandard" nzRequired>Dosage Standard</nz-form-label>
+            <nz-form-control [nzErrorTip]="'Le dosage est requis'">
+              <input nz-input id="dosageStandard" formControlName="dosageStandard" placeholder="Dosage Standard" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzFor="actif" nzRequired>Actif</nz-form-label>
+            <nz-form-control [nzErrorTip]="'Le statut actif est requis'">
+              <nz-switch formControlName="actif" nzCheckedChildren="Oui" nzUnCheckedChildren="Non"></nz-switch>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="24">
+          <nz-form-item>
+            <nz-form-label nzFor="file">Importer un fichier (CSV/Excel)</nz-form-label>
+            <nz-form-control>
+              <div class="file-import-container">
+                <input
+                  type="file"
+                  id="file"
+                  (change)="onFileChange($event)"
+                  accept=".csv,.xlsx,.xls"
+                  class="file-input"
+                >
+                <button
+                  nz-button
+                  nzType="default"
+                  (click)="downloadSampleExcel()"
+                  class="download-sample-btn"
+                >
+                  <span nz-icon nzType="download" nzTheme="outline"></span>
+                  Télécharger un modèle
+                </button>
+              </div>
+              <div class="ant-upload-hint">Formats supportés: CSV, Excel (max 5MB)</div>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
+    </nz-card>
+
+
+    <div class="form-actions">
+      <button nz-button nzType="default" (click)="onCancel()" style="margin-right: 8px">Annuler</button>
+      <button nz-button nzType="primary" [disabled]="medicamentForm.invalid">Enregistrer</button>
+    </div>
+  </form>
+</nz-card>

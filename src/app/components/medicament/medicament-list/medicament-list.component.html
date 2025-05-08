@@ -1,0 +1,84 @@
+<nz-card nzHoverable>
+  <nz-spin [nzSpinning]="isLoading" [nzTip]="'Chargement des données...'">
+    <ng-container *ngIf="medicaments$ | async as medicaments">
+      <div class="search-add-container">
+        <app-search-add-actions
+          searchPlaceholder="Rechercher un médicament"
+          addButtonText="Ajouter un médicament"
+          (searchChange)="onSearch($event)"
+          (addClick)="onAdd()">
+        </app-search-add-actions>
+      </div>
+
+      <nz-table
+        #medicamentTable
+        [nzData]="medicaments"
+        nzBordered
+        nzSize="middle"
+        [nzScroll]="{ x: '1000px' }"
+      >
+        <thead>
+        <tr>
+          <th nzWidth="80px">ID</th>
+          <th nzWidth="200px">Nom</th>
+          <th>Description</th>
+          <th>Catégorie</th>
+          <th>Fabricant</th>
+          <th>Dosage</th>
+          <th>Actif</th>
+          <th nzWidth="150px">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let m of medicaments">
+          <td>{{ m.id }}</td>
+          <td><strong>{{ m.nom }}</strong></td>
+          <td>{{ m.description || '-' }}</td>
+          <td>{{ m.categorie || '-' }}</td>
+          <td>{{ m.fabricant || '-' }}</td>
+          <td>{{ m.dosageStandard || '-' }}</td>
+          <td>
+            <nz-tag [nzColor]="m.actif ? 'green' : 'red'">
+              {{ m.actif ? 'Oui' : 'Non' }}
+            </nz-tag>
+          </td>
+          <td>
+            <button nz-button nz-tooltip nzTooltipTitle="Modifier" nzType="link" (click)="onEdit(m)">
+              <i nz-icon nzType="edit"></i>
+            </button>
+            <button nz-button nz-tooltip nzTooltipTitle="Supprimer" nzType="link" nzDanger (click)="onDelete(m)">
+              <i nz-icon nzType="delete"></i>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </nz-table>
+
+      <!-- Empty state -->
+      <nz-empty *ngIf="medicaments.length === 0 && !isLoading" [nzNotFoundContent]="'Aucun médicament trouvé'"></nz-empty>
+
+      <!-- Pagination -->
+      <div class="modern-pagination" *ngIf="!isLoading && totalPages > 0">
+        <button nz-button nzShape="circle" (click)="prevPage()" [disabled]="currentPage === 0">
+          <i nz-icon nzType="left" nzTheme="outline"></i>
+        </button>
+        <nz-select
+          class="page-selector"
+          [ngModel]="currentPage + 1"
+          (ngModelChange)="goToPage($event - 1)"
+          nzShowSearch
+          nzAllowClear>
+          <nz-option
+            *ngFor="let page of totalPagesArray"
+            [nzLabel]="'Page ' + page"
+            [nzValue]="page">
+          </nz-option>
+        </nz-select>
+        <span class="page-info">sur {{ totalPages }}</span>
+        <button nz-button nzShape="circle" (click)="nextPage()" [disabled]="currentPage === totalPages - 1">
+          <i nz-icon nzType="right" nzTheme="outline"></i>
+        </button>
+      </div>
+    </ng-container>
+  </nz-spin>
+</nz-card>
