@@ -43,7 +43,7 @@ export interface LoginRequest {
 export interface JwtResponse {
   token: string;
   type: string;
-  id: number;
+  userId: string;
   username: string;
   email: string;
   roles: string[];
@@ -59,7 +59,7 @@ export interface SignupRequest {
 }
 
 export interface User {
-  id?: number;
+  id?: string;
   username: string;
   email: string;
   password?: string;

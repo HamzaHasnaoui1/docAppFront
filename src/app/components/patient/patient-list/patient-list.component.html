@@ -1,71 +1,84 @@
 <ng-container *ngIf="patients$ | async as patients; else error">
-  <nz-list nzItemLayout="horizontal" class="patient-list modern-list">
-    <div class="search-add-container">
-      <app-search-add-actions
-        searchPlaceholder="Rechercher un patient..."
-        addButtonText="Nouveau Patient"
-        (searchChange)="onSearch($event)"
-        (addClick)="onAdd()">
-      </app-search-add-actions>
-    </div>
+  <nz-spin [nzSpinning]="loading" [nzTip]="'Chargement des données...'">
+    <ng-container *ngIf="!loading">
+      <nz-list nzItemLayout="horizontal" class="patient-list modern-list">
+        <div class="search-add-container">
+          <app-search-add-actions
+            searchPlaceholder="Rechercher un patient..."
+            addButtonText="Nouveau Patient"
+            (searchChange)="onSearch($event)"
+            (addClick)="onAdd()">
+          </app-search-add-actions>
+        </div>
 
-    <nz-list-item *ngFor="let patient of patients" class="patient-item" (click)="navigateToDetails(patient.id)">
-      <nz-list-item-meta
-        [nzAvatar]="avatarTpl"
-        [nzTitle]="patient.titre + ' ' + patient.nom"
-        [nzDescription]="'Âge : ' + getAge(patient.dateNaissance) + ' ans'">
+        <nz-list-item *ngFor="let patient of patients" class="patient-item" (click)="navigateToDetails(patient.id)">
+          <nz-list-item-meta
+            [nzAvatar]="avatarTpl"
+            [nzTitle]="patient.titre + ' ' + patient.nom"
+            [nzDescription]="'Âge : ' + getAge(patient.dateNaissance) + ' ans'">
 
-        <ng-template #avatarTpl>
-          <nz-avatar nzIcon="user" nzSize="large" nzStyle="{ backgroundColor: patient.malade ? '#f5222d' : '#52c41a' }"></nz-avatar>
-        </ng-template>
+            <ng-template #avatarTpl>
+              <nz-avatar
+                nzIcon="user"
+                nzSize="large"
+              >
+              </nz-avatar>
+            </ng-template>
 
-      </nz-list-item-meta>
+          </nz-list-item-meta>
 
-      <div class="patient-actions">
-        <button
-          nz-button
-          nzType="text"
-          nz-tooltip="Voir le numéro"
-          class="action-button phone-button"
-          (click)="showPhoneModal(patient); $event.stopPropagation()">
-          <i nz-icon nzType="phone" nzTheme="outline"></i>
+          <div class="patient-actions">
+            <button
+              nz-button
+              nzType="text"
+              nz-tooltip="Voir le numéro"
+              class="action-button phone-button"
+              (click)="showPhoneModal(patient); $event.stopPropagation()">
+              <i nz-icon nzType="phone" nzTheme="outline"></i>
+            </button>
+
+            <nz-tag
+              [nzColor]="patient.malade ? 'error' : 'success'"
+              class="status-tag">
+              {{ patient.malade ? 'Malade' : 'Sain' }}
+            </nz-tag>
+          </div>
+        </nz-list-item>
+
+      </nz-list>
+
+      <nz-empty *ngIf="patients.length === 0" [nzNotFoundContent]="'Aucun patient trouvé'"></nz-empty>
+
+      <div class="modern-pagination">
+        <button nz-button nzShape="circle" (click)="prevPage()" [disabled]="currentPage === 0">
+          <i nz-icon nzType="left" nzTheme="outline"></i>
         </button>
-
-        <nz-tag
-          [nzColor]="patient.malade ? 'error' : 'success'"
-          class="status-tag">
-          {{ patient.malade ? 'Malade' : 'Sain' }}
-        </nz-tag>
+        <nz-select
+          class="page-selector"
+          [ngModel]="currentPage + 1"
+          (ngModelChange)="goToPage($event - 1)"
+          nzShowSearch
+          nzAllowClear>
+          <nz-option
+            *ngFor="let page of totalPagesArray"
+            [nzLabel]="'Page ' + page"
+            [nzValue]="page">
+          </nz-option>
+        </nz-select>
+        <span class="page-info">sur {{ totalPages }}</span>
+        <button nz-button nzShape="circle" (click)="nextPage()" [disabled]="currentPage === totalPages - 1">
+          <i nz-icon nzType="right" nzTheme="outline"></i>
+        </button>
       </div>
-    </nz-list-item>
-
-  </nz-list>
-  <nz-empty *ngIf="patients.length === 0" [nzNotFoundContent]="'Aucun patient trouvé'"></nz-empty>
-
-  <div class="modern-pagination">
-    <button nz-button nzShape="circle" (click)="prevPage()" [disabled]="currentPage === 0">
-      <i nz-icon nzType="left" nzTheme="outline"></i>
-    </button>
-    <nz-select
-      class="page-selector"
-      [ngModel]="currentPage + 1"
-      (ngModelChange)="goToPage($event - 1)"
-      nzShowSearch
-      nzAllowClear>
-      <nz-option
-        *ngFor="let page of totalPagesArray"
-        [nzLabel]="'Page ' + page"
-        [nzValue]="page">
-      </nz-option>
-    </nz-select>
-    <span class="page-info">sur {{ totalPages }}</span>
-    <button nz-button nzShape="circle" (click)="nextPage()" [disabled]="currentPage === totalPages - 1">
-      <i nz-icon nzType="right" nzTheme="outline"></i>
-    </button>
-  </div>
-
+    </ng-container>
+  </nz-spin>
 </ng-container>
 
 <ng-template #error>
-  <nz-alert nzType="error" [nzMessage]="errorMessage" nzShowIcon class="error-message"></nz-alert>
+  <nz-alert *ngIf="!loading && errorMessage"
+            [nzType]="'error'"
+            [nzMessage]="errorMessage"
+            nzShowIcon
+            nzCloseable>
+  </nz-alert>
 </ng-template>

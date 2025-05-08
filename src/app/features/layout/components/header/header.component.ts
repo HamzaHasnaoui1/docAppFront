@@ -13,6 +13,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 
 import { icons } from '../../../../icons-provider';
+import {NzDividerComponent} from 'ng-zorro-antd/divider';
 
 @Component({
   selector: 'app-header',
@@ -32,6 +33,7 @@ import { icons } from '../../../../icons-provider';
     NzDropDownModule,
     NzBadgeModule,
     NzMenuModule,
+    NzDividerComponent,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
@@ -49,4 +51,9 @@ export class HeaderComponent {
       window.location.reload();
     });
   }
+
+  edit() {
+    this.route.navigate(['/doc/user/edit-profile']);
+  }
+
 }

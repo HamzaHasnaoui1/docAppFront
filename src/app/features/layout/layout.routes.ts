@@ -40,6 +40,10 @@ export const LAYOUT_ROUTES: Routes = [
         loadChildren: () => import('../../components/rdv/rdv.routes').then(m => m.RDV_ROUTES),
       },
       {
+        path: 'user',
+        loadChildren: () => import('../../components/user/user.routes').then(m => m.USER_ROUTES),
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full',

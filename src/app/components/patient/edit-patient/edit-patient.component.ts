@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { PatientService } from '../../../service/patient.service';
 import { Patient } from '../../../models/patient.model';
-import { CommonModule } from '@angular/common';
+import {CommonModule, Location} from '@angular/common';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -65,7 +65,8 @@ export class EditPatientComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private patientService: PatientService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -138,7 +139,12 @@ export class EditPatientComponent implements OnInit {
 
 
   onCancel(): void {
-    this.router.navigate(['/doc/patients/detail', this.patientId]);
+    if (this.patientId) {
+      this.router.navigate(['/doc/patients/detail', this.patientId]);
+    } else {
+      this.location.back();
+    }
   }
+
 
 }

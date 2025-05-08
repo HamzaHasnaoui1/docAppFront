@@ -12,11 +12,16 @@ import {environment} from '../../../environments/environment.development';
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/auth`;
   private currentUserSubject = new BehaviorSubject<User | null>(null);
-  public currentUser$: Observable<User | null> = this.currentUserSubject.asObservable();
   private tokenExpirationTimer: any;
+
+  get currentUserValue(): User | null {
+    return this.currentUserSubject.value;
+  }
 
   constructor(private http: HttpClient) {
     this.checkAuthStatus();
+    console.log('Utilisateur courant au chargement :', this.currentUserValue);
+
   }
 
   login(credentials: AuthRequest): Observable<JwtResponse> {
@@ -27,7 +32,7 @@ export class AuthService {
           this.startTokenExpirationTimer(response.token);
 
           const user: User = {
-            id: response.id,
+            id: response.userId,
             username: response.username,
             email: response.email,
             roles: response.roles,
@@ -68,10 +73,10 @@ export class AuthService {
     return null;
   }
 
+
   private checkAuthStatus(): void {
     const authData = this.getAuthData();
     if (authData && authData.token) {
-      // Check if token is expired
       const jwtTokenParts = authData.token.split('.');
       if (jwtTokenParts.length === 3) {
         try {
@@ -79,9 +84,8 @@ export class AuthService {
           const expirationDate = new Date(tokenPayload.exp * 1000);
 
           if (expirationDate > new Date()) {
-            // Token is still valid
             const user: User = {
-              id: authData.id,
+              id: authData.userId,
               username: authData.username,
               email: authData.email,
               roles: authData.roles,
@@ -90,16 +94,17 @@ export class AuthService {
               lastName: ''
             };
 
-            this.currentUserSubject.next(user);
+            this.currentUserSubject.next(user); // 👈 met à jour l'utilisateur
             this.startTokenExpirationTimer(authData.token);
           } else {
-            // Token expired
-            this.logout();
+            this.logout(); // 👈 token expiré
           }
         } catch (error) {
-          console.error('Error parsing token', error);
+          console.error('Erreur de parsing du token :', error);
           this.logout();
         }
+      } else {
+        this.logout();
       }
     }
   }
@@ -137,12 +142,5 @@ export class AuthService {
     return user.roles.some(r => r.toLowerCase() === role.toLowerCase());
   }
 
-  isAdmin(): boolean {
-    return this.hasRole('admin');
-  }
 
-  getCurrentUserId(): number | null {
-    const user = this.currentUserSubject.value;
-    return user ? user.id || null : null;
-  }
 }

@@ -32,6 +32,8 @@ import { Medecin } from '../../models/medecin.model';
 import { forkJoin, of, catchError } from 'rxjs';
 import {NzProgressComponent} from 'ng-zorro-antd/progress';
 import {NzSpinComponent} from 'ng-zorro-antd/spin';
+import {AuthService} from '../../components/auth/auth.service';
+import {User} from '../../models/auth-response.model';
 
 // Interface pour les données de graphique
 interface ChartData {
@@ -68,9 +70,14 @@ interface ChartData {
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  // Propriété pour déterminer le rôle de l'utilisateur
-  userRole: 'MEDECIN' | 'SECRETAIRE' = 'MEDECIN'; // Valeur par défaut
-  today: Date = new Date();
+  get userRole(): 'MEDECIN' | 'SECRETAIRE' {
+    if (this.authService.hasRole('ADMIN')){
+      return 'MEDECIN';
+    } else if (this.authService.hasRole('USER')) {
+      return 'SECRETAIRE';
+    }
+    return 'SECRETAIRE';
+  }  today: Date = new Date();
 
   // Données partagées entre médecin et secrétaire
   totalPatients: number = 0;
@@ -108,6 +115,7 @@ export class DashboardComponent implements OnInit {
     private medecinService: MedecinService,
     private message: NzMessageService,
     private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -502,11 +510,15 @@ export class DashboardComponent implements OnInit {
   }
 
   // Changer de rôle (pour démonstration)
-  toggleRole(): void {
+ /* toggleRole(): void {
     this.userRole = this.userRole === 'MEDECIN' ? 'SECRETAIRE' : 'MEDECIN';
-  }
+  }*/
 
   navigateToDetails(patientId: number): void {
     this.router.navigate(['/doc/patients/detail', patientId]);
+  }
+
+  get currentUser(): User | null {
+    return this.authService.currentUserValue;
   }
 }

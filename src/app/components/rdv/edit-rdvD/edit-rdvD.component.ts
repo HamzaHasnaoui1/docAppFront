@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, Location} from '@angular/common';
 import {
   AbstractControl,
   FormArray,
@@ -49,7 +49,8 @@ export class EditRdvDComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -136,6 +137,6 @@ export class EditRdvDComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['doc/rdv/list']);
+    this.location.back();
   }
 }

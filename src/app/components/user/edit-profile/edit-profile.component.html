@@ -1,0 +1,54 @@
+<nz-card nzTitle="Modifier le Profil" nzHoverable class="form-card">
+  <form (ngSubmit)="onSubmit()" nz-form nzLayout="vertical">
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label>Nom d'utilisateur</nz-form-label>
+          <nz-form-control>
+            <input nz-input [(ngModel)]="currentUser.username" name="username" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label>Email</nz-form-label>
+          <nz-form-control>
+            <input nz-input type="email" [(ngModel)]="currentUser.email" name="email" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div nz-row [nzGutter]="16">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label>Téléphone</nz-form-label>
+          <nz-form-control>
+            <input nz-input [(ngModel)]="currentUser.phoneNumber" name="phoneNumber" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label>Nouveau mot de passe</nz-form-label>
+          <nz-form-control>
+            <input
+              nz-input
+              type="password"
+              [(ngModel)]="currentUser.password"
+              name="password"
+              placeholder="Laisser vide pour ne pas changer"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button nz-button type="button" (click)="onCancel()" style="margin-right: 8px">Annuler</button>
+      <button nz-button nzType="primary" [disabled]="isLoading">Enregistrer</button>
+    </div>
+  </form>
+</nz-card>

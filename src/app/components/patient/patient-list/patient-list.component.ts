@@ -29,43 +29,45 @@ import { RdvService } from '../../../service/rdv.service';
 import {PatientWithRdvs} from '../../../models/PatientWithRdvs.model';
 import {NzListComponent, NzListItemComponent, NzListItemMetaComponent, NzListModule} from 'ng-zorro-antd/list';
 import {NzAvatarComponent} from 'ng-zorro-antd/avatar';
+import {NzSpinComponent} from "ng-zorro-antd/spin";
 
 @Component({
   selector: 'app-patient-list',
   templateUrl: './patient-list.component.html',
   standalone: true,
-  imports: [
-    AsyncPipe,
-    CommonModule,
-    DatePipe,
-    NzTableModule,
-    NzTagModule,
-    NzButtonModule,
-    NzIconModule,
-    NzCardModule,
-    NzAlertModule,
-    NzSpaceModule,
-    NzPopconfirmDirective,
-    NzModalModule,
-    NzToolTipModule,
-    NzInputGroupComponent,
-    FormsModule,
-    ReactiveFormsModule,
-    SearchAddActionsComponent,
-    NzModalModule,
-    NzCollapsePanelComponent,
-    NzCollapseComponent,
-    NzEmptyComponent,
-    NzDescriptionsItemComponent,
-    NzDescriptionsComponent,
-    NzSelectComponent,
-    NzOptionComponent,
-    NzListComponent,
-    NzListItemComponent,
-    NzListItemMetaComponent,
-    NzListModule,
-    NzAvatarComponent
-  ],
+    imports: [
+        AsyncPipe,
+        CommonModule,
+        DatePipe,
+        NzTableModule,
+        NzTagModule,
+        NzButtonModule,
+        NzIconModule,
+        NzCardModule,
+        NzAlertModule,
+        NzSpaceModule,
+        NzPopconfirmDirective,
+        NzModalModule,
+        NzToolTipModule,
+        NzInputGroupComponent,
+        FormsModule,
+        ReactiveFormsModule,
+        SearchAddActionsComponent,
+        NzModalModule,
+        NzCollapsePanelComponent,
+        NzCollapseComponent,
+        NzEmptyComponent,
+        NzDescriptionsItemComponent,
+        NzDescriptionsComponent,
+        NzSelectComponent,
+        NzOptionComponent,
+        NzListComponent,
+        NzListItemComponent,
+        NzListItemMetaComponent,
+        NzListModule,
+        NzAvatarComponent,
+        NzSpinComponent
+    ],
   styleUrl: './patient-list.component.scss',
   animations: [
     trigger('listAnimation', [
@@ -91,13 +93,14 @@ import {NzAvatarComponent} from 'ng-zorro-antd/avatar';
 })
 export class PatientListComponent implements OnInit {
   patients$!: Observable<Patient[]>;
-  patientsWithRdvs$!: Observable<PatientWithRdvs[]>; // Au lieu de patients$
+  patientsWithRdvs$!: Observable<PatientWithRdvs[]>;
   errorMessage = '';
   currentPage = 0;
   totalPages = 0;
   deletedIds: number[] = [];
   searchTerm$ = new Subject<string>();
   totalPagesArray: number[] = [];
+  loading: boolean = true;
 
   constructor(
     private patientService: PatientService,
@@ -110,6 +113,7 @@ export class PatientListComponent implements OnInit {
   ngOnInit(): void {
     this.setupSearch();
     this.loadPage(0);
+    this.loading=false
   }
 
   combinePatientWithRdvs(patients: Patient[], rdvs: RendezVous[]): Patient[] {
@@ -150,6 +154,9 @@ export class PatientListComponent implements OnInit {
   }
 
   loadPage(page: number): void {
+    this.loading = true;
+    this.errorMessage = '';
+
     forkJoin([
       this.patientService.getPatients(page),
       this.rdvService.getRdvs()
@@ -171,6 +178,7 @@ export class PatientListComponent implements OnInit {
       this.totalPages = response.totalPages;
       this.currentPage = response.currentPage;
       this.initPagesArray();
+      this.loading = false; // fin du chargement
     });
   }
 

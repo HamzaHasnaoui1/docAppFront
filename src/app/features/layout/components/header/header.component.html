@@ -8,17 +8,24 @@
       <li><a routerLink="rdv" routerLinkActive="active">Rendez-vous</a></li>
 
       <li>
-        <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu">
-          <nz-icon nzType="user" />
+        <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="mainMenu" [nzPlacement]="'bottomRight'">
+    <span class="menu-label">
+      <nz-icon nzType="menu" nzTheme="outline" class="dropdown-icon" />
+    </span>
         </a>
-        <nz-dropdown-menu #menu="nzDropdownMenu">
+        <nz-dropdown-menu #mainMenu="nzDropdownMenu">
           <ul nz-menu>
-            <li nz-menu-item>
-              <i nz-icon nzType="setting"></i>
-              Profil</li>
+            <li nz-menu-item routerLink="/ordonnances">
+              <i nz-icon nzType="file-done"></i> Ordonnances
+            </li>
+            <li nz-menu-item routerLink="/factures">
+              <i nz-icon nzType="file-protect"></i> Factures
+            </li>
+            <li nz-menu-item (click)="edit()">
+              <i nz-icon nzType="user"></i> Profil
+            </li>
             <li nz-menu-item (click)="logout()">
-              <i nz-icon nzType="logout"></i>
-              Déconnexion
+              <i nz-icon nzType="logout"></i> Déconnexion
             </li>
           </ul>
         </nz-dropdown-menu>
