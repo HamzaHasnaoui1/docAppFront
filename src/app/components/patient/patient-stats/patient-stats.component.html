@@ -1,14 +1,10 @@
-<!-- src/app/components/patient/patient-stats/patient-stats.component.html -->
-<div class="stats-container">
+<div class="stats-container" *ngIf="patient">
   <nz-spin [nzSpinning]="loading">
-    <!-- Affichage d'une erreur si nécessaire -->
     <div *ngIf="error" class="error-message">
       <nz-alert nzType="error" nzMessage="Erreur lors du chargement des données médicales" nzShowIcon></nz-alert>
     </div>
 
-    <!-- Vérifier si le patient existe -->
-    <ng-container *ngIf="patient; else noPatient">
-      <!-- État de santé actuel -->
+    <div *ngIf="!error">
       <nz-card class="overview-card" [nzTitle]="titleTpl">
         <ng-template #titleTpl>
           <div class="card-title">
@@ -36,7 +32,6 @@
             <nz-tag *ngIf="calculateIMC()" [nzColor]="getIMCStatus(calculateIMC()).color">
               {{ getIMCStatus(calculateIMC()).text }}
             </nz-tag>
-            <nz-tag *ngIf="!calculateIMC()" nzColor="default">Non disponible</nz-tag>
           </div>
 
           <!-- Tension artérielle -->
@@ -100,133 +95,110 @@
             </div>
             <ng-template #noVitals>
               <div class="stat-value">Données non disponibles</div>
-              <nz-tag nzColor="default">Non disponible</nz-tag>
             </ng-template>
           </div>
         </div>
       </nz-card>
 
       <!-- Rapport de santé -->
-      <ng-container *ngIf="donneesPhysiologiques.length > 0; else noData">
-        <ng-container *ngIf="healthReport">
-          <nz-card class="report-card" nzTitle="Rapport de santé">
-            <nz-tabs>
-              <nz-tab nzTitle="Tendances">
-                <div class="trends-container" *ngIf="healthReport.tendances; else noTrends">
-                  <div class="trend-item" *ngIf="healthReport.tendances.variationPoids !== undefined">
-                    <div class="trend-header">
-                      <span class="trend-title">Évolution du poids</span>
-                      <nz-tag [nzColor]="healthReport.tendances.variationPoids > 0 ? 'warning' : (healthReport.tendances.variationPoids < 0 ? 'success' : 'default')">
-                        {{ healthReport.tendances.tendancePoids }}
-                      </nz-tag>
-                    </div>
-                    <div class="trend-value">{{ healthReport.tendances.variationPoids > 0 ? '+' : '' }}{{ healthReport.tendances.variationPoids }} kg</div>
+      <ng-container *ngIf="healthReport">
+        <nz-card class="report-card" nzTitle="Rapport de santé">
+          <nz-tabs>
+            <nz-tab nzTitle="Tendances">
+              <div class="trends-container" *ngIf="healthReport.tendances; else noTrends">
+                <div class="trend-item" *ngIf="healthReport.tendances.variationPoids !== undefined">
+                  <div class="trend-header">
+                    <span class="trend-title">Évolution du poids</span>
+                    <nz-tag [nzColor]="healthReport.tendances.variationPoids > 0 ? 'warning' : (healthReport.tendances.variationPoids < 0 ? 'success' : 'default')">
+                      {{ healthReport.tendances.tendancePoids }}
+                    </nz-tag>
                   </div>
+                  <div class="trend-value">{{ healthReport.tendances.variationPoids > 0 ? '+' : '' }}{{ healthReport.tendances.variationPoids }} kg</div>
+                </div>
 
-                  <div class="trend-item" *ngIf="healthReport.tendances.variationIMC !== undefined">
-                    <div class="trend-header">
-                      <span class="trend-title">Évolution de l'IMC</span>
-                      <nz-tag [nzColor]="healthReport.tendances.variationIMC > 0 ? 'warning' : (healthReport.tendances.variationIMC < 0 ? 'success' : 'default')">
-                        {{ healthReport.tendances.tendanceIMC }}
-                      </nz-tag>
-                    </div>
-                    <div class="trend-value">{{ healthReport.tendances.variationIMC > 0 ? '+' : '' }}{{ healthReport.tendances.variationIMC }} points</div>
+                <div class="trend-item" *ngIf="healthReport.tendances.variationIMC !== undefined">
+                  <div class="trend-header">
+                    <span class="trend-title">Évolution de l'IMC</span>
+                    <nz-tag [nzColor]="healthReport.tendances.variationIMC > 0 ? 'warning' : (healthReport.tendances.variationIMC < 0 ? 'success' : 'default')">
+                      {{ healthReport.tendances.tendanceIMC }}
+                    </nz-tag>
                   </div>
+                  <div class="trend-value">{{ healthReport.tendances.variationIMC > 0 ? '+' : '' }}{{ healthReport.tendances.variationIMC }} points</div>
+                </div>
 
-                  <div class="trend-item" *ngIf="healthReport.tendances.tension">
-                    <div class="trend-header">
-                      <span class="trend-title">Évolution de la tension</span>
+                <div class="trend-item" *ngIf="healthReport.tendances.tension">
+                  <div class="trend-header">
+                    <span class="trend-title">Évolution de la tension</span>
+                  </div>
+                  <div class="tension-trends">
+                    <div>
+                      <span>Systolique:</span>
+                      <span [class.up]="healthReport.tendances.tension.variationSystolique > 0"
+                            [class.down]="healthReport.tendances.tension.variationSystolique < 0">
+                        {{ healthReport.tendances.tension.variationSystolique > 0 ? '+' : '' }}{{ healthReport.tendances.tension.variationSystolique }}
+                      </span>
                     </div>
-                    <div class="tension-trends">
-                      <div>
-                        <span>Systolique:</span>
-                        <span [class.up]="healthReport.tendances.tension.variationSystolique > 0"
-                              [class.down]="healthReport.tendances.tension.variationSystolique < 0">
-                          {{ healthReport.tendances.tension.variationSystolique > 0 ? '+' : '' }}{{ healthReport.tendances.tension.variationSystolique }}
-                        </span>
-                      </div>
-                      <div>
-                        <span>Diastolique:</span>
-                        <span [class.up]="healthReport.tendances.tension.variationDiastolique > 0"
-                              [class.down]="healthReport.tendances.tension.variationDiastolique < 0">
-                          {{ healthReport.tendances.tension.variationDiastolique > 0 ? '+' : '' }}{{ healthReport.tendances.tension.variationDiastolique }}
-                        </span>
-                      </div>
+                    <div>
+                      <span>Diastolique:</span>
+                      <span [class.up]="healthReport.tendances.tension.variationDiastolique > 0"
+                            [class.down]="healthReport.tendances.tension.variationDiastolique < 0">
+                        {{ healthReport.tendances.tension.variationDiastolique > 0 ? '+' : '' }}{{ healthReport.tendances.tension.variationDiastolique }}
+                      </span>
                     </div>
                   </div>
                 </div>
-                <ng-template #noTrends>
-                  <nz-empty nzDescription="Pas assez de données pour analyser les tendances"></nz-empty>
-                </ng-template>
-              </nz-tab>
+              </div>
+              <ng-template #noTrends>
+                <nz-empty nzDescription="Pas assez de données pour analyser les tendances"></nz-empty>
+              </ng-template>
+            </nz-tab>
 
-              <nz-tab nzTitle="Recommandations">
-                <div *ngIf="healthReport.recommandations?.length; else noRecommendations">
-                  <ul class="recommendations-list">
-                    <li *ngFor="let rec of healthReport.recommandations">{{ rec }}</li>
-                  </ul>
-                </div>
-                <ng-template #noRecommendations>
-                  <nz-empty nzDescription="Aucune recommandation médicale spécifique"></nz-empty>
-                </ng-template>
-              </nz-tab>
-            </nz-tabs>
-          </nz-card>
-        </ng-container>
-
-        <!-- Historique -->
-        <nz-card class="history-card" nzTitle="Historique des mesures">
-          <div *ngIf="donneesPhysiologiques.length > 0; else noHistory">
-            <table class="history-table">
-              <thead>
-              <tr>
-                <th>Date</th>
-                <th>Poids</th>
-                <th>IMC</th>
-                <th>Tension</th>
-                <th>Pouls</th>
-                <th>Temp.</th>
-                <th>Glycémie</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let data of donneesPhysiologiques">
-                <td>{{ data.rendezVous?.date | date:'dd/MM/yyyy' }}</td>
-                <td>{{ data.poids || '-' }} {{ data.poids ? 'kg' : '' }}</td>
-                <td>{{ data.imc || '-' }}</td>
-                <td>{{ data.tensionSystolique && data.tensionDiastolique ? data.tensionSystolique + '/' + data.tensionDiastolique : '-' }}</td>
-                <td>{{ data.frequenceCardiaque || '-' }} {{ data.frequenceCardiaque ? 'bpm' : '' }}</td>
-                <td>{{ data.temperature || '-' }} {{ data.temperature ? '°C' : '' }}</td>
-                <td>{{ data.glycemie || '-' }} {{ data.glycemie ? 'g/L' : '' }}</td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-          <ng-template #noHistory>
-            <nz-empty nzDescription="Aucune donnée physiologique enregistrée"></nz-empty>
-          </ng-template>
+            <nz-tab nzTitle="Recommandations">
+              <div *ngIf="healthReport.recommandations?.length; else noRecommendations">
+                <ul class="recommendations-list">
+                  <li *ngFor="let rec of healthReport.recommandations">{{ rec }}</li>
+                </ul>
+              </div>
+              <ng-template #noRecommendations>
+                <nz-empty nzDescription="Aucune recommandation médicale spécifique"></nz-empty>
+              </ng-template>
+            </nz-tab>
+          </nz-tabs>
         </nz-card>
       </ng-container>
 
-      <ng-template #noData>
-        <nz-card>
-          <nz-result
-            nzStatus="info"
-            nzTitle="Aucune donnée physiologique"
-            nzSubTitle="Aucune donnée physiologique n'a été enregistrée pour ce patient.">
-          </nz-result>
-        </nz-card>
-      </ng-template>
-    </ng-container>
-
-    <ng-template #noPatient>
-      <nz-card *ngIf="!loading">
-        <nz-result
-          nzStatus="warning"
-          nzTitle="Données patient non disponibles"
-          nzSubTitle="Impossible d'afficher les statistiques médicales car les données du patient ne sont pas disponibles.">
-        </nz-result>
+      <!-- Historique -->
+      <nz-card class="history-card" nzTitle="Historique des mesures">
+        <div *ngIf="donneesPhysiologiques.length > 0; else noHistory">
+          <table class="history-table">
+            <thead>
+            <tr>
+              <th>Date</th>
+              <th>Poids</th>
+              <th>IMC</th>
+              <th>Tension</th>
+              <th>Pouls</th>
+              <th>Temp.</th>
+              <th>Glycémie</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of donneesPhysiologiques">
+              <td>{{ data.rendezVous?.date | date:'dd/MM/yyyy' }}</td>
+              <td>{{ data.poids || '-' }} {{ data.poids ? 'kg' : '' }}</td>
+              <td>{{ data.imc || '-' }}</td>
+              <td>{{ data.tensionSystolique && data.tensionDiastolique ? data.tensionSystolique + '/' + data.tensionDiastolique : '-' }}</td>
+              <td>{{ data.frequenceCardiaque || '-' }} {{ data.frequenceCardiaque ? 'bpm' : '' }}</td>
+              <td>{{ data.temperature || '-' }} {{ data.temperature ? '°C' : '' }}</td>
+              <td>{{ data.glycemie || '-' }} {{ data.glycemie ? 'g/L' : '' }}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #noHistory>
+          <nz-empty nzDescription="Aucune donnée physiologique enregistrée"></nz-empty>
+        </ng-template>
       </nz-card>
-    </ng-template>
+    </div>
   </nz-spin>
 </div>

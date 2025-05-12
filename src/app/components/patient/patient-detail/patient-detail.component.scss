@@ -171,3 +171,73 @@
     }
   }
 }
+/* Custom tab styles to add to patient-detail.component.scss */
+
+.custom-tabs {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.tab-header {
+  display: flex;
+  border-bottom: 1px solid #e8e8e8;
+  margin-bottom: 16px;
+}
+
+.tab-button {
+  padding: 12px 16px;
+  margin-right: 8px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #595959;
+  transition: all 0.3s;
+  outline: none;
+  position: relative;
+
+  &:hover {
+    color: #1890ff;
+  }
+
+  &.active {
+    color: #1890ff;
+    border-bottom: 2px solid #1890ff;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.tab-content {
+  padding: 8px 0;
+
+  > div {
+    animation: fadeIn 0.3s ease-in;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Ensure these styles match with your existing styles */
+.info-card,
+.medical-record,
+.appointments-card,
+.no-record-card {
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: none;
+}

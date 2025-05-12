@@ -1,3 +1,4 @@
+// src/app/components/patient/patient-detail/patient-detail.component.ts
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
@@ -28,7 +29,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzEmptyComponent } from 'ng-zorro-antd/empty';
 import { NzDescriptionsComponent, NzDescriptionsItemComponent } from 'ng-zorro-antd/descriptions';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
-import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzTabComponent, NzTabSetComponent, NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { PdfService } from '../../../service/pdf.service';
 import { NzCheckboxGroupComponent, NzCheckboxWrapperComponent } from 'ng-zorro-antd/checkbox';
@@ -61,13 +62,15 @@ import { PatientStatsComponent } from '../patient-stats/patient-stats.component'
     NzCheckboxWrapperComponent,
     NzCheckboxGroupComponent,
     NzTabsModule,
-    NzResultModule, // Ajout du module manquant
+    NzTabComponent,
+    NzTabSetComponent,
+    NzResultModule,
     PatientStatsComponent
   ],
   styleUrl: './patient-detail.component.scss'
 })
 export class PatientDetailComponent implements OnInit {
-  patient$!: Observable<null>;
+  patient$!: Observable<Patient | null>;
   loading = true;
   errorMessage = '';
   patientId: number = 0;
@@ -265,8 +268,10 @@ export class PatientDetailComponent implements OnInit {
     }
   }
 
-  // Correction de la méthode switchTab pour accepter un nombre au lieu d'un Event
-  switchTab(tabIndex: number): void {
-    this.activeTab = tabIndex;
+  // Update the tab value directly, avoiding the event type issues
+  handleTabChange(index: any): void {
+    if (typeof index === 'number') {
+      this.activeTab = index;
+    }
   }
 }

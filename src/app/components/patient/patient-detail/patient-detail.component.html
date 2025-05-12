@@ -18,134 +18,164 @@
       </div>
 
       <!-- Tabs de navigation -->
+      <!-- src/app/components/patient/patient-detail/patient-detail.component.html -->
+      <!-- Replace the nz-tabs element with a custom implementation -->
+
       <nz-card class="main-card">
-        <nz-tabs [nzSelectedIndex]="activeTab" (nzSelectedIndexChange)="switchTab($event)">
-          <nz-tab nzTitle="Informations générales">
-            <!-- Carte d'identité patient -->
-            <nz-card class="info-card">
-              <div class="patient-id-card">
-                <nz-descriptions nzBordered [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 2, sm: 2, xs: 1 }">
-                  <nz-descriptions-item nzTitle="CIN">{{ patient?.cin }}</nz-descriptions-item>
-                  <nz-descriptions-item nzTitle="Email">{{ patient?.email }}  </nz-descriptions-item>
-                  <nz-descriptions-item nzTitle="Date de Naissance">{{ patient?.dateNaissance | date: 'dd/MM/yyyy' }}</nz-descriptions-item>
-                  <nz-descriptions-item nzTitle="Âge">{{ patient?.dateNaissance ? getAge(patient.dateNaissance) : 'N/A' }} ans</nz-descriptions-item>
-                  <nz-descriptions-item nzTitle="Téléphone">{{ patient?.numeroTelephone }}</nz-descriptions-item>
-                  <nz-descriptions-item nzTitle="Adresse" [nzSpan]="patient?.adresse && patient.adresse.length > 30 ? 2 : 1">{{ patient?.adresse }}</nz-descriptions-item>
-                </nz-descriptions>
-              </div>
-            </nz-card>
+        <!-- Custom tab implementation to avoid nz-tabs issues -->
+        <div class="custom-tabs">
+          <!-- Tab headers -->
+          <div class="tab-header">
+            <button
+              class="tab-button"
+              [class.active]="activeTab === 0"
+              (click)="activeTab = 0">
+              Informations générales
+            </button>
+            <button
+              class="tab-button"
+              [class.active]="activeTab === 1"
+              (click)="activeTab = 1">
+              Statistiques Médicales
+            </button>
+            <button
+              class="tab-button"
+              [class.active]="activeTab === 2"
+              (click)="activeTab = 2">
+              Historique des Rendez-vous
+            </button>
+          </div>
 
-            <!-- Dossier médical -->
-            <nz-card *ngIf="patient?.dossierMedical; else noMedicalRecord" class="medical-record">
-              <h3 class="section-title">Dossier Médical</h3>
-
-              <div class="medical-summary">
-                <nz-descriptions nzBordered [nzColumn]="{ xxl: 2, xl: 2, lg: 2, md: 2, sm: 2, xs: 1 }">
-                  <nz-descriptions-item nzTitle="Allergies">
-                    <span class="medical-data">{{ patient?.dossierMedical?.allergies || 'Aucune' }}</span>
-                  </nz-descriptions-item>
-                  <nz-descriptions-item nzTitle="Antécédents">
-                    <span class="medical-data">{{ patient?.dossierMedical?.antecedents || 'Aucun' }}</span>
-                  </nz-descriptions-item>
-                  <nz-descriptions-item nzTitle="Traitements">
-                    <span class="medical-data">{{ patient?.dossierMedical?.traitementsChroniques || 'Aucun' }}</span>
-                  </nz-descriptions-item>
-                  <nz-descriptions-item nzTitle="Groupe Sanguin">
-                    <span class="medical-data">{{ patient?.dossierMedical?.groupeSanguin || 'Aucun' }}</span>
-                  </nz-descriptions-item>
-                </nz-descriptions>
-              </div>
-            </nz-card>
-
-            <ng-template #noMedicalRecord>
-              <nz-card class="no-record-card">
-                <nz-alert nzType="info" nzMessage="Aucun dossier médical disponible" nzShowIcon class="no-record-alert"></nz-alert>
+          <!-- Tab content -->
+          <div class="tab-content">
+            <!-- Tab 1: Informations générales -->
+            <div *ngIf="activeTab === 0">
+              <!-- Carte d'identité patient -->
+              <nz-card class="info-card">
+                <div class="patient-id-card">
+                  <nz-descriptions nzBordered [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 2, sm: 2, xs: 1 }">
+                    <nz-descriptions-item nzTitle="CIN">{{ patient?.cin }}</nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Email">{{ patient?.email }}  </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Date de Naissance">{{ patient?.dateNaissance | date: 'dd/MM/yyyy' }}</nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Âge">{{ patient?.dateNaissance ? getAge(patient.dateNaissance) : 'N/A' }} ans</nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Téléphone">{{ patient?.numeroTelephone }}</nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Adresse" [nzSpan]="patient?.adresse && patient.adresse.length > 30 ? 2 : 1">{{ patient?.adresse }}</nz-descriptions-item>
+                  </nz-descriptions>
+                </div>
               </nz-card>
-            </ng-template>
-          </nz-tab>
 
-          <!-- Nouvel onglet pour les statistiques médicales -->
-          <nz-tab nzTitle="Statistiques Médicales">
-            <app-patient-stats [patient]="patient"></app-patient-stats>
-          </nz-tab>
+              <!-- Dossier médical -->
+              <nz-card *ngIf="patient?.dossierMedical; else noMedicalRecord" class="medical-record">
+                <h3 class="section-title">Dossier Médical</h3>
 
-          <!-- Onglet des rendez-vous -->
-          <nz-tab nzTitle="Historique des Rendez-vous">
-            <nz-card class="appointments-card">
-              <nz-table
-                #rdvTable
-                [nzData]="patient?.rendezVousList || []"
-                nzSize="middle"
-                [nzFrontPagination]="true"
-                [nzPageSize]="5"
-                class="consultation-table">
+                <div class="medical-summary">
+                  <nz-descriptions nzBordered [nzColumn]="{ xxl: 2, xl: 2, lg: 2, md: 2, sm: 2, xs: 1 }">
+                    <nz-descriptions-item nzTitle="Allergies">
+                      <span class="medical-data">{{ patient?.dossierMedical?.allergies || 'Aucune' }}</span>
+                    </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Antécédents">
+                      <span class="medical-data">{{ patient?.dossierMedical?.antecedents || 'Aucun' }}</span>
+                    </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Traitements">
+                      <span class="medical-data">{{ patient?.dossierMedical?.traitementsChroniques || 'Aucun' }}</span>
+                    </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Groupe Sanguin">
+                      <span class="medical-data">{{ patient?.dossierMedical?.groupeSanguin || 'Aucun' }}</span>
+                    </nz-descriptions-item>
+                  </nz-descriptions>
+                </div>
+              </nz-card>
 
-                <thead>
-                <tr>
-                  <th nzWidth="120px">Date</th>
-                  <th nzWidth="150px">Médecin</th>
-                  <th nzWidth="80px">Rapport</th>
-                  <th nzWidth="80px">Ordonnance</th>
-                  <th nzWidth="100px">Prix</th>
-                  <th nzWidth="120px">Statut</th>
-                  <th nzWidth="120px">Actions</th>
-                </tr>
-                </thead>
+              <ng-template #noMedicalRecord>
+                <nz-card class="no-record-card">
+                  <nz-alert nzType="info" nzMessage="Aucun dossier médical disponible" nzShowIcon class="no-record-alert"></nz-alert>
+                </nz-card>
+              </ng-template>
+            </div>
 
-                <tbody>
-                <tr *ngFor="let rdv of rdvTable.data" class="consultation-row">
-                  <td>{{ rdv.date | date: 'dd/MM/yyyy HH:mm'}}</td>
-                  <td>{{ rdv.medecin?.nom || 'Non spécifié' }}</td>
-                  <td class="action-cell">
-                    <button nz-button nzType="text" nz-tooltip="Voir le rapport" (click)="showRapportModal(rdv)">
-                      <i nz-icon nzType="file-text" nzTheme="outline" class="doc-icon"></i>
-                    </button>
-                  </td>
-                  <td class="action-cell">
-                    <!-- Si ordonnance existe : bouton pour l'afficher -->
-                    <button *ngIf="rdv.ordonnance"
-                            nz-button nzType="text" nzTooltipTitle="Voir l'ordonnance"
-                            (click)="showOrdonnanceModal(rdv)">
-                      <i nz-icon nzType="medicine-box" nzTheme="outline" class="doc-icon"></i>
-                    </button>
+            <!-- Tab 2: Statistiques Médicales -->
+            <div *ngIf="activeTab === 1">
+              <app-patient-stats [patient]="patient"></app-patient-stats>
+            </div>
 
-                    <!-- Sinon : bouton pour générer et afficher automatiquement -->
-                    <button *ngIf="!rdv.ordonnance"
-                            nz-button nzType="text" nzTooltipTitle="Générer ordonnance"
-                            (click)="generateAndShowOrdonnance(rdv)">
-                      <i nz-icon nzType="plus-circle" nzTheme="outline" class="doc-icon"></i>
-                    </button>
-                  </td>
+            <!-- Tab 3: Historique des Rendez-vous -->
+            <div *ngIf="activeTab === 2">
+              <nz-card class="appointments-card">
+                <nz-table
+                  #rdvTable
+                  [nzData]="patient?.rendezVousList || []"
+                  nzSize="middle"
+                  [nzFrontPagination]="true"
+                  [nzPageSize]="5"
+                  class="consultation-table">
 
-                  <td class="price-cell">{{ rdv.prix }} DH</td>
-                  <td>
-                    <nz-tag [nzColor]="getStatusConfig(rdv.statusRDV)?.color || 'default'" class="status-tag">
-                      {{ getStatusConfig(rdv.statusRDV)?.label || rdv.statusRDV }}
-                    </nz-tag>
-                  </td>
-                  <td class="action-cell">
-                    <nz-space nzSize="small">
-                      <button *nzSpaceItem nz-button nzType="text" nz-tooltip nzTooltipTitle="Modifier" (click)="onEditRdv(rdv)">
-                        <i nz-icon nzType="edit" nzTheme="outline"></i>
+                  <thead>
+                  <tr>
+                    <th nzWidth="120px">Date</th>
+                    <th nzWidth="150px">Médecin</th>
+                    <th nzWidth="80px">Rapport</th>
+                    <th nzWidth="80px">Ordonnance</th>
+                    <th nzWidth="100px">Prix</th>
+                    <th nzWidth="120px">Statut</th>
+                    <th nzWidth="120px">Actions</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  <tr *ngFor="let rdv of rdvTable.data" class="consultation-row">
+                    <td>{{ rdv.date | date: 'dd/MM/yyyy HH:mm'}}</td>
+                    <td>{{ rdv.medecin?.nom || 'Non spécifié' }}</td>
+                    <td class="action-cell">
+                      <button nz-button nzType="text" nz-tooltip="Voir le rapport" (click)="showRapportModal(rdv)">
+                        <i nz-icon nzType="file-text" nzTheme="outline" class="doc-icon"></i>
                       </button>
-                      <button *nzSpaceItem nz-button nzType="text" nz-tooltip nzTooltipTitle="Supprimer" nzDanger (click)="onDeleteRdv(rdv)">
-                        <i nz-icon nzType="delete" nzTheme="outline"></i>
+                    </td>
+                    <td class="action-cell">
+                      <!-- Si ordonnance existe : bouton pour l'afficher -->
+                      <button *ngIf="rdv.ordonnance"
+                              nz-button nzType="text" nzTooltipTitle="Voir l'ordonnance"
+                              (click)="showOrdonnanceModal(rdv)">
+                        <i nz-icon nzType="medicine-box" nzTheme="outline" class="doc-icon"></i>
                       </button>
-                      <button *nzSpaceItem nz-button nzType="text" nz-tooltip nzTooltipTitle="Facture" (click)="generateFacture(rdv); $event.stopPropagation()">
-                        <i nz-icon nzType="file-text" nzTheme="outline"></i>
-                      </button>
-                    </nz-space>
-                  </td>
-                </tr>
-                </tbody>
-              </nz-table>
 
-              <div *ngIf="!patient?.rendezVousList?.length" class="empty-state">
-                <nz-empty [nzNotFoundContent]="'Aucun rendez-vous enregistré'"></nz-empty>
-              </div>
-            </nz-card>
-          </nz-tab>
-        </nz-tabs>
+                      <!-- Sinon : bouton pour générer et afficher automatiquement -->
+                      <button *ngIf="!rdv.ordonnance"
+                              nz-button nzType="text" nzTooltipTitle="Générer ordonnance"
+                              (click)="generateAndShowOrdonnance(rdv)">
+                        <i nz-icon nzType="plus-circle" nzTheme="outline" class="doc-icon"></i>
+                      </button>
+                    </td>
+
+                    <td class="price-cell">{{ rdv.prix }} DH</td>
+                    <td>
+                      <nz-tag [nzColor]="getStatusConfig(rdv.statusRDV)?.color || 'default'" class="status-tag">
+                        {{ getStatusConfig(rdv.statusRDV)?.label || rdv.statusRDV }}
+                      </nz-tag>
+                    </td>
+                    <td class="action-cell">
+                      <nz-space nzSize="small">
+                        <button *nzSpaceItem nz-button nzType="text" nz-tooltip nzTooltipTitle="Modifier" (click)="onEditRdv(rdv)">
+                          <i nz-icon nzType="edit" nzTheme="outline"></i>
+                        </button>
+                        <button *nzSpaceItem nz-button nzType="text" nz-tooltip nzTooltipTitle="Supprimer" nzDanger (click)="onDeleteRdv(rdv)">
+                          <i nz-icon nzType="delete" nzTheme="outline"></i>
+                        </button>
+                        <button *nzSpaceItem nz-button nzType="text" nz-tooltip nzTooltipTitle="Facture" (click)="generateFacture(rdv); $event.stopPropagation()">
+                          <i nz-icon nzType="file-text" nzTheme="outline"></i>
+                        </button>
+                      </nz-space>
+                    </td>
+                  </tr>
+                  </tbody>
+                </nz-table>
+
+                <div *ngIf="!patient?.rendezVousList?.length" class="empty-state">
+                  <nz-empty [nzNotFoundContent]="'Aucun rendez-vous enregistré'"></nz-empty>
+                </div>
+              </nz-card>
+            </div>
+          </div>
+        </div>
       </nz-card>
 
       <!-- Actions patient -->

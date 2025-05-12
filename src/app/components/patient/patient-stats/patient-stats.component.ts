@@ -1,5 +1,5 @@
 // src/app/components/patient/patient-stats/patient-stats.component.ts
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzGridModule } from 'ng-zorro-antd/grid';
@@ -38,6 +38,7 @@ import { catchError, map, Observable, of } from 'rxjs';
     NzIconModule,
     NzResultModule
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], // Add CUSTOM_ELEMENTS_SCHEMA to resolve the issue
   templateUrl: './patient-stats.component.html',
   styleUrl: './patient-stats.component.scss'
 })
@@ -105,8 +106,6 @@ export class PatientStatsComponent implements OnInit, OnChanges {
         this.healthReport = report;
       });
   }
-
-  // Le reste du code reste inchangé...
 
   calculateIMC(): number | null {
     const latestData = this.donneesPhysiologiques[0];
