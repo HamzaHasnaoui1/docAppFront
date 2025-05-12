@@ -20,6 +20,7 @@
     "@angular/router": "^19.2.0",
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@kolkov/angular-editor": "^3.0.0-beta.2",
+    "@types/xlsx": "^0.0.36",
     "angular-calendar": "^0.31.1",
     "angular-editor": "^0.0.3",
     "date-fns": "^4.1.0",

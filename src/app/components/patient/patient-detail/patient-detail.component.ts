@@ -28,8 +28,11 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzEmptyComponent } from 'ng-zorro-antd/empty';
 import { NzDescriptionsComponent, NzDescriptionsItemComponent } from 'ng-zorro-antd/descriptions';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
-import {PdfService} from '../../../service/pdf.service';
-import {NzCheckboxGroupComponent, NzCheckboxWrapperComponent} from 'ng-zorro-antd/checkbox';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { PdfService } from '../../../service/pdf.service';
+import { NzCheckboxGroupComponent, NzCheckboxWrapperComponent } from 'ng-zorro-antd/checkbox';
+import { PatientStatsComponent } from '../patient-stats/patient-stats.component';
 
 @Component({
   selector: 'app-patient-detail',
@@ -56,16 +59,20 @@ import {NzCheckboxGroupComponent, NzCheckboxWrapperComponent} from 'ng-zorro-ant
     NzDescriptionsComponent,
     NzSpinComponent,
     NzCheckboxWrapperComponent,
-    NzCheckboxGroupComponent
+    NzCheckboxGroupComponent,
+    NzTabsModule,
+    NzResultModule, // Ajout du module manquant
+    PatientStatsComponent
   ],
   styleUrl: './patient-detail.component.scss'
 })
 export class PatientDetailComponent implements OnInit {
-  patient$!: Observable<Patient>;
+  patient$!: Observable<null>;
   loading = true;
   errorMessage = '';
   patientId: number = 0;
   includeTva: boolean = false;
+  activeTab = 0;
 
   constructor(
     private patientService: PatientService,
@@ -88,17 +95,32 @@ export class PatientDetailComponent implements OnInit {
     this.loading = true;
 
     forkJoin({
-      patient: this.patientService.getPatientById(this.patientId),
-      rdvs: this.rdvService.getRdvsByPatient(this.patientId)
+      patient: this.patientService.getPatientById(this.patientId).pipe(
+        catchError(err => {
+          console.error('Erreur lors du chargement du patient', err);
+          return of(null); // Retourne null en cas d'erreur
+        })
+      ),
+      rdvs: this.rdvService.getRdvsByPatient(this.patientId).pipe(
+        catchError(err => {
+          console.error('Erreur lors du chargement des rendez-vous', err);
+          return of([]); // Retourne un tableau vide en cas d'erreur
+        })
+      )
     }).pipe(
-      map(({ patient, rdvs }) => ({
-        ...patient,
-        rendezVousList: rdvs
-      })),
+      map(({ patient, rdvs }) => {
+        if (!patient) {
+          throw new Error(`Patient avec ID ${this.patientId} non trouvé`);
+        }
+        return {
+          ...patient,
+          rendezVousList: rdvs
+        };
+      }),
       catchError(err => {
         this.errorMessage = `Impossible de charger les données du patient: ${err.message}`;
         this.loading = false;
-        return throwError(() => new Error(this.errorMessage));
+        return of(null); // Retourne null en cas d'erreur
       })
     ).subscribe({
       next: (patientData) => {
@@ -193,12 +215,11 @@ export class PatientDetailComponent implements OnInit {
         this.showOrdonnanceModal(rdv);
       },
       error: (err) => {
-        this.message.error('Erreur lors de la génération de l’ordonnance');
+        this.message.error('Erreur lors de la génération de lordonnance');
         console.error(err);
       }
     });
   }
-
 
   showRapportModal(rdv: RendezVous): void {
     this.modal.create({
@@ -230,17 +251,10 @@ export class PatientDetailComponent implements OnInit {
     });
   }
 
-  // Add these methods to the PatientDetailComponent class
-  /**
-   * Handle TVA checkbox change
-   */
   onTvaChange(e: any): void {
     this.includeTva = e.some((item: any) => item === 'tva');
   }
 
-  /**
-   * Generate a PDF invoice for the selected appointment
-   */
   generateFacture(rdv: RendezVous): void {
     try {
       this.pdfService.generateFacturePdf(rdv, this.includeTva);
@@ -249,5 +263,10 @@ export class PatientDetailComponent implements OnInit {
       this.message.error('Erreur lors de la génération de la facture');
       console.error(error);
     }
+  }
+
+  // Correction de la méthode switchTab pour accepter un nombre au lieu d'un Event
+  switchTab(tabIndex: number): void {
+    this.activeTab = tabIndex;
   }
 }
