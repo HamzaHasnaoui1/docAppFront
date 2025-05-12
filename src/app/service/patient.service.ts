@@ -37,4 +37,9 @@ export class PatientService {
     return this.http.delete<void>(`${environment.apiUrl}/admin/patients/${id}`);
   }
 
+  createOrdonnance(rdvId: number, data: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/admin/ordonnances/${rdvId}`, data);
+  }
+
+
 }

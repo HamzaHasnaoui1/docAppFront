@@ -1,7 +1,6 @@
 <nz-card nzTitle="Créer Médicament" nzHoverable class="form-card">
   <form [formGroup]="medicamentForm" (ngSubmit)="onSubmit()" nz-form nzLayout="vertical">
 
-    <!-- Section Informations de base -->
     <nz-card nzTitle="Informations du médicament" nzType="inner" class="section-card">
       <div nz-row [nzGutter]="16">
         <div nz-col [nzSpan]="12">
@@ -15,7 +14,7 @@
 
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzFor="description" nzRequired>Description</nz-form-label>
+            <nz-form-label nzFor="description" >Description</nz-form-label>
             <nz-form-control [nzErrorTip]="'La description est requise'">
               <input nz-input id="description" formControlName="description" placeholder="Description" />
             </nz-form-control>
@@ -26,7 +25,7 @@
       <div nz-row [nzGutter]="16">
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzFor="categorie" nzRequired>Catégorie</nz-form-label>
+            <nz-form-label nzFor="categorie" >Catégorie</nz-form-label>
             <nz-form-control [nzErrorTip]="'La catégorie est requise'">
               <input nz-input id="categorie" formControlName="categorie" placeholder="Catégorie" />
             </nz-form-control>
@@ -35,7 +34,7 @@
 
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzFor="fabricant" nzRequired>Fabricant</nz-form-label>
+            <nz-form-label nzFor="fabricant" >Fabricant</nz-form-label>
             <nz-form-control [nzErrorTip]="'Le fabricant est requis'">
               <input nz-input id="fabricant" formControlName="fabricant" placeholder="Fabricant" />
             </nz-form-control>
@@ -46,7 +45,7 @@
       <div nz-row [nzGutter]="16">
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzFor="dosageStandard" nzRequired>Dosage Standard</nz-form-label>
+            <nz-form-label nzFor="dosageStandard" >Dosage Standard</nz-form-label>
             <nz-form-control [nzErrorTip]="'Le dosage est requis'">
               <input nz-input id="dosageStandard" formControlName="dosageStandard" placeholder="Dosage Standard" />
             </nz-form-control>
@@ -55,7 +54,7 @@
 
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzFor="actif" nzRequired>Actif</nz-form-label>
+            <nz-form-label nzFor="actif" >Actif</nz-form-label>
             <nz-form-control [nzErrorTip]="'Le statut actif est requis'">
               <nz-switch formControlName="actif" nzCheckedChildren="Oui" nzUnCheckedChildren="Non"></nz-switch>
             </nz-form-control>

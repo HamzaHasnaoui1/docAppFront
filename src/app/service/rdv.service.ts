@@ -35,6 +35,11 @@ export class RdvService {
     return this.http.get<RendezVous>(`${environment.apiUrl}/user/rdv/${id}`);
   }
 
+  getRdvsByPatient(patientId: number): Observable<RendezVous[]> {
+    return this.http.get<RendezVous[]>(`${environment.apiUrl}/user/patients/${patientId}/rdv`);
+  }
+
+
   deleteRdv(id: number): Observable<void> {
     return this.http.delete<void>(`${environment.apiUrl}/admin/rdv/${id}`);
   }

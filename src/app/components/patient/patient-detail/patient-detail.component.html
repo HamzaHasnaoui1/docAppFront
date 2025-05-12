@@ -36,7 +36,7 @@
         <h3 class="section-title">Dossier Médical</h3>
 
         <div class="medical-summary">
-          <nz-descriptions nzBordered [nzColumn]="{ xxl: 3, xl: 3, lg: 3, md: 2, sm: 2, xs: 1 }">
+            <nz-descriptions nzBordered [nzColumn]="{ xxl: 2, xl: 2, lg: 2, md: 2, sm: 2, xs: 1 }">
             <nz-descriptions-item nzTitle="Allergies">
               <span class="medical-data">{{ patient.dossierMedical.allergies || 'Aucune' }}</span>
             </nz-descriptions-item>
@@ -45,6 +45,9 @@
             </nz-descriptions-item>
             <nz-descriptions-item nzTitle="Traitements">
               <span class="medical-data">{{ patient.dossierMedical.traitementsChroniques || 'Aucun' }}</span>
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Groupe Sanguin">
+              <span class="medical-data">{{ patient.dossierMedical.groupeSanguin || 'Aucun' }}</span>
             </nz-descriptions-item>
           </nz-descriptions>
         </div>
@@ -90,10 +93,21 @@
               </button>
             </td>
             <td class="action-cell">
-              <button nz-button nzType="text" nz-tooltip="Voir l'ordonnance" (click)="showOrdonnanceModal(rdv)">
+              <!-- Si ordonnance existe : bouton pour l'afficher -->
+              <button *ngIf="rdv.ordonnance"
+                      nz-button nzType="text" nzTooltipTitle="Voir l'ordonnance"
+                      (click)="showOrdonnanceModal(rdv)">
                 <i nz-icon nzType="medicine-box" nzTheme="outline" class="doc-icon"></i>
               </button>
+
+              <!-- Sinon : bouton pour générer et afficher automatiquement -->
+              <button *ngIf="!rdv.ordonnance"
+                      nz-button nzType="text" nzTooltipTitle="Générer ordonnance"
+                      (click)="generateAndShowOrdonnance(rdv)">
+                <i nz-icon nzType="plus-circle" nzTheme="outline" class="doc-icon"></i>
+              </button>
             </td>
+
             <td class="price-cell">{{ rdv.prix }} DH</td>
             <td>
               <nz-tag [nzColor]="getStatusConfig(rdv.statusRDV)?.color || 'default'" class="status-tag">

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { catchError, map, Observable, throwError, of, switchMap } from 'rxjs';
+import {catchError, map, Observable, throwError, of, switchMap, forkJoin} from 'rxjs';
 
 // Models
 import { Patient } from '../../../models/patient.model';
@@ -87,15 +87,14 @@ export class PatientDetailComponent implements OnInit {
   loadPatientData(): void {
     this.loading = true;
 
-    this.patientService.getPatientById(this.patientId).pipe(
-      switchMap(patient => {
-        return this.rdvService.getRdvs().pipe(
-          map(response => {
-            const patientRdvs = response.rdvs.filter((rdv: { patient: { id: number; }; }) => rdv.patient.id === this.patientId);
-            return { ...patient, rendezVousList: patientRdvs };
-          })
-        );
-      }),
+    forkJoin({
+      patient: this.patientService.getPatientById(this.patientId),
+      rdvs: this.rdvService.getRdvsByPatient(this.patientId)
+    }).pipe(
+      map(({ patient, rdvs }) => ({
+        ...patient,
+        rendezVousList: rdvs
+      })),
       catchError(err => {
         this.errorMessage = `Impossible de charger les données du patient: ${err.message}`;
         this.loading = false;
@@ -166,15 +165,40 @@ export class PatientDetailComponent implements OnInit {
   }
 
   showOrdonnanceModal(rdv: RendezVous): void {
+    const ordonnance = rdv.ordonnance?.contenu || 'Aucune ordonnance disponible.';
+    const remarques = rdv.ordonnance?.remarques ? `\n\nRemarques : ${rdv.ordonnance.remarques}` : '';
+
     this.modal.create({
       nzTitle: 'Ordonnance du patient',
-      nzContent: `<p style="white-space: pre-wrap;">${rdv.ordonnance || 'Aucune ordonnance disponible.'}</p>`,
+      nzContent: `<p style="white-space: pre-wrap;">${ordonnance}${remarques}</p>`,
       nzClosable: true,
       nzWidth: 600,
       nzFooter: null,
       nzWrapClassName: 'rapport-modal',
     });
   }
+
+  generateAndShowOrdonnance(rdv: RendezVous): void {
+    if (!rdv || !rdv.id) return;
+
+    const defaultOrdonnance = {
+      contenu: 'Contenu par défaut généré automatiquement.',
+      remarques: '',
+      archivee: false
+    };
+
+    this.patientService.createOrdonnance(rdv.id, defaultOrdonnance).subscribe({
+      next: (ordonnance) => {
+        rdv.ordonnance = ordonnance;
+        this.showOrdonnanceModal(rdv);
+      },
+      error: (err) => {
+        this.message.error('Erreur lors de la génération de l’ordonnance');
+        console.error(err);
+      }
+    });
+  }
+
 
   showRapportModal(rdv: RendezVous): void {
     this.modal.create({

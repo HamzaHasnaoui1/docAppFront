@@ -34,6 +34,7 @@ import {NzSpinComponent} from "ng-zorro-antd/spin";
 @Component({
   selector: 'app-patient-list',
   templateUrl: './patient-list.component.html',
+  styleUrl: './patient-list.component.scss',
   standalone: true,
     imports: [
         AsyncPipe,
@@ -68,7 +69,6 @@ import {NzSpinComponent} from "ng-zorro-antd/spin";
         NzAvatarComponent,
         NzSpinComponent
     ],
-  styleUrl: './patient-list.component.scss',
   animations: [
     trigger('listAnimation', [
       transition('* => *', [
@@ -93,11 +93,10 @@ import {NzSpinComponent} from "ng-zorro-antd/spin";
 })
 export class PatientListComponent implements OnInit {
   patients$!: Observable<Patient[]>;
-  patientsWithRdvs$!: Observable<PatientWithRdvs[]>;
   errorMessage = '';
   currentPage = 0;
   totalPages = 0;
-  pageSize = 10; // taille par page configurable
+  pageSize = 10;
   deletedIds: number[] = [];
   searchTerm$ = new Subject<string>();
   totalPagesArray: number[] = [];
@@ -106,7 +105,6 @@ export class PatientListComponent implements OnInit {
 
   constructor(
     private patientService: PatientService,
-    private rdvService: RdvService,
     private router: Router,
     private message: NzMessageService,
     private modal: NzModalService
@@ -116,13 +114,6 @@ export class PatientListComponent implements OnInit {
     this.setupSearch();
     this.loadPage(0);
     this.loading = false;
-  }
-
-  combinePatientWithRdvs(patients: Patient[], rdvs: RendezVous[]): Patient[] {
-    return patients.map(patient => {
-      const rendezVousList = rdvs.filter(rdv => rdv.patient.id === patient.id);
-      return { ...patient, rendezVousList };
-    });
   }
 
   private setupSearch(): void {
@@ -139,18 +130,7 @@ export class PatientListComponent implements OnInit {
     this.loading = true;
     this.errorMessage = '';
 
-    forkJoin([
-      this.patientService.getPatients(page, keyword, this.pageSize),
-      this.rdvService.getRdvs()
-    ]).pipe(
-      map(([patientsResponse, rdvsResponse]) => {
-        const combinedPatients = this.combinePatientWithRdvs(patientsResponse.patients, rdvsResponse.rdvs);
-        return {
-          patients: combinedPatients,
-          totalPages: patientsResponse.totalPages,
-          currentPage: patientsResponse.currentPage
-        };
-      }),
+    this.patientService.getPatients(page, keyword, this.pageSize).pipe(
       catchError(err => {
         this.errorMessage = err.message;
         return of({ patients: [], totalPages: 0, currentPage: 0 });
@@ -177,6 +157,7 @@ export class PatientListComponent implements OnInit {
   }
 
   getAge(dateNaissance: string | Date): number {
+    if (!dateNaissance) return 0;
     const birth = new Date(dateNaissance);
     const today = new Date();
     let age = today.getFullYear() - birth.getFullYear();
@@ -208,7 +189,7 @@ export class PatientListComponent implements OnInit {
     this.goToPage(this.currentPage + 1);
   }
 
-  onAdd() {
+  onAdd(): void {
     this.router.navigate(['/doc/patients/create']);
   }
 

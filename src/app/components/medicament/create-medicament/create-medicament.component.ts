@@ -44,11 +44,11 @@ export class CreateMedicamentComponent implements OnInit {
   ngOnInit(): void {
     this.medicamentForm = this.fb.group({
       nom: ['', [Validators.required]],
-      description: ['', [Validators.required]],
-      categorie: ['', [Validators.required]],
-      fabricant: ['', [Validators.required]],
-      dosageStandard: ['', [Validators.required]],
-      actif: [true, [Validators.required]]
+      description: [''],
+      categorie: [''],
+      fabricant: [''],
+      dosageStandard: [''],
+      actif: [true]
     });
   }
 
@@ -66,7 +66,7 @@ export class CreateMedicamentComponent implements OnInit {
 
   // Fonction pour annuler la création et revenir à la liste des médicaments
   onCancel(): void {
-    this.router.navigate(['/medicaments']);
+    this.router.navigate(['/doc/medicament']);
   }
 
   // Fonction pour télécharger un échantillon Excel
