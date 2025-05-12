@@ -1,4 +1,3 @@
-// src/app/components/patient/patient-stats/patient-stats.component.ts
 import { Component, Input, OnInit, OnChanges, SimpleChanges, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzCardModule } from 'ng-zorro-antd/card';

@@ -1,21 +1,17 @@
-// src/app/components/patient/patient-detail/patient-detail.component.ts
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {catchError, map, Observable, throwError, of, switchMap, forkJoin} from 'rxjs';
 
-// Models
 import { Patient } from '../../../models/patient.model';
 import { RDV_STATUS_CONFIG, RdvStatus, RendezVous } from '../../../models/rdv.model';
 
-// Services
 import { PatientService } from '../../../service/patient.service';
 import { RdvService } from '../../../service/rdv.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-// NG-ZORRO Components
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzButtonModule } from 'ng-zorro-antd/button';
