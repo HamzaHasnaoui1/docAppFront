@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {RendezVous} from '../models/rdv.model';
 import {Patient} from '../models/patient.model';
+import {CreateRendezVous} from '../models/CreateRendezVous';
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +24,10 @@ export class RdvService {
     return this.http.get<any>(`${environment.apiUrl}/user/medecins/${medecinId}/rdv`);
   }
 
-  createRdv( rdv:RendezVous):Observable<RendezVous> {
+  createRdv(rdv: CreateRendezVous): Observable<RendezVous> {
     return this.http.post<RendezVous>(`${environment.apiUrl}/admin/rdv`, rdv);
   }
+
 
   updateRdv(id:number , rdv:RendezVous):Observable<RendezVous> {
     return this.http.put<RendezVous>(`${environment.apiUrl}/admin/rdv/${id}`, rdv);

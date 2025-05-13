@@ -1,0 +1,31 @@
+.appointment-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.step-content {
+  min-height: 400px;
+  padding: 1rem 0;
+}
+
+.step-section {
+  padding: 0 1rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+nz-descriptions {
+  margin-top: 1rem;
+}
+
+nz-form-item {
+  margin-bottom: 1.5rem;
+}

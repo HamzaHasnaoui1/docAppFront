@@ -86,6 +86,7 @@ export class PatientStatsComponent implements OnInit, OnChanges {
         })
       )
       .subscribe(data => {
+        console.log(data)
         this.donneesPhysiologiques = data;
         this.loading = false;
       });

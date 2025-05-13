@@ -1,48 +1,183 @@
-<nz-card nzTitle="Planifier un Rendez-vous" nzHoverable class="form-card">
-  <form [formGroup]="rdvForm" (ngSubmit)="onSubmit()" nz-form nzLayout="vertical">
+<div class="appointment-container">
+  <nz-steps [nzCurrent]="currentStep" nzSize="small">
+    <nz-step nzTitle="Médecin" nzDescription="Sélectionnez un professionnel"></nz-step>
+    <nz-step nzTitle="Patient" nzDescription="Choisissez un patient"></nz-step>
+    <nz-step nzTitle="Planification" nzDescription="Date et heure"></nz-step>
+    <nz-step nzTitle="Confirmation" nzDescription="Vérifiez les détails"></nz-step>
+  </nz-steps>
 
-    <div nz-row [nzGutter]="16">
-      <div nz-col [nzSpan]="24">
+  <nz-divider></nz-divider>
+
+  <form [formGroup]="rdvForm">
+    <div class="step-content">
+      <!-- Step 1: Doctor Selection -->
+      <div *ngIf="currentStep === 0" class="step-section">
+        <h3>1. Sélection du médecin</h3>
         <nz-form-item>
-          <nz-form-label nzFor="date" nzRequired>Date et heure du Rendez-Vous</nz-form-label>
-          <nz-form-control [nzErrorTip]="'La date du Rendez-Vous est requise'">
-            <input nz-input type="datetime-local" id="date" formControlName="date" />
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-    </div>
-
-
-    <div nz-row [nzGutter]="16">
-      <div nz-col [nzSpan]="12">
-        <nz-form-item>
-          <nz-form-label nzFor="patientId" nzRequired>Patient</nz-form-label>
-          <nz-form-control [nzErrorTip]="'Veuillez sélectionner un patient'">
-            <nz-select id="patientId" formControlName="patientId" nzPlaceHolder="Choisir un patient">
-              <nz-option *ngFor="let p of patients" [nzValue]="p.id" [nzLabel]="p.nom"></nz-option>
+          <nz-form-label nzRequired>Médecin</nz-form-label>
+          <nz-form-control nzErrorTip="Veuillez sélectionner un médecin">
+            <nz-select
+              nzShowSearch
+              nzPlaceHolder="Sélectionnez un médecin"
+              formControlName="medecinId"
+              style="width: 100%"
+            >
+              <nz-option
+                *ngFor="let medecin of medecins"
+                [nzValue]="medecin.id"
+                [nzLabel]="medecin.nom"
+              ></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
       </div>
 
-      <div nz-col [nzSpan]="12">
+      <!-- Step 2: Patient Selection -->
+      <div *ngIf="currentStep === 1" class="step-section">
+        <h3>2. Sélection du patient</h3>
         <nz-form-item>
-          <nz-form-label nzFor="medecinId" nzRequired>Médecin</nz-form-label>
-          <nz-form-control [nzErrorTip]="'Veuillez sélectionner un médecin'">
-            <nz-select id="medecinId" formControlName="medecinId" nzPlaceHolder="Choisir un médecin">
-              <nz-option *ngFor="let m of medecins" [nzValue]="m.id" [nzLabel]="m.nom"></nz-option>
+          <nz-form-label nzRequired>Patient</nz-form-label>
+          <nz-form-control nzErrorTip="Veuillez sélectionner un patient">
+            <nz-select
+              nzShowSearch
+              nzPlaceHolder="Sélectionnez un patient"
+              formControlName="patientId"
+              style="width: 100%"
+            >
+              <nz-option
+                *ngFor="let patient of patients"
+                [nzValue]="patient.id"
+                [nzLabel]="patient.nom + ' (' + patient.cin + ')'"
+              ></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
       </div>
-    </div>
 
-    <div class="form-actions">
-      <button nz-button type="button" (click)="onCancel()" style="margin-right: 8px">Annuler</button>
-      <button nz-button nzType="primary" [disabled]="rdvForm.invalid">
-        Enregistrer
-      </button>
-    </div>
+      <!-- Step 3: Date/Time Selection -->
+      <div *ngIf="currentStep === 2" class="step-section">
+        <h3>3. Planification du rendez-vous</h3>
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired>Date</nz-form-label>
+              <nz-form-control nzErrorTip="Veuillez sélectionner une date">
+                <nz-date-picker
+                  formControlName="date"
+                  style="width: 100%"
+                ></nz-date-picker>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired>Durée (minutes)</nz-form-label>
+              <nz-form-control nzErrorTip="Durée entre 15 et 120 minutes">
+                <nz-input-number
+                  formControlName="duration"
+                  [nzMin]="15"
+                  [nzMax]="120"
+                  [nzStep]="15"
+                  style="width: 100%"
+                ></nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
 
+        <nz-form-item>
+          <nz-form-label nzRequired>Heure de début</nz-form-label>
+          <nz-form-control nzErrorTip="Veuillez sélectionner une heure">
+            <nz-select
+              formControlName="time"
+              nzPlaceHolder="Sélectionnez une heure"
+              style="width: 100%"
+            >
+              <nz-option
+                *ngFor="let time of availableTimes"
+                [nzValue]="time"
+                [nzLabel]="time"
+              ></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Prix (DH)</nz-form-label>
+          <nz-form-control nzErrorTip="Veuillez saisir un prix valide">
+            <nz-input-number
+              formControlName="prix"
+              [nzMin]="0"
+              style="width: 100%"
+            ></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <!-- Step 4: Confirmation -->
+      <div *ngIf="currentStep === 3" class="step-section">
+        <h3>4. Confirmation du rendez-vous</h3>
+        <nz-card>
+          <nz-descriptions nzBordered [nzColumn]="1">
+            <nz-descriptions-item nzTitle="Médecin">
+              {{ getSelectedMedecin()?.nom }}
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Patient">
+              {{ getSelectedPatient()?.titre }} {{ getSelectedPatient()?.nom }} ({{ getSelectedPatient()?.cin }})
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Date">
+              {{ rdvForm.get('date')?.value | date:'fullDate':'':'fr' }}
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Heure">
+              {{ rdvForm.get('time')?.value }} - {{ calculateEndTime(rdvForm.get('time')?.value, rdvForm.get('duration')?.value) }}
+              ({{ rdvForm.get('duration')?.value }} minutes)
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Prix">
+              {{ rdvForm.get('prix')?.value }} DH
+            </nz-descriptions-item>
+          </nz-descriptions>
+        </nz-card>
+
+        <nz-form-item>
+          <nz-form-label>Notes supplémentaires</nz-form-label>
+          <nz-form-control>
+            <textarea
+              nz-input
+              formControlName="rapport"
+              rows="3"
+              style="width: 100%"
+              placeholder="Ajoutez des notes ou des symptômes..."
+            ></textarea>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
   </form>
-</nz-card>
+
+  <nz-divider></nz-divider>
+
+  <div class="actions">
+    <button
+      nz-button
+      nzType="default"
+      (click)="prevStep()"
+      [disabled]="currentStep === 0"
+    >
+      <span nz-icon nzType="left"></span> Précédent
+    </button>
+
+    <button
+      nz-button
+      nzType="primary"
+      (click)="currentStep === 3 ? onSubmit() : nextStep()"
+      [nzLoading]="isLoading"
+      [disabled]="
+        (currentStep === 0 && !rdvForm.get('medecinId')?.value) ||
+        (currentStep === 1 && !rdvForm.get('patientId')?.value) ||
+        (currentStep === 2 && (!rdvForm.get('date')?.value || !rdvForm.get('time')?.value || !rdvForm.get('duration')?.value))"
+    >
+      {{ currentStep === 3 ? 'Confirmer' : 'Suivant' }}
+      <span nz-icon nzType="right" *ngIf="currentStep !== 3"></span>
+    </button>
+  </div>
+</div>
