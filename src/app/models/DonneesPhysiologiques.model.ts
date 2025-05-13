@@ -2,7 +2,8 @@ import {RendezVous} from './rdv.model';
 
 export interface DonneesPhysiologiques {
   id: number;
-  rendezVous: RendezVous;
+  rendezVousId: number;
+  rendezVousDate: string;
   poids: number;
   taille: number;
   imc: number;

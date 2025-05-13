@@ -184,8 +184,7 @@
             </thead>
             <tbody>
             <tr *ngFor="let data of donneesPhysiologiques">
-              <td>{{ data.rendezVous?.date ? (data.rendezVous.date | date:'dd/MM/yyyy HH:mm') : '-' }}</td>
-              <pre>{{ data.rendezVous?.date | json }}</pre>
+              <td>{{ data.rendezVousDate | date:'dd/MM/yyyy' }}</td>
               <td>{{ data.poids || '-' }} {{ data.poids ? 'kg' : '' }}</td>
               <td>{{ data.imc || '-' }}</td>
               <td>{{ data.tensionSystolique && data.tensionDiastolique ? data.tensionSystolique + '/' + data.tensionDiastolique : '-' }}</td>
