@@ -128,7 +128,7 @@ export class DashboardComponent implements OnInit {
   loadDashboardData(): void {
     // Utiliser forkJoin pour charger plusieurs sources de données en parallèle
     forkJoin({
-      patients: this.patientService.getPatients(0, "").pipe(catchError(err => {
+      patients: this.patientService.getPatients(0, "",50).pipe(catchError(err => {
         this.message.error("Erreur lors du chargement des patients");
         return of({ patients: [], totalPages: 0 });
       })),

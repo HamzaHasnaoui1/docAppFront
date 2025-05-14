@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Observable, debounceTime, distinctUntilChanged, of, Subject, switchMap } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import {
   NzFormDirective, NzFormItemComponent, NzFormLabelComponent,
@@ -12,12 +13,14 @@ import { NzCardComponent } from 'ng-zorro-antd/card';
 import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
 import { NzInputNumberComponent } from 'ng-zorro-antd/input-number';
 import { NzSwitchComponent } from 'ng-zorro-antd/switch';
-import { NzInputDirective } from 'ng-zorro-antd/input';
+import {NzAutosizeDirective, NzInputDirective} from 'ng-zorro-antd/input';
 import { NzDatePickerComponent } from 'ng-zorro-antd/date-picker';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconDirective } from 'ng-zorro-antd/icon';
+import { NzSpinComponent } from 'ng-zorro-antd/spin';
 
 import { RdvService } from '../../../service/rdv.service';
+import { MedicamentService } from '../../../service/medicament.service';
 import { RendezVous } from '../../../models/rdv.model';
 import { Medicament } from '../../../models/Medicament.model';
 import { OrdonnanceMedicament } from '../../../models/OrdonnanceMedicament.model';
@@ -44,7 +47,9 @@ import { OrdonnanceMedicament } from '../../../models/OrdonnanceMedicament.model
     NzInputDirective,
     NzDatePickerComponent,
     NzButtonComponent,
-    NzIconDirective
+    NzIconDirective,
+    NzSpinComponent,
+    NzAutosizeDirective
   ],
   styleUrls: ['./edit-rdv.component.scss']
 })
@@ -55,10 +60,18 @@ export class EditRdvComponent implements OnInit {
   rdvId!: number;
   medecin: string = '';
   patient: string = '';
+  originalRdv!: RendezVous;
+
+  // Médicaments search
+  medicamentsList: Medicament[] = [];
+  isLoadingMeds = false;
+  medicamentSearchTerm$ = new Subject<string>();
+  nzFilterOption = () => true;
 
   constructor(
     private fb: FormBuilder,
     private rdvService: RdvService,
+    private medicamentService: MedicamentService,
     private route: ActivatedRoute,
     private router: Router,
     private message: NzMessageService
@@ -68,6 +81,8 @@ export class EditRdvComponent implements OnInit {
     this.rdvId = Number(this.route.snapshot.paramMap.get('id'));
     this.initForm();
     this.loadRdv();
+    this.setupMedicamentSearch();
+    this.loadInitialMedicaments();
   }
 
   formatDateTimeLocal(iso: string): string {
@@ -78,14 +93,14 @@ export class EditRdvComponent implements OnInit {
 
   initForm() {
     this.rdvForm = this.fb.group({
-      date: [null, Validators.required],
-      statusRDV: ['PENDING', Validators.required],
-      medecin: [null, Validators.required],
-      patient: [null, Validators.required],
+      date: [null],
+      statusRDV: ['PENDING'],
+      medecin: [null],
+      patient: [null],
       prix: [0],
-      archivee: [false],
       rapport: [''],
       ordonnance: this.fb.group({
+        id: [null],
         contenu: [''],
         remarques: [''],
         medicaments: this.fb.array([])
@@ -99,8 +114,10 @@ export class EditRdvComponent implements OnInit {
 
   addMedicament(medicament?: Medicament, posologie: string = '', duree: string = '', frequence: string = '', instructions: string = '') {
     this.medicaments.push(this.fb.group({
-      medicament: [medicament, Validators.required],
-      posologie: [posologie, Validators.required],
+      id: [null], // Pour les médicaments existants
+      medicamentId: [medicament?.id || null],
+      medicamentNom: [medicament?.nom || ''],
+      posologie: [posologie],
       duree: [duree],
       frequence: [frequence],
       instructions: [instructions]
@@ -115,6 +132,7 @@ export class EditRdvComponent implements OnInit {
     this.loading = true;
     this.rdvService.getRdvById(this.rdvId).subscribe({
       next: (rdv: RendezVous) => {
+        this.originalRdv = rdv;
         this.patientId = rdv.patient?.id;
         this.medecin = rdv.medecin?.nom || 'Médecin inconnu';
         this.patient = rdv.patient?.nom || 'Patient inconnu';
@@ -130,10 +148,9 @@ export class EditRdvComponent implements OnInit {
 
         if (rdv.ordonnance) {
           this.rdvForm.get('ordonnance')?.patchValue({
+            id: rdv.ordonnance.id,
             contenu: rdv.ordonnance.contenu ?? '',
-            remarques: rdv.ordonnance.remarques ?? '',
-            dateEmission: rdv.ordonnance.dateEmission?.substring(0, 10) ?? '',
-            archivee: rdv.ordonnance.archivee ?? false
+            remarques: rdv.ordonnance.remarques ?? ''
           });
 
           if (rdv.ordonnance.medicaments) {
@@ -159,30 +176,85 @@ export class EditRdvComponent implements OnInit {
     });
   }
 
+  setupMedicamentSearch() {
+    this.medicamentSearchTerm$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(keyword => {
+        this.isLoadingMeds = true;
+        return this.medicamentService.getMedicaments(0, keyword, 10).pipe(
+          switchMap(response => {
+            this.isLoadingMeds = false;
+            return of(response.medicaments || []);
+          })
+        );
+      })
+    ).subscribe(medicaments => {
+      this.medicamentsList = medicaments;
+    });
+  }
+
+  loadInitialMedicaments() {
+    this.isLoadingMeds = true;
+    this.medicamentService.getMedicaments(0, '', 10).subscribe({
+      next: (response) => {
+        this.medicamentsList = response.medicaments || [];
+        this.isLoadingMeds = false;
+      },
+      error: () => {
+        this.isLoadingMeds = false;
+        this.message.error('Erreur lors du chargement des médicaments');
+      }
+    });
+  }
+
+  onSearchMedicament(keyword: string) {
+    this.medicamentSearchTerm$.next(keyword);
+  }
+
+  compareFn = (o1: any, o2: any) => {
+    if (o1 && o2) {
+      return o1.id === o2.id;
+    }
+    return false;
+  };
+
   onSubmit() {
     if (this.rdvForm.invalid) {
       this.message.warning('Veuillez remplir tous les champs requis');
       return;
     }
 
+    this.loading = true;
     const formValue = this.rdvForm.getRawValue();
 
-    const rdv: RendezVous = {
+    // Préparation des données avec une structure simplifiée
+    const payload = {
       id: this.rdvId,
       date: formValue.date,
-      dateFin: formValue.date,
+      dateFin: this.originalRdv.dateFin || formValue.date,
       statusRDV: formValue.statusRDV,
-      medecin: { id: formValue.medecin } as any,
-      patient: { id: formValue.patient } as any,
       rapport: formValue.rapport,
       prix: formValue.prix,
-      ordonnance: {
+      medecinId: formValue.medecin,  // Juste l'ID
+      patientId: formValue.patient,   // Juste l'ID
+      ordonnance: formValue.ordonnance.id ? {
+        id: formValue.ordonnance.id,
         contenu: formValue.ordonnance.contenu,
         remarques: formValue.ordonnance.remarques,
-        dateEmission: formValue.ordonnance.dateEmission,
-        archivee: formValue.ordonnance.archivee,
         medicaments: formValue.ordonnance.medicaments.map((m: any) => ({
-          medicament: m.medicament,
+          id: m.id || undefined,
+          medicamentId: m.medicamentId,
+          posologie: m.posologie,
+          duree: m.duree,
+          frequence: m.frequence,
+          instructions: m.instructions
+        }))
+      } : {
+        contenu: formValue.ordonnance.contenu,
+        remarques: formValue.ordonnance.remarques,
+        medicaments: formValue.ordonnance.medicaments.map((m: any) => ({
+          medicamentId: m.medicamentId,
           posologie: m.posologie,
           duree: m.duree,
           frequence: m.frequence,
@@ -191,19 +263,21 @@ export class EditRdvComponent implements OnInit {
       }
     };
 
-    this.rdvService.updateRdv(this.rdvId, rdv).subscribe({
+    console.log('Payload envoyé:', JSON.stringify(payload, null, 2));
+
+    this.rdvService.updateRdv(this.rdvId, payload).subscribe({
       next: () => {
+        this.loading = false;
         this.message.success('Rendez-vous mis à jour avec succès');
         this.router.navigate(['/doc/patients/detail', this.patientId]);
       },
       error: (err) => {
-        console.error('Erreur de mise à jour :', err);
-        this.message.error('Erreur lors de la mise à jour du rendez-vous');
+        this.loading = false;
+        console.error('Erreur complète:', err);
+        this.message.error(`Échec de la mise à jour: ${err.error?.message || err.message}`);
       }
     });
-  }
-
-  onCancel(): void {
+  }  onCancel(): void {
     if (this.patientId) {
       this.router.navigate(['/doc/patients/detail', this.patientId]);
     } else {

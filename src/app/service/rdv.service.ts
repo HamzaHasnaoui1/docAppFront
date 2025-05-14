@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {RendezVous} from '../models/rdv.model';
@@ -29,8 +29,13 @@ export class RdvService {
   }
 
 
-  updateRdv(id:number , rdv:RendezVous):Observable<RendezVous> {
-    return this.http.put<RendezVous>(`${environment.apiUrl}/admin/rdv/${id}`, rdv);
+  updateRdv(id: number, rdv: any): Observable<RendezVous> {
+    return this.http.put<RendezVous>(`${environment.apiUrl}/admin/rdv/${id}`, rdv, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      })
+    });
   }
 
   getRdvById(id: number): Observable<RendezVous> {
