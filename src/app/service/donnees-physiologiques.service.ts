@@ -47,10 +47,7 @@ export class DonneesPhysiologiquesService {
     );
   }
 
-  updateDonneesPhysiologiques(
-    id: number,
-    donnees: DonneesPhysiologiques
-  ): Observable<DonneesPhysiologiques> {
+  updateDonneesPhysiologiques(id: number, donnees: DonneesPhysiologiques): Observable<DonneesPhysiologiques> {
     return this.http.put<DonneesPhysiologiques>(
       `${environment.apiUrl}/user/donnees-physiologiques/${id}`,
       donnees

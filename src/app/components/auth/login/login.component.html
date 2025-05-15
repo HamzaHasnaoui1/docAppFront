@@ -36,7 +36,15 @@
           </nz-form-control>
         </nz-form-item>
 
-        <button nz-button nzType="primary" [disabled]="loginForm.invalid" >
+        <nz-alert
+          *ngIf="errorMessage"
+          nzType="error"
+          nzMessage="{{ errorMessage }}"
+          nzShowIcon
+          style="margin-bottom: 16px">
+        </nz-alert>
+
+        <button nz-button nzType="primary" [nzLoading]="loading" [disabled]="loginForm.invalid">
           Se connecter
         </button>
       </form>

@@ -1,7 +1,6 @@
-// src/app/auth/auth.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {BehaviorSubject, Observable, of, throwError} from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import {AuthRequest, JwtResponse, User} from '../../models/auth-response.model';
 import {environment} from '../../../environments/environment.development';
@@ -21,7 +20,6 @@ export class AuthService {
   constructor(private http: HttpClient) {
     this.checkAuthStatus();
     console.log('Utilisateur courant au chargement :', this.currentUserValue);
-
   }
 
   login(credentials: AuthRequest): Observable<JwtResponse> {
@@ -42,10 +40,25 @@ export class AuthService {
           };
 
           this.currentUserSubject.next(user);
+        }),
+        catchError((error: HttpErrorResponse) => {
+          let errorMessage = 'Une erreur est survenue';
+          if (error.status === 400 || error.status === 401 || error.status === 403) {
+            errorMessage = 'Username ou mot de passe incorrect';
+          } else if (error.status === 0) {
+            errorMessage = 'Impossible de se connecter au serveur';
+          }
+
+          console.error('Login error:', error);
+
+          return throwError(() => ({
+            status: error.status,
+            message: errorMessage,
+            originalError: error
+          }));
         })
       );
   }
-
 
   logout(): void {
     localStorage.removeItem('auth_data');
@@ -94,10 +107,10 @@ export class AuthService {
               lastName: ''
             };
 
-            this.currentUserSubject.next(user); // 👈 met à jour l'utilisateur
+            this.currentUserSubject.next(user);
             this.startTokenExpirationTimer(authData.token);
           } else {
-            this.logout(); // 👈 token expiré
+            this.logout();
           }
         } catch (error) {
           console.error('Erreur de parsing du token :', error);
@@ -141,6 +154,4 @@ export class AuthService {
     if (!user) return false;
     return user.roles.some(r => r.toLowerCase() === role.toLowerCase());
   }
-
-
 }

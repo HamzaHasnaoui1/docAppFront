@@ -9,6 +9,7 @@ import {NzFormModule} from 'ng-zorro-antd/form';
 import {NzButtonModule} from 'ng-zorro-antd/button';
 import {NzCheckboxModule} from 'ng-zorro-antd/checkbox';
 import {NzIconModule} from 'ng-zorro-antd/icon';
+import {NzAlertComponent} from 'ng-zorro-antd/alert';
 
 @Component({
   selector: 'app-login',
@@ -23,6 +24,7 @@ import {NzIconModule} from 'ng-zorro-antd/icon';
     NzButtonModule,
     NzCheckboxModule,
     NzIconModule,
+    NzAlertComponent,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
@@ -32,6 +34,7 @@ export class LoginComponent implements OnInit {
   loading = false;
   hidePassword = true;
   year: number = new Date().getFullYear();
+  errorMessage: string | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -46,8 +49,6 @@ export class LoginComponent implements OnInit {
       password: ['', Validators.required]
     });
 
-
-    // If already logged in, redirect to returnUrl
     if (this.authService.isLoggedIn()) {
       this.router.navigate(['/doc/dashboard']);
     }
@@ -57,17 +58,17 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     }
-
+    this.errorMessage = null;
     this.loading = true;
+
     this.authService.login(this.loginForm.value)
       .subscribe({
         next: () => {
-          console.log("authentication done")
           this.router.navigate(['/doc/dashboard']);
-       },
-        error: error => {
+        },
+        error: (error) => {
           this.loading = false;
+          this.errorMessage = error.message || "Une erreur est survenue. Veuillez réessayer plus tard.";
         }
       });
-  }
-}
+  }}
