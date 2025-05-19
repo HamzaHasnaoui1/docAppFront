@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, of, Subject } from 'rxjs';
-import { switchMap, catchError, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { forkJoin, of, Subject, Observable } from 'rxjs';
+import { switchMap, catchError, debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { RdvService } from '../../../service/rdv.service';
 import { MedicamentService } from '../../../service/medicament.service';
@@ -23,6 +23,9 @@ import { NzEmptyComponent } from 'ng-zorro-antd/empty';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconDirective } from 'ng-zorro-antd/icon';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { OrdonnanceService } from '../../../service/ordonnance.service';
+import { Ordonnance } from '../../../models/ordonnance.model';
+import { PdfService } from '../../../service/pdf.service';
 
 @Component({
   selector: 'app-edit-rdv',
@@ -65,6 +68,7 @@ export class EditRdvComponent implements OnInit {
   medicamentsList: Medicament[] = [];
   isLoadingMeds = false;
   medicamentSearchTerm$ = new Subject<string>();
+  generatingPdf = false;
 
   constructor(
     private fb: FormBuilder,
@@ -72,6 +76,8 @@ export class EditRdvComponent implements OnInit {
     private medicamentService: MedicamentService,
     private donneesPhysioService: DonneesPhysiologiquesService,
     private ordonnanceMedicamentService: OrdonnanceMedicamentService,
+    private ordonnanceService: OrdonnanceService,
+    private pdfService: PdfService,
     private route: ActivatedRoute,
     private router: Router,
     private message: NzMessageService
@@ -99,11 +105,11 @@ export class EditRdvComponent implements OnInit {
 
   initForms(): void {
     this.rdvForm = this.fb.group({
-      date: [null],
-      statusRDV: ['PENDING'],
-      medecin: [null],
-      patient: [null],
-      prix: [0, [ Validators.min(0)]],
+      date: [null, Validators.required],
+      statusRDV: ['PENDING', Validators.required],
+      medecin: [null, Validators.required],
+      patient: [null, Validators.required],
+      prix: [0, [Validators.min(0), Validators.required]],
       rapport: [''],
       ordonnance: this.fb.group({
         id: [null],
@@ -114,17 +120,20 @@ export class EditRdvComponent implements OnInit {
     });
 
     this.medicalDataForm = this.fb.group({
+      id: [null],
       poids: [null, [Validators.min(0)]],
       taille: [null, [Validators.min(0)]],
       tensionSystolique: [null, [Validators.min(0)]],
-      tensionDiastolica: [null, [Validators.min(0)]],
+      tensionDiastolique: [null, [Validators.min(0)]],
       frequenceCardiaque: [null, [Validators.min(0)]],
+      frequenceRespiratoire: [null],
       temperature: [null, [Validators.min(0)]],
       glycemie: [null, [Validators.min(0)]],
       oeilDroit: [''],
       oeilGauche: [''],
       remarques: [''],
-      imc: [null]
+      imc: [null],
+      rendezVousDate: [null]
     });
   }
 
@@ -132,16 +141,32 @@ export class EditRdvComponent implements OnInit {
     return this.rdvForm.get('ordonnance.medicaments') as FormArray;
   }
 
-  addMedicament(medicament?: Medicament, posologie: string = '', duree: string = '', frequence: string = '', instructions: string = ''): void {
+  addMedicament(medicament?: any, posologie: string = '', duree: string = '', frequence: string = '', instructions: string = ''): void {
+    const medicamentId = medicament?.id || medicament?.medicamentId;
+    const medicamentNom = medicament?.nom || '';
+
     this.medicaments.push(this.fb.group({
-      id: [null],
-      medicamentId: [medicament?.id || null],
-      medicamentNom: [medicament?.nom || ''],
-      posologie: [posologie],
+      id: [medicament?.id || null],
+      medicamentId: [medicamentId, Validators.required],
+      medicamentNom: [medicamentNom],
+      posologie: [posologie, Validators.required],
       duree: [duree],
       frequence: [frequence],
       instructions: [instructions]
     }));
+
+    // If we have a medicament ID but no name, try to load it
+    if (medicamentId && !medicamentNom) {
+      this.medicamentService.getMedicamentById(medicamentId).subscribe(med => {
+        if (med) {
+          // Find the index of the last added medicament
+          const lastIndex = this.medicaments.length - 1;
+          this.medicaments.at(lastIndex).patchValue({
+            medicamentNom: med.nom
+          });
+        }
+      });
+    }
   }
 
   removeMedicament(index: number): void {
@@ -193,52 +218,54 @@ export class EditRdvComponent implements OnInit {
           const ordonnanceId = rdv.ordonnance.id;
           if (ordonnanceId != null) {
             return this.ordonnanceMedicamentService.getMedicamentsByOrdonnance(ordonnanceId);
-          } else {
-            return of([]);
           }
-        } else {
-          return of([]);
         }
+        return of([]);
       }),
       switchMap((medicaments: OrdonnanceMedicamentDTO[]) => {
-        if (medicaments.length > 0) {
-          this.medicaments.clear();
-          medicaments.forEach(med => {
-            this.addMedicament(
-              { id: med.medicamentId, nom: '' },
-              med.dosage,
-              med.duree,
-              med.frequence,
-              ''
+        // Clear existing medications
+        this.medicaments.clear();
+
+        if (medicaments && medicaments.length > 0) {
+          // Add each medication to the form
+          const medicamentPromises = medicaments.map(med => {
+            if (!med.medicamentId) {
+              return of(null);
+            }
+            return this.medicamentService.getMedicamentById(med.medicamentId).pipe(
+              catchError(() => of(null))
             );
           });
 
-          return forkJoin(
-            medicaments.map(med =>
-              this.medicamentService.getMedicamentById(med.medicamentId).pipe(
-                catchError(() => of(null))
-              )
-            )
+          return forkJoin(medicamentPromises).pipe(
+            switchMap((medicamentDetails: (Medicament | null)[]) => {
+              medicaments.forEach((med, index) => {
+                const medicamentDetail = medicamentDetails[index];
+                this.addMedicament(
+                  {
+                    id: med.id,
+                    medicamentId: med.medicamentId,
+                    nom: medicamentDetail?.nom || ''
+                  },
+                  med.dosage,
+                  med.duree || '',
+                  med.frequence || '',
+                  ''
+                );
+              });
+              return of(medicaments);
+            })
           );
-        } else {
-          return of([]);
         }
+        return of([]);
       })
     ).subscribe({
-      next: (medicamentsDetails: (Medicament | null)[]) => {
-        medicamentsDetails.forEach((medDetail, index) => {
-          if (medDetail) {
-            this.medicaments.at(index).patchValue({
-              medicamentNom: medDetail.nom
-            });
-          }
-        });
-
+      next: () => {
         this.loadMedicalData();
       },
-      error: () => {
+      error: (err) => {
         this.loading = false;
-        this.message.error('Erreur lors du chargement du rendez-vous');
+        this.message.error('Erreur lors du chargement du rendez-vous: ' + (err.message || 'Erreur inconnue'));
       }
     });
   }
@@ -251,7 +278,7 @@ export class EditRdvComponent implements OnInit {
             poids: data.poids,
             taille: data.taille,
             tensionSystolique: data.tensionSystolique,
-            tensionDiastolica: data.tensionDiastolique,
+            tensionDiastolique: data.tensionDiastolique,
             frequenceCardiaque: data.frequenceCardiaque,
             temperature: data.temperature,
             glycemie: data.glycemie,
@@ -298,6 +325,20 @@ export class EditRdvComponent implements OnInit {
 
   onSubmit(): void {
     if (this.rdvForm.invalid) {
+      // Marquer tous les champs comme touchés pour afficher les erreurs
+      Object.keys(this.rdvForm.controls).forEach(key => {
+        const control = this.rdvForm.get(key);
+        control?.markAsTouched();
+        control?.markAsDirty();
+        if (control instanceof FormGroup) {
+          Object.keys(control.controls).forEach(subKey => {
+            const subControl = control.get(subKey);
+            subControl?.markAsTouched();
+            subControl?.markAsDirty();
+          });
+        }
+      });
+      
       this.message.warning('Veuillez remplir tous les champs requis');
       return;
     }
@@ -306,38 +347,100 @@ export class EditRdvComponent implements OnInit {
     const rdvData = this.prepareRdvData();
     const medicalData = this.prepareMedicalData();
     const medicamentsData = this.prepareMedicamentsData();
+    const ordonnanceData = this.prepareOrdonnanceData();
 
-    forkJoin([
-      this.rdvService.updateRdv(this.rdvId, rdvData),
-      medicalData.id
-        ? this.donneesPhysioService.updateDonneesPhysiologiques(medicalData.id, medicalData)
-        : this.donneesPhysioService.saveDonneesPhysiologiques(medicalData, this.rdvId)
-    ]).pipe(
-      switchMap(() => {
-        const medicamentRequests = [];
-        const ordonnanceId = this.rdvForm.get('ordonnance.id')?.value;
+    console.log('RDV Data:', rdvData);
 
-        if (ordonnanceId) {
-          for (const medicament of medicamentsData) {
-            if (medicament.id) {
-              medicamentRequests.push(
-                this.ordonnanceMedicamentService.updateMedicament(
-                  medicament.id,
-                  this.mapToOrdonnanceMedicamentDTO(medicament, ordonnanceId)
-                )
-              );
-            } else {
-              medicamentRequests.push(
-                this.ordonnanceMedicamentService.ajouterMedicament(
-                  ordonnanceId,
-                  this.mapToOrdonnanceMedicamentDTO(medicament, ordonnanceId)
-                )
+    // Étape 1: Mettre à jour le RDV sans l'ordonnance
+    this.rdvService.updateRdv(this.rdvId, rdvData).pipe(
+      catchError(err => {
+        this.loading = false;
+        this.message.error(`Erreur lors de la mise à jour du RDV: ${err.error?.message || err.message}`);
+        console.error('Erreur de mise à jour RDV:', err);
+        return of(null);
+      }),
+      switchMap(updatedRdv => {
+        if (!updatedRdv) return of(null);
+        
+        // Étape 2: Mettre à jour ou créer les données médicales
+        // Vérifier si les données médicales existent déjà
+        let medicalDataOperation;
+        
+        if (medicalData.id) {
+          // Créer une copie sans rendezVousId pour la mise à jour
+          const { rendezVousId, ...updateData } = medicalData as any;
+          medicalDataOperation = this.donneesPhysioService.updateDonneesPhysiologiques(
+            medicalData.id, 
+            updateData as DonneesPhysiologiques
+          );
+        } else {
+          medicalDataOperation = this.donneesPhysioService.saveDonneesPhysiologiques(
+            medicalData, 
+            this.rdvId
+          );
+        }
+        
+        return medicalDataOperation.pipe(
+          catchError(err => {
+            console.error('Erreur données physiologiques:', err);
+            // On continue même en cas d'erreur sur les données physiologiques
+            return of(null);
+          }),
+          switchMap(() => {
+            // Étape 3: Gérer l'ordonnance et les médicaments
+            const ordId = updatedRdv.ordonnance?.id;
+            
+            // Si l'ordonnance existe déjà, la mettre à jour
+            if (ordId && ordonnanceData) {
+              return this.ordonnanceService.updateOrdonnance(
+                ordId, 
+                {
+                  id: ordId,
+                  ...ordonnanceData
+                }
+              ).pipe(
+                catchError(err => {
+                  console.error('Erreur mise à jour ordonnance:', err);
+                  return of(null);
+                }),
+                switchMap(() => {
+                  if (medicamentsData.length > 0) {
+                    // Nous savons que ordId est défini ici car nous sommes dans la condition ordId && ordonnanceData
+                    const ordonnanceIdNumber = Number(ordId);
+                    return this.processOrdonnanceMedicaments(medicamentsData, ordonnanceIdNumber);
+                  }
+                  return of(null);
+                })
               );
             }
-          }
-        }
-
-        return forkJoin(medicamentRequests);
+            // Si pas d'ordonnance mais des médicaments, créer une ordonnance
+            else if (!ordId && medicamentsData.length > 0) {
+              const newOrdonnance: Ordonnance = {
+                contenu: this.rdvForm.get('ordonnance.contenu')?.value || '',
+                remarques: this.rdvForm.get('ordonnance.remarques')?.value || '',
+                dateEmission: new Date().toISOString(),
+                archivee: false,
+                rendezVous: { id: this.rdvId } as any
+              };
+              
+              return this.ordonnanceService.createOrdonnance(newOrdonnance).pipe(
+                catchError(err => {
+                  console.error('Erreur création ordonnance:', err);
+                  return of(null);
+                }),
+                switchMap(createdOrdonnance => {
+                  if (createdOrdonnance && createdOrdonnance.id && medicamentsData.length > 0) {
+                    const newOrdId = Number(createdOrdonnance.id);
+                    return this.processOrdonnanceMedicaments(medicamentsData, newOrdId);
+                  }
+                  return of(null);
+                })
+              );
+            }
+            
+            return of(null);
+          })
+        );
       })
     ).subscribe({
       next: () => {
@@ -347,66 +450,146 @@ export class EditRdvComponent implements OnInit {
       error: (err) => {
         this.loading = false;
         this.message.error(`Erreur: ${err.error?.message || err.message}`);
+        console.error('Erreur générale:', err);
+      },
+      complete: () => {
+        this.loading = false;
       }
     });
   }
 
   prepareRdvData(): any {
     const formValue = this.rdvForm.getRawValue();
+    // Format strict pour éviter les problèmes de contrainte
     return {
       id: this.rdvId,
       date: formValue.date,
       statusRDV: formValue.statusRDV,
-      rapport: formValue.rapport,
-      prix: formValue.prix,
-      medecinId: formValue.medecin,
-      patientId: formValue.patient,
-      ordonnance: formValue.ordonnance.id ? {
-        id: formValue.ordonnance.id,
-        contenu: formValue.ordonnance.contenu,
-        remarques: formValue.ordonnance.remarques
-      } : {
-        contenu: formValue.ordonnance.contenu,
-        remarques: formValue.ordonnance.remarques
-      }
+      rapport: formValue.rapport || '',
+      prix: Number(formValue.prix) || 0,
+      // Utiliser un format strict pour les IDs
+      medecin: { id: Number(formValue.medecin) },
+      patient: { id: Number(formValue.patient) }
+      // Ne pas inclure l'ordonnance ici pour éviter les problèmes de cascade
     };
   }
 
   prepareMedicalData(): DonneesPhysiologiques {
     const formValue = this.medicalDataForm.value;
-    return {
+    
+    // Base object with common properties
+    const baseData = {
       id: formValue.id,
       poids: formValue.poids,
       taille: formValue.taille,
       tensionSystolique: formValue.tensionSystolique,
-      tensionDiastolique: formValue.tensionDiastolica,
+      tensionDiastolique: formValue.tensionDiastolique,
       frequenceCardiaque: formValue.frequenceCardiaque,
-      frequenceRespiratoire: formValue.frequenceRespiratoire,
+      frequenceRespiratoire: formValue.frequenceRespiratoire || 0,
       temperature: formValue.temperature,
       glycemie: formValue.glycemie,
-      oeilDroit: formValue.oeilDroit,
-      oeilGauche: formValue.oeilGauche,
-      remarques: formValue.remarques,
-      rendezVousId: this.rdvId,
-      imc: formValue.imc,
-      rendezVousDate: formValue.rendezVousDate,
-
+      oeilDroit: formValue.oeilDroit || '',
+      oeilGauche: formValue.oeilGauche || '',
+      remarques: formValue.remarques || '',
+      imc: formValue.imc || 0,
+      rendezVousDate: formValue.rendezVousDate || new Date().toISOString()
     };
+    
+    // Add rendezVousId only for new records
+    if (!formValue.id) {
+      return {
+        ...baseData,
+        rendezVousId: this.rdvId
+      };
+    }
+    
+    return baseData as DonneesPhysiologiques;
   }
 
   prepareMedicamentsData(): any[] {
     return this.medicaments.getRawValue();
   }
 
-  mapToOrdonnanceMedicamentDTO(medicament: any, ordonnanceId: number): OrdonnanceMedicamentDTO {
+  prepareOrdonnanceData(): any {
+    const ordonnanceGroup = this.rdvForm.get('ordonnance');
+    if (!ordonnanceGroup) return null;
+    
+    const ordonnanceValue = ordonnanceGroup.value;
+    if (!ordonnanceValue) return null;
+    
     return {
-      id: medicament.id || undefined,
-      medicamentId: medicament.medicamentId,
-      ordonnanceId: ordonnanceId,
-      dosage: medicament.posologie,
-      duree: medicament.duree,
-      frequence: medicament.frequence
+      contenu: ordonnanceValue.contenu || '',
+      remarques: ordonnanceValue.remarques || '',
+      archivee: false
     };
+  }
+
+  // Nouvelle méthode pour traiter les médicaments d'une ordonnance avec un ID défini
+  private processOrdonnanceMedicaments(medicamentsData: any[], ordonnanceId: number): Observable<any> {
+    // Debug log
+    console.log('Processing medicaments for ordonnance:', ordonnanceId);
+    console.log('Medicaments data:', medicamentsData);
+    
+    // Ensure ordonnanceId is a number
+    const safeOrdonnanceId = Number(ordonnanceId);
+    
+    // Plutôt que de mettre à jour chaque médicament individuellement,
+    // nous allons d'abord récupérer l'ordonnance complète
+    return this.ordonnanceService.getOrdonnanceById(safeOrdonnanceId).pipe(
+      catchError(err => {
+        console.error('Erreur lors de la récupération de l\'ordonnance:', err);
+        return of(null);
+      }),
+      switchMap(ordonnance => {
+        if (!ordonnance) return of(null);
+        
+        // Créer des requêtes pour chaque médicament
+        const medicamentRequests = medicamentsData.map(medicament => {
+          // Créer le DTO avec le format attendu par le backend
+          const dto: OrdonnanceMedicamentDTO = {
+            medicamentId: Number(medicament.medicamentId) || 0,
+            medicament: {
+              id: Number(medicament.medicamentId) || 0
+            },
+            dosage: medicament.posologie || '',
+            duree: medicament.duree || '',
+            frequence: medicament.frequence || ''
+          };
+          
+          // Ajouter l'ID si existant
+          if (medicament.id) {
+            dto.id = medicament.id;
+          }
+          
+          // Debug: log the DTO being sent
+          console.log('Sending medicament DTO:', JSON.stringify(dto));
+          
+          if (medicament.id) {
+            return this.ordonnanceMedicamentService.updateMedicament(
+              medicament.id,
+              dto
+            ).pipe(
+              catchError(err => {
+                console.error(`Erreur mise à jour médicament ${medicament.medicamentId}:`, err);
+                return of(null);
+              })
+            );
+          } else {
+            return this.ordonnanceMedicamentService.ajouterMedicament(
+              safeOrdonnanceId,
+              dto
+            ).pipe(
+              catchError(err => {
+                console.error(`Erreur ajout médicament ${medicament.medicamentId}:`, err);
+                return of(null);
+              })
+            );
+          }
+        });
+
+        return medicamentRequests.length ? forkJoin(medicamentRequests) : of(null);
+      })
+    );
   }
 
   onCancel(): void {
@@ -449,5 +632,42 @@ export class EditRdvComponent implements OnInit {
     if (imc < 25) return 'check';
     if (imc < 30) return 'warning';
     return 'close';
+  }
+
+  // Generate PDF prescription
+  generatePrescription(): void {
+    const ordonnanceId = this.rdvForm.get('ordonnance.id')?.value;
+    if (!ordonnanceId) {
+      this.message.warning('Veuillez d\'abord enregistrer l\'ordonnance');
+      return;
+    }
+
+    if (this.medicaments.length === 0) {
+      this.message.warning('Aucun médicament n\'a été ajouté à l\'ordonnance');
+      return;
+    }
+
+    this.generatingPdf = true;
+
+    // First get the ordonnance details
+    this.ordonnanceService.getOrdonnanceById(ordonnanceId).subscribe({
+      next: (ordonnance) => {
+        // Then generate the PDF
+        this.pdfService.generateOrdonnancePdf(ordonnance)
+          .then(() => {
+            this.message.success('Ordonnance générée avec succès');
+            this.generatingPdf = false;
+          })
+          .catch((error: Error) => {
+            this.message.error('Erreur lors de la génération de l\'ordonnance: ' + error.message);
+            this.generatingPdf = false;
+          });
+      },
+      error: (err: any) => {
+        this.message.error('Erreur lors de la récupération de l\'ordonnance');
+        console.error('Erreur récupération ordonnance:', err);
+        this.generatingPdf = false;
+      }
+    });
   }
 }

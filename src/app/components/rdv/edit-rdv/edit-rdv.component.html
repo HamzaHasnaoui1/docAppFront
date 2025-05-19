@@ -19,7 +19,7 @@
                   <nz-select formControlName="statusRDV" class="full-width">
                     <nz-option nzValue="PENDING" nzLabel="En attente"></nz-option>
                     <nz-option nzValue="CONFIRMED" nzLabel="Confirmé"></nz-option>
-                    <nz-option nzValue="COMPLETED" nzLabel="Terminé"></nz-option>
+                    <nz-option nzValue="DONE" nzLabel="Terminé"></nz-option>
                     <nz-option nzValue="CANCELLED" nzLabel="Annulé"></nz-option>
                   </nz-select>
                 </nz-form-item>
@@ -74,6 +74,17 @@
           <div class="form-actions">
             <button nz-button (click)="onCancel()" type="button">Annuler</button>
             <button nz-button nzType="primary" (click)="activeTab = 1" type="button" [disabled]="rdvForm.invalid">Suivant</button>
+            <button 
+              nz-button 
+              nzType="default" 
+              (click)="generatePrescription()" 
+              type="button" 
+              [disabled]="!rdvForm.get('ordonnance.id')?.value || medicaments.length === 0 || generatingPdf"
+              *ngIf="rdvForm.get('ordonnance.id')?.value">
+              <i nz-icon nzType="file-pdf" nzTheme="outline" *ngIf="!generatingPdf"></i>
+              <i nz-icon nzType="loading" nzTheme="outline" *ngIf="generatingPdf"></i>
+              Générer l'ordonnance
+            </button>
           </div>
         </form>
       </nz-tab>
@@ -143,17 +154,33 @@
                 <ng-template #emptyMedicaments>
                   <div class="empty-medicaments">
                     <nz-empty nzDescription="Aucun médicament ajouté"></nz-empty>
+                    <div class="empty-action">
+                      <button nz-button nzType="primary" (click)="addMedicament()">
+                        <i nz-icon nzType="plus"></i> Ajouter un médicament
+                      </button>
+                    </div>
                   </div>
                 </ng-template>
               </div>
             </div>
           </div>
-        </form>
 
-        <div class="form-actions">
-          <button nz-button (click)="activeTab = 0" type="button">Précédent</button>
-          <button nz-button nzType="primary" (click)="activeTab = 2" type="button">Suivant</button>
-        </div>
+          <div class="form-actions">
+            <button nz-button (click)="activeTab = 0" type="button">Précédent</button>
+            <button nz-button nzType="primary" (click)="activeTab = 2" type="button">Suivant</button>
+            <button 
+              nz-button 
+              nzType="default" 
+              (click)="generatePrescription()" 
+              type="button" 
+              [disabled]="!rdvForm.get('ordonnance.id')?.value || medicaments.length === 0 || generatingPdf"
+              *ngIf="rdvForm.get('ordonnance.id')?.value">
+              <i nz-icon nzType="file-pdf" nzTheme="outline" *ngIf="!generatingPdf"></i>
+              <i nz-icon nzType="loading" nzTheme="outline" *ngIf="generatingPdf"></i>
+              Générer l'ordonnance
+            </button>
+          </div>
+        </form>
       </nz-tab>
 
       <!-- Onglet 3: Données médicales -->
@@ -217,7 +244,7 @@
                 <nz-form-item>
                   <nz-form-label>Tension diastolique</nz-form-label>
                   <nz-input-number
-                    formControlName="tensionDiastolica"
+                    formControlName="tensionDiastolique"
                     [nzMin]="0"
                     class="full-width">
                   </nz-input-number>

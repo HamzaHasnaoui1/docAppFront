@@ -21,7 +21,13 @@ export class OrdonnanceService {
   }
 
   createOrdonnance(ordonnance: Ordonnance): Observable<Ordonnance> {
-    return this.http.post<Ordonnance>(`${environment.apiUrl}/admin/ordonnances`, ordonnance);
+    const rendezVousId = ordonnance.rendezVous?.id;
+    
+    if (!rendezVousId) {
+      throw new Error('RendezVous ID is required to create an ordonnance');
+    }
+    
+    return this.http.post<Ordonnance>(`${environment.apiUrl}/admin/ordonnances/${rendezVousId}`, ordonnance);
   }
 
   updateOrdonnance(id: number, ordonnance: Ordonnance): Observable<Ordonnance> {

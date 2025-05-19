@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {catchError, map, Observable, throwError, of, switchMap, forkJoin} from 'rxjs';
+import {catchError, map, Observable, throwError, of, switchMap, forkJoin, finalize} from 'rxjs';
 
 import { Patient } from '../../../models/patient.model';
 import { RDV_STATUS_CONFIG, RdvStatus, RendezVous } from '../../../models/rdv.model';
@@ -30,6 +30,7 @@ import { NzResultModule } from 'ng-zorro-antd/result';
 import { PdfService } from '../../../service/pdf.service';
 import { NzCheckboxGroupComponent, NzCheckboxWrapperComponent } from 'ng-zorro-antd/checkbox';
 import { PatientStatsComponent } from '../patient-stats/patient-stats.component';
+import { OrdonnanceService } from '../../../service/ordonnance.service';
 
 @Component({
   selector: 'app-patient-detail',
@@ -80,7 +81,8 @@ export class PatientDetailComponent implements OnInit {
     private router: Router,
     private message: NzMessageService,
     private modal: NzModalService,
-    private pdfService: PdfService
+    private pdfService: PdfService,
+    private ordonnanceService: OrdonnanceService
   ) {}
 
   ngOnInit(): void {
@@ -186,36 +188,83 @@ export class PatientDetailComponent implements OnInit {
   }
 
   showOrdonnanceModal(rdv: RendezVous): void {
-    const ordonnance = rdv.ordonnance?.contenu || 'Aucune ordonnance disponible.';
-    const remarques = rdv.ordonnance?.remarques ? `\n\nRemarques : ${rdv.ordonnance.remarques}` : '';
+    if (!rdv.ordonnance) {
+      this.message.warning('Aucune ordonnance disponible.');
+      return;
+    }
 
-    this.modal.create({
+    // Créer un modal avec les informations de l'ordonnance et des boutons d'action
+    const modal = this.modal.create({
       nzTitle: 'Ordonnance du patient',
-      nzContent: `<p style="white-space: pre-wrap;">${ordonnance}${remarques}</p>`,
+      nzContent: `<div style="white-space: pre-wrap;">
+        <p><strong>Date:</strong> ${new Date(rdv.date).toLocaleDateString()}</p>
+        <p><strong>Contenu:</strong> ${rdv.ordonnance.contenu || 'Aucun contenu'}</p>
+        ${rdv.ordonnance.remarques ? `<p><strong>Remarques:</strong> ${rdv.ordonnance.remarques}</p>` : ''}
+      </div>`,
       nzClosable: true,
       nzWidth: 600,
-      nzFooter: null,
+      nzFooter: [
+        {
+          label: 'Fermer',
+          onClick: () => modal.destroy()
+        },
+        {
+          label: 'Générer PDF',
+          type: 'primary',
+          onClick: () => {
+            modal.destroy();
+            this.generateOrdonnancePdf(rdv);
+          }
+        }
+      ],
       nzWrapClassName: 'rapport-modal',
     });
   }
 
-  generateAndShowOrdonnance(rdv: RendezVous): void {
-    if (!rdv || !rdv.id) return;
+  // Nouvelle méthode pour générer une ordonnance PDF
+  generateOrdonnancePdf(rdv: RendezVous): void {
+    if (!rdv.ordonnance || !rdv.ordonnance.id) {
+      this.message.warning('Aucune ordonnance disponible pour ce rendez-vous.');
+      return;
+    }
 
-    const defaultOrdonnance = {
-      contenu: 'Contenu par défaut généré automatiquement.',
-      remarques: '',
-      archivee: false
-    };
-
-    this.patientService.createOrdonnance(rdv.id, defaultOrdonnance).subscribe({
+    this.loading = true;
+    
+    this.ordonnanceService.getOrdonnanceById(rdv.ordonnance.id).pipe(
+      finalize(() => this.loading = false)
+    ).subscribe({
       next: (ordonnance) => {
-        rdv.ordonnance = ordonnance;
-        this.showOrdonnanceModal(rdv);
+        try {
+          // Si l'ordonnance n'a pas de rendezVous, on l'ajoute manuellement
+          if (!ordonnance.rendezVous) {
+            ordonnance.rendezVous = rdv;
+          }
+          
+          // Assurons-nous que les informations patient et médecin sont disponibles
+          if (!ordonnance.rendezVous.patient && rdv.patient) {
+            ordonnance.rendezVous.patient = rdv.patient;
+          }
+          
+          if (!ordonnance.rendezVous.medecin && rdv.medecin) {
+            ordonnance.rendezVous.medecin = rdv.medecin;
+          }
+          
+          this.pdfService.generateOrdonnancePdf(ordonnance)
+            .then(() => {
+              this.message.success('Ordonnance générée avec succès');
+            })
+            .catch((error: Error) => {
+              this.message.error('Erreur lors de la génération de l\'ordonnance: ' + error.message);
+              console.error('Erreur génération PDF:', error);
+            });
+        } catch (error) {
+          this.message.error('Erreur lors de la génération de l\'ordonnance');
+          console.error('Erreur génération PDF:', error);
+        }
       },
       error: (err) => {
-        this.message.error('Erreur lors de la génération de lordonnance');
-        console.error(err);
+        this.message.error('Erreur lors de la récupération de l\'ordonnance');
+        console.error('Erreur récupération ordonnance:', err);
       }
     });
   }
@@ -269,5 +318,26 @@ export class PatientDetailComponent implements OnInit {
     if (typeof index === 'number') {
       this.activeTab = index;
     }
+  }
+
+  generateAndShowOrdonnance(rdv: RendezVous): void {
+    if (!rdv || !rdv.id) return;
+
+    const defaultOrdonnance = {
+      contenu: 'Contenu par défaut généré automatiquement.',
+      remarques: '',
+      archivee: false
+    };
+
+    this.patientService.createOrdonnance(rdv.id, defaultOrdonnance).subscribe({
+      next: (ordonnance) => {
+        rdv.ordonnance = ordonnance;
+        this.showOrdonnanceModal(rdv);
+      },
+      error: (err) => {
+        this.message.error('Erreur lors de la génération de l\'ordonnance');
+        console.error(err);
+      }
+    });
   }
 }

@@ -132,11 +132,18 @@
                     </td>
                     <td class="action-cell">
                       <!-- Si ordonnance existe : bouton pour l'afficher -->
-                      <button *ngIf="rdv.ordonnance"
-                              nz-button nzType="text" nzTooltipTitle="Voir l'ordonnance"
-                              (click)="showOrdonnanceModal(rdv)">
-                        <i nz-icon nzType="medicine-box" nzTheme="outline" class="doc-icon"></i>
-                      </button>
+                      <nz-space *ngIf="rdv.ordonnance" nzSize="small">
+                        <button *nzSpaceItem
+                                nz-button nzType="text" nz-tooltip nzTooltipTitle="Voir l'ordonnance"
+                                (click)="showOrdonnanceModal(rdv)">
+                          <i nz-icon nzType="medicine-box" nzTheme="outline" class="doc-icon"></i>
+                        </button>
+                        <button *nzSpaceItem
+                                nz-button nzType="text" nz-tooltip nzTooltipTitle="Générer PDF"
+                                (click)="generateOrdonnancePdf(rdv)">
+                          <i nz-icon nzType="file-pdf" nzTheme="outline" class="doc-icon"></i>
+                        </button>
+                      </nz-space>
 
                       <!-- Sinon : bouton pour générer et afficher automatiquement -->
                       <button *ngIf="!rdv.ordonnance"
