@@ -34,6 +34,7 @@ export class AuthService {
             username: response.username,
             email: response.email,
             roles: response.roles,
+            permissions: response.permissions,
             active: true,
             firstName: '',
             lastName: ''
@@ -102,6 +103,7 @@ export class AuthService {
               username: authData.username,
               email: authData.email,
               roles: authData.roles,
+              permissions: authData.permissions,
               active: true,
               firstName: '',
               lastName: ''
@@ -153,5 +155,23 @@ export class AuthService {
     const user = this.currentUserSubject.value;
     if (!user) return false;
     return user.roles.some(r => r.toLowerCase() === role.toLowerCase());
+  }
+  
+  hasPermission(permission: string): boolean {
+    const user = this.currentUserSubject.value;
+    if (!user || !user.permissions) return false;
+    return user.permissions.some(p => p === permission);
+  }
+  
+  hasAnyPermission(permissions: string[]): boolean {
+    const user = this.currentUserSubject.value;
+    if (!user || !user.permissions) return false;
+    return permissions.some(permission => user.permissions?.includes(permission));
+  }
+  
+  hasAllPermissions(permissions: string[]): boolean {
+    const user = this.currentUserSubject.value;
+    if (!user || !user.permissions) return false;
+    return permissions.every(permission => user.permissions?.includes(permission));
   }
 }

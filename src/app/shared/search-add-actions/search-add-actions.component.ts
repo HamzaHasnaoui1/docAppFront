@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-search-add-actions',
@@ -17,14 +18,18 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     ReactiveFormsModule,
     NzInputModule,
     NzButtonModule,
-    NzIconModule
+    NzIconModule,
+    RouterModule
   ],
   templateUrl: './search-add-actions.component.html',
   styleUrls: ['./search-add-actions.component.scss']
 })
 export class SearchAddActionsComponent {
+  @Input() title: string = '';
   @Input() searchPlaceholder: string = 'Rechercher';
   @Input() addButtonText: string = 'Ajouter';
+  @Input() showAddButton: boolean = true;
+  @Input() addButtonLink: string | null = null;
   @Input() debounceTime: number = 300;
   @Output() searchChange = new EventEmitter<string>();
   @Output() addClick = new EventEmitter<void>();

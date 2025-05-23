@@ -21,6 +21,23 @@
             <li nz-menu-item routerLink="/factures">
               <i nz-icon nzType="file-protect"></i> Factures
             </li>
+            
+            <!-- Section Administration -->
+            <ng-container *appHasPermission="'ROLE_LIST'">
+              <li nz-menu-divider></li>
+              <li nz-submenu nzTitle="Administration" nzIcon="setting">
+                <ul>
+                  <li nz-menu-item routerLink="/doc/admin/roles" *appHasPermission="'ROLE_LIST'">
+                    <i nz-icon nzType="team"></i> Gestion des rôles
+                  </li>
+                  <li nz-menu-item routerLink="/doc/admin/permissions" *appHasPermission="'ROLE_PERMISSION_ASSIGN'">
+                    <i nz-icon nzType="safety-certificate"></i> Permissions utilisateurs
+                  </li>
+                </ul>
+              </li>
+            </ng-container>
+            
+            <li nz-menu-divider></li>
             <li nz-menu-item (click)="edit()">
               <i nz-icon nzType="user"></i> Profil
             </li>

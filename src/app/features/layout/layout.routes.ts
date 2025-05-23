@@ -28,7 +28,7 @@ export const LAYOUT_ROUTES: Routes = [
         loadChildren: () => import('../../components/paiement/paiement.routes').then(m => m.PAIEMENT_ROUTES),
       },
       {
-        path: 'ordonnance',
+        path: 'ordonnances',
         loadChildren: () => import('../../components/ordonnance/ordonnance.routes').then(m => m.ORDONNANCE_ROUTES),
       },
       {
@@ -46,6 +46,10 @@ export const LAYOUT_ROUTES: Routes = [
       {
         path: 'medicament',
         loadChildren: () => import('../../components/medicament/medicament.routes').then(m => m.MEDICAMENT_ROUTES),
+      },
+      {
+        path: 'admin',
+        loadChildren: () => import('../../components/admin/admin.routes').then(m => m.ADMIN_ROUTES),
       },
       {
         path: '',

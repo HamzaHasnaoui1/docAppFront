@@ -1,0 +1,35 @@
+.permissions-container {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+}
+
+.role-permissions {
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.permission-badges {
+  margin-top: 5px;
+}
+
+.badge {
+  font-size: 0.8rem;
+  padding: 0.3em 0.6em;
+}
+
+.badge.bg-primary {
+  background-color: #1890ff !important;
+}
+
+.badge.bg-info {
+  background-color: #13c2c2 !important;
+}
+
+h6 {
+  margin-bottom: 5px;
+  font-weight: 500;
+} 

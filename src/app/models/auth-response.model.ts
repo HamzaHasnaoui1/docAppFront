@@ -9,6 +9,7 @@ export interface AuthResponse {
   email: string;
   token: string;
   roles: string[];
+  permissions?: string[];
 }
 
 export interface RegisterRequest {
@@ -34,6 +35,7 @@ export interface UserDetailsResponse {
   phoneNumber: string;
   active: boolean;
   roles: string[];
+  permissions?: string[];
 }
 export interface LoginRequest {
   username: string;
@@ -47,6 +49,7 @@ export interface JwtResponse {
   username: string;
   email: string;
   roles: string[];
+  permissions: string[];
 }
 
 export interface SignupRequest {
@@ -60,6 +63,7 @@ export interface SignupRequest {
 
 export interface User {
   id?: string;
+  userId?: string;
   username: string;
   email: string;
   password?: string;
@@ -67,4 +71,5 @@ export interface User {
   lastName?: string;
   active: boolean;
   roles: string[];
+  permissions?: string[];
 }

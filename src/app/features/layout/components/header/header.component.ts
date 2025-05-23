@@ -1,4 +1,3 @@
-
 import {Component, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 import { CommonModule, NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
@@ -14,6 +13,9 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 
 import { icons } from '../../../../icons-provider';
 import {NzDividerComponent} from 'ng-zorro-antd/divider';
+import { NzSubMenuComponent } from 'ng-zorro-antd/menu';
+import { AuthService } from '../../../../components/auth/auth.service';
+import { DirectivesModule } from '../../../../directives/directives.module';
 
 @Component({
   selector: 'app-header',
@@ -34,6 +36,8 @@ import {NzDividerComponent} from 'ng-zorro-antd/divider';
     NzBadgeModule,
     NzMenuModule,
     NzDividerComponent,
+    NzSubMenuComponent,
+    DirectivesModule
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
@@ -41,7 +45,10 @@ import {NzDividerComponent} from 'ng-zorro-antd/divider';
 
 })
 export class HeaderComponent {
-  constructor(private route: Router) {}
+  constructor(
+    private route: Router,
+    public authService: AuthService
+  ) {}
 
   protected readonly icons = icons;
 
@@ -55,5 +62,4 @@ export class HeaderComponent {
   edit() {
     this.route.navigate(['/doc/user/edit-profile']);
   }
-
 }

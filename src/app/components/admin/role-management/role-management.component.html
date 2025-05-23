@@ -1,0 +1,151 @@
+<div class="admin-container">
+  <div class="admin-header">
+    <h2 class="admin-title">
+      <i nz-icon nzType="safety-certificate" nzTheme="outline"></i>
+      Gestion des rôles et permissions
+    </h2>
+    <p class="admin-description">Configurez les rôles et les permissions associées pour gérer les droits d'accès des utilisateurs</p>
+  </div>
+
+  <div class="admin-content">
+    <div nz-row [nzGutter]="24">
+      <!-- Liste des rôles -->
+      <div nz-col [nzXs]="24" [nzMd]="8">
+        <nz-card nzTitle="Rôles disponibles" [nzExtra]="roleActions" class="role-list-card">
+          <ng-template #roleActions>
+            <button nz-button nzType="primary" (click)="clearForm()">
+              <i nz-icon nzType="plus"></i> Nouveau
+            </button>
+          </ng-template>
+          
+          <nz-list [nzDataSource]="roles" [nzRenderItem]="roleItem" [nzLoading]="roles.length === 0">
+            <ng-template #roleItem let-role>
+              <nz-list-item 
+                class="role-item" 
+                [class.selected]="selectedRole?.roleId === role.roleId"
+                (click)="selectRole(role)">
+                <nz-list-item-meta
+                  [nzAvatar]="roleAvatar"
+                  [nzTitle]="roleTitle"
+                  [nzDescription]="role.description || 'Aucune description'">
+                  <ng-template #roleAvatar>
+                    <nz-avatar nzIcon="user" [ngStyle]="{ backgroundColor: selectedRole?.roleId === role.roleId ? '#1890ff' : '#d9d9d9' }"></nz-avatar>
+                  </ng-template>
+                  <ng-template #roleTitle>
+                    <span>{{ role.roleName }}</span>
+                    <nz-tag [nzColor]="'blue'" class="role-count-tag">
+                      {{ role.permissions.length }} permissions
+                    </nz-tag>
+                  </ng-template>
+                </nz-list-item-meta>
+                <ul nz-list-item-actions>
+                  <nz-list-item-action>
+                    <button 
+                      nz-button 
+                      nzType="primary" 
+                      nzDanger 
+                      nzShape="circle" 
+                      nzSize="small"
+                      (click)="deleteRole(role); $event.stopPropagation()">
+                      <i nz-icon nzType="delete"></i>
+                    </button>
+                  </nz-list-item-action>
+                </ul>
+              </nz-list-item>
+            </ng-template>
+            <nz-list-empty *ngIf="roles.length === 0"></nz-list-empty>
+          </nz-list>
+        </nz-card>
+      </div>
+
+      <!-- Formulaire de rôle -->
+      <div nz-col [nzXs]="24" [nzMd]="16">
+        <nz-card [nzTitle]="formCardTitle" class="role-form-card">
+          <ng-template #formCardTitle>
+            <span *ngIf="selectedRole; else newRole" class="form-card-title">
+              <i nz-icon nzType="edit" nzTheme="outline"></i> 
+              Modifier le rôle: {{ selectedRole.roleName }}
+            </span>
+            <ng-template #newRole>
+              <span class="form-card-title">
+                <i nz-icon nzType="plus-circle" nzTheme="outline"></i>
+                Créer un nouveau rôle
+              </span>
+            </ng-template>
+          </ng-template>
+
+          <form [formGroup]="roleForm" (ngSubmit)="saveRole()" nz-form nzLayout="vertical">
+            <nz-form-item>
+              <nz-form-label nzFor="roleName" nzRequired>Nom du rôle</nz-form-label>
+              <nz-form-control nzErrorTip="Le nom du rôle est requis">
+                <nz-input-group nzPrefixIcon="user">
+                  <input nz-input id="roleName" formControlName="roleName" placeholder="Entrez le nom du rôle">
+                </nz-input-group>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label nzFor="description">Description</nz-form-label>
+              <nz-form-control>
+                <textarea 
+                  nz-input 
+                  id="description" 
+                  rows="3" 
+                  formControlName="description"
+                  placeholder="Décrivez le rôle et son usage prévu">
+                </textarea>
+              </nz-form-control>
+            </nz-form-item>
+
+            <!-- Permissions par catégorie -->
+            <nz-form-item>
+              <nz-form-label>Permissions associées</nz-form-label>
+              <nz-form-control>
+                <nz-collapse [nzBordered]="false" class="permissions-collapse">
+                  <nz-collapse-panel *ngFor="let category of categories; let i = index" 
+                                    [nzHeader]="categoryHeader" 
+                                    [nzActive]="i === 0">
+                    <ng-template #categoryHeader>
+                      <div class="category-header">
+                        <i nz-icon nzType="folder" nzTheme="outline"></i> 
+                        <span>{{ category }}</span>
+                        <nz-badge 
+                          [nzCount]="permissionsByCategory[category].length"
+                          [nzStyle]="{ backgroundColor: '#1890ff' }"
+                          class="category-count">
+                        </nz-badge>
+                      </div>
+                    </ng-template>
+                    
+                    <div class="permissions-grid">
+                      <div *ngFor="let permission of permissionsByCategory[category]" class="permission-item">
+                        <label nz-checkbox 
+                              [nzChecked]="isPermissionSelected(permission.id)"
+                              (nzCheckedChange)="togglePermission(permission.id)"
+                              class="permission-checkbox">
+                          <span class="permission-name">{{ permission.name }}</span>
+                          <span class="permission-description">{{ permission.description }}</span>
+                        </label>
+                      </div>
+                    </div>
+                  </nz-collapse-panel>
+                </nz-collapse>
+              </nz-form-control>
+            </nz-form-item>
+
+            <div class="form-actions">
+              <button nz-button nzType="default" (click)="clearForm()" class="cancel-btn">
+                <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+                {{ selectedRole ? 'Annuler les modifications' : 'Effacer' }}
+              </button>
+              <button nz-button nzType="primary" [disabled]="roleForm.invalid" type="submit">
+                <i nz-icon [nzType]="selectedRole ? 'save' : 'plus-circle'" nzTheme="outline"></i>
+                {{ selectedRole ? 'Mettre à jour' : 'Créer le rôle' }}
+              </button>
+            </div>
+          </form>
+        </nz-card>
+      </div>
+    </div>
+  </div>
+</div> 

@@ -1,0 +1,139 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <ng-container *appHasPermission="'ORDONNANCE_GENERER'">
+        <app-search-add-actions
+          [title]="'Liste des ordonnances'"
+          [showAddButton]="true"
+          [addButtonText]="'Nouvelle ordonnance'"
+          [addButtonLink]="'/doc/ordonnances/create'"
+          [searchPlaceholder]="'Rechercher une ordonnance...'"
+          (searchChange)="onSearchChange($event)"
+        ></app-search-add-actions>
+      </ng-container>
+      
+      <!-- Version sans bouton d'ajout pour les utilisateurs sans permission -->
+      <ng-container *appHasPermission="'ORDONNANCE_CONSULTER'; appHasPermissionMode: 'all'">
+        <ng-container *appHasPermission="['!ORDONNANCE_GENERER']; appHasPermissionMode: 'all'">
+          <app-search-add-actions
+            [title]="'Liste des ordonnances'"
+            [showAddButton]="false"
+            [searchPlaceholder]="'Rechercher une ordonnance...'"
+            (searchChange)="onSearchChange($event)"
+          ></app-search-add-actions>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-12">
+      <nz-card>
+        <nz-table
+          #ordonnancesTable
+          [nzData]="(ordonnances$ | async)?.content || []"
+          [nzLoading]="loading"
+          [nzTotal]="(ordonnances$ | async)?.totalElements || 0"
+          [nzPageSize]="pageSize"
+          [nzPageIndex]="pageIndex + 1"
+          (nzPageIndexChange)="onPageChange($event)"
+          nzShowSizeChanger
+          [nzPageSizeOptions]="[5, 10, 20]"
+          (nzPageSizeChange)="onPageSizeChange($event)"
+        >
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Patient</th>
+              <th>Date d'émission</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ordonnance of ordonnancesTable.data">
+              <td>{{ ordonnance.id }}</td>
+              <td>
+                <span *ngIf="ordonnance.rendezVous?.patient">
+                  {{ ordonnance.rendezVous.patient.nom }}
+                  {{ ordonnance.rendezVous.patient.prenom }}
+                </span>
+                <span *ngIf="!ordonnance.rendezVous?.patient">
+                  Patient inconnu
+                </span>
+              </td>
+              <td>{{ ordonnance.dateEmission | date: 'dd/MM/yyyy' }}</td>
+              <td>
+                <nz-tag [nzColor]="ordonnance.archivee ? 'default' : 'green'">
+                  {{ ordonnance.archivee ? 'Archivée' : 'Active' }}
+                </nz-tag>
+              </td>
+              <td>
+                <nz-space>
+                  <ng-container *nzSpaceItem>
+                    <ng-container *appHasPermission="'ORDONNANCE_CONSULTER'">
+                      <button
+                        nz-button
+                        nzType="primary"
+                        nzShape="circle"
+                        nz-tooltip="Voir l'ordonnance"
+                        [routerLink]="['/doc/ordonnances', ordonnance.id]"
+                      >
+                        <span nz-icon nzType="eye"></span>
+                      </button>
+                    </ng-container>
+                  </ng-container>
+                  
+                  <ng-container *nzSpaceItem>
+                    <ng-container *appHasPermission="'ORDONNANCE_MODIFIER'">
+                      <button
+                        nz-button
+                        nzType="default"
+                        nzShape="circle"
+                        nz-tooltip="Modifier l'ordonnance"
+                        [routerLink]="['/doc/ordonnances/edit', ordonnance.id]"
+                      >
+                        <span nz-icon nzType="edit"></span>
+                      </button>
+                    </ng-container>
+                  </ng-container>
+                  
+                  <ng-container *nzSpaceItem>
+                    <ng-container *appHasPermission="'ORDONNANCE_CONSULTER'">
+                      <button
+                        nz-button
+                        nzType="primary"
+                        nzShape="circle"
+                        nz-tooltip="Générer PDF"
+                        (click)="generatePdf(ordonnance)"
+                      >
+                        <span nz-icon nzType="file-pdf"></span>
+                      </button>
+                    </ng-container>
+                  </ng-container>
+                  
+                  <ng-container *nzSpaceItem>
+                    <ng-container *appHasPermission="'ORDONNANCE_SUPPRIMER'">
+                      <button
+                        nz-button
+                        nzDanger
+                        nzShape="circle"
+                        nz-tooltip="Supprimer l'ordonnance"
+                        nz-popconfirm
+                        nzPopconfirmTitle="Êtes-vous sûr de vouloir supprimer cette ordonnance ?"
+                        nzPopconfirmPlacement="top"
+                        (nzOnConfirm)="deleteOrdonnance(ordonnance.id)"
+                      >
+                        <span nz-icon nzType="delete"></span>
+                      </button>
+                    </ng-container>
+                  </ng-container>
+                </nz-space>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </nz-card>
+    </div>
+  </div>
+</div>

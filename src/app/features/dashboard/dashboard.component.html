@@ -325,6 +325,19 @@
                 <i nz-icon nzType="medicine-box" nzTheme="outline"></i>
                 <span>Liste médecins</span>
               </a>
+              
+              <!-- Boutons pour administrateurs -->
+              <ng-container *appHasPermission="['ADMIN']">
+                <a routerLink="/doc/admin/roles" class="quick-action-btn admin-btn">
+                  <i nz-icon nzType="safety-certificate" nzTheme="outline"></i>
+                  <span>Gestion des rôles</span>
+                </a>
+                
+                <a routerLink="/doc/admin/permissions" class="quick-action-btn admin-btn">
+                  <i nz-icon nzType="lock" nzTheme="outline"></i>
+                  <span>Gestion des permissions</span>
+                </a>
+              </ng-container>
             </div>
           </nz-card>
         </div>
@@ -637,6 +650,19 @@
           <i nz-icon nzType="notification" nzTheme="outline"></i>
           <span>Envoyer notification</span>
         </a>
+        
+        <!-- Boutons pour administrateurs -->
+        <ng-container *appHasPermission="['ADMIN']">
+          <a routerLink="/doc/admin/roles" class="quick-action-btn admin-btn">
+            <i nz-icon nzType="safety-certificate" nzTheme="outline"></i>
+            <span>Gestion des rôles</span>
+          </a>
+          
+          <a routerLink="/doc/admin/permissions" class="quick-action-btn admin-btn">
+            <i nz-icon nzType="lock" nzTheme="outline"></i>
+            <span>Gestion des permissions</span>
+          </a>
+        </ng-container>
       </div>
     </nz-card>
   </div>
