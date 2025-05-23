@@ -1,26 +1,18 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Document } from '../models/document.model';
 import { DossierMedical } from '../models/dossierMedical.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DossierMedicalService {
+export class DocumentService {
   private apiUrl = `${environment.apiUrl}/user/dossiers-medicaux`;
   
   constructor(private http: HttpClient) { }
   
-  getDossierMedical(id: number): Observable<DossierMedical> {
-    return this.http.get<DossierMedical>(`${this.apiUrl}/${id}`);
-  }
-  
-  getDossierMedicalByPatient(patientId: number): Observable<DossierMedical> {
-    return this.http.get<DossierMedical>(`${environment.apiUrl}/user/patients/${patientId}/dossier-medical`);
-  }
-  
-  // Method to upload document to a dossier medical
   uploadDocument(
     dossierMedicalId: number, 
     nom: string, 
@@ -46,15 +38,21 @@ export class DossierMedicalService {
     return this.http.post<DossierMedical>(`${environment.apiUrl}/admin/dossiers-medicaux/${dossierMedicalId}/documents`, formData);
   }
   
-  // Méthode pour télécharger un document
+  getDocumentsByDossierMedical(dossierMedicalId: number): Observable<Document[]> {
+    return this.http.get<Document[]>(`${this.apiUrl}/${dossierMedicalId}/documents`);
+  }
+  
+  getDocumentById(dossierMedicalId: number, documentId: number): Observable<Document> {
+    return this.http.get<Document>(`${this.apiUrl}/${dossierMedicalId}/documents/${documentId}`);
+  }
+  
+  deleteDocument(dossierMedicalId: number, documentId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${dossierMedicalId}/documents/${documentId}`);
+  }
+  
   downloadDocument(dossierMedicalId: number, documentId: number): Observable<Blob> {
     return this.http.get(`${this.apiUrl}/${dossierMedicalId}/documents/${documentId}/download`, {
       responseType: 'blob'
     });
   }
-  
-  // Méthode pour supprimer un document
-  deleteDocument(dossierMedicalId: number, documentId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${dossierMedicalId}/documents/${documentId}`);
-  }
-}
+} 

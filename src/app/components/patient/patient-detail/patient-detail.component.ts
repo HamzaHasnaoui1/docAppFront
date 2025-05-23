@@ -31,6 +31,8 @@ import { PdfService } from '../../../service/pdf.service';
 import { NzCheckboxGroupComponent, NzCheckboxWrapperComponent } from 'ng-zorro-antd/checkbox';
 import { PatientStatsComponent } from '../patient-stats/patient-stats.component';
 import { OrdonnanceService } from '../../../service/ordonnance.service';
+import { Document } from '../../../models/document.model';
+import { DocumentAttachmentComponent } from '../../../shared/document-attachment/document-attachment.component';
 
 @Component({
   selector: 'app-patient-detail',
@@ -62,7 +64,8 @@ import { OrdonnanceService } from '../../../service/ordonnance.service';
     NzTabComponent,
     NzTabSetComponent,
     NzResultModule,
-    PatientStatsComponent
+    PatientStatsComponent,
+    DocumentAttachmentComponent
   ],
   styleUrl: './patient-detail.component.scss'
 })
@@ -321,23 +324,24 @@ export class PatientDetailComponent implements OnInit {
   }
 
   generateAndShowOrdonnance(rdv: RendezVous): void {
-    if (!rdv || !rdv.id) return;
-
-    const defaultOrdonnance = {
-      contenu: 'Contenu par défaut généré automatiquement.',
-      remarques: '',
-      archivee: false
-    };
-
-    this.patientService.createOrdonnance(rdv.id, defaultOrdonnance).subscribe({
-      next: (ordonnance) => {
-        rdv.ordonnance = ordonnance;
-        this.showOrdonnanceModal(rdv);
-      },
-      error: (err) => {
-        this.message.error('Erreur lors de la génération de l\'ordonnance');
-        console.error(err);
-      }
-    });
+    // TODO: Implémenter la génération d'ordonnance automatique
+    this.message.info('Fonctionnalité en cours de développement');
+  }
+  
+  onDocumentsUpdated(documents: Document[]): void {
+    this.patient$ = this.patient$.pipe(
+      map(patient => {
+        if (patient && patient.dossierMedical) {
+          return {
+            ...patient,
+            dossierMedical: {
+              ...patient.dossierMedical,
+              documents: documents
+            }
+          };
+        }
+        return patient;
+      })
+    );
   }
 }

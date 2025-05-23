@@ -1,4 +1,5 @@
 import {Patient} from './patient.model';
+import {Document} from './document.model';
 
 export interface DossierMedical {
   id: number;
@@ -7,4 +8,5 @@ export interface DossierMedical {
   antecedents: string;
   traitementsChroniques: string;
   groupeSanguin: string;
+  documents?: Document[];
 }

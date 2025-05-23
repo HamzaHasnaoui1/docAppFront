@@ -84,6 +84,15 @@
                     </nz-descriptions-item>
                   </nz-descriptions>
                 </div>
+                
+                <!-- Documents du patient -->
+                <div class="documents-section">
+                  <app-document-attachment 
+                    [dossierMedicalId]="patient.dossierMedical.id"
+                    [documents]="patient.dossierMedical.documents || []"
+                    (documentsUpdated)="onDocumentsUpdated($event)">
+                  </app-document-attachment>
+                </div>
               </nz-card>
 
               <ng-template #noMedicalRecord>

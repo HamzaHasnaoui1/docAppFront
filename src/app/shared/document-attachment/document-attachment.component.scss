@@ -1,0 +1,75 @@
+.document-attachment-container {
+  margin-bottom: 2rem;
+}
+
+.document-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.document-list {
+  margin-top: 1rem;
+}
+
+.no-documents {
+  padding: 2rem;
+  text-align: center;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  color: #6c757d;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.upload-progress {
+  margin-top: 1rem;
+}
+
+.ml-1 {
+  margin-left: 0.5rem;
+}
+
+/* Customize table appearance */
+:host ::ng-deep {
+  .ant-table-thead > tr > th {
+    background-color: #f0f2ff;
+    font-weight: 600;
+  }
+  
+  .ant-btn-primary {
+    background-color: #1890ff;
+    border-color: #1890ff;
+  }
+  
+  .ant-btn-danger {
+    background-color: #ff4d4f;
+    border-color: #ff4d4f;
+    color: white;
+  }
+}
+
+/* Alert styles */
+.alert {
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+}
+
+.alert-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+.alert-success {
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+} 

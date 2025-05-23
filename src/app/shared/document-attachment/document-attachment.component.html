@@ -1,0 +1,131 @@
+<div class="document-attachment-container">
+  <!-- Alert messages -->
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+  <!-- Document List -->
+  <div class="document-list">
+    <div class="document-list-header">
+      <h3>Documents</h3>
+      <button nz-button nzType="primary" (click)="showModal()">
+        <i nz-icon nzType="upload"></i> Ajouter un document
+      </button>
+    </div>
+
+    <div *ngIf="loading" class="loading-spinner">
+      <nz-spin nzTip="Chargement..."></nz-spin>
+    </div>
+
+    <div *ngIf="!loading && (!documents || documents.length === 0)" class="no-documents">
+      <p>Aucun document disponible</p>
+    </div>
+
+    <nz-table
+      #documentTable
+      [nzData]="documents"
+      [nzPageSize]="5"
+      [nzLoading]="loading"
+      *ngIf="!loading && documents && documents.length > 0"
+    >
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Type</th>
+          <th>Catégorie</th>
+          <th>Date d'ajout</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let doc of documentTable.data">
+          <td>{{ doc.nom }}</td>
+          <td>{{ doc.type }}</td>
+          <td>{{ doc.categorie || 'Non spécifié' }}</td>
+          <td>{{ doc.dateAjout | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <button nz-button nzType="primary" nzSize="small" (click)="downloadDocument(doc)" nzShape="circle">
+              <i nz-icon nzType="download"></i>
+            </button>
+            <button nz-button nzType="primary" nzDanger nzSize="small" (click)="deleteDocument(doc)" nzShape="circle" class="ml-1">
+              <i nz-icon nzType="delete"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+
+  <!-- Upload Document Modal -->
+  <nz-modal
+    [(nzVisible)]="isModalVisible"
+    nzTitle="Ajouter un document"
+    [nzOkText]="'Télécharger'"
+    nzCancelText="Annuler"
+    (nzOnCancel)="handleCancel()"
+    (nzOnOk)="uploadDocument()"
+    [nzOkDisabled]="!documentForm.valid || !selectedFile"
+  >
+    <form nz-form [formGroup]="documentForm" *nzModalContent>
+      <!-- Document Name -->
+      <nz-form-item>
+        <nz-form-label nzRequired>Nom du document</nz-form-label>
+        <nz-form-control nzErrorTip="Le nom du document est requis">
+          <input nz-input formControlName="nom" placeholder="Nom du document" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- Document Type -->
+      <nz-form-item>
+        <nz-form-label nzRequired>Type de document</nz-form-label>
+        <nz-form-control nzErrorTip="Le type de document est requis">
+          <nz-select formControlName="type" nzPlaceHolder="Sélectionner un type">
+            <nz-option
+              *ngFor="let type of documentTypes"
+              [nzValue]="type.value"
+              [nzLabel]="type.label"
+            ></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- Document Category -->
+      <nz-form-item>
+        <nz-form-label>Catégorie (optionnel)</nz-form-label>
+        <nz-form-control>
+          <nz-select formControlName="categorie" nzPlaceHolder="Sélectionner une catégorie">
+            <nz-option
+              *ngFor="let category of documentCategories"
+              [nzValue]="category.value"
+              [nzLabel]="category.label"
+            ></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- Document Description -->
+      <nz-form-item>
+        <nz-form-label>Description (optionnel)</nz-form-label>
+        <nz-form-control>
+          <textarea nz-input formControlName="description" rows="3" placeholder="Description du document"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- File Upload -->
+      <nz-form-item>
+        <nz-form-label nzRequired>Fichier</nz-form-label>
+        <nz-form-control>
+          <input type="file" (change)="onFileSelect($event)" />
+          <div *ngIf="selectedFile" class="mt-2">
+            <p>Fichier sélectionné: {{ selectedFile.name }}</p>
+          </div>
+          <small class="text-muted">Types de fichiers supportés: PDF, JPG, PNG, DOCX.</small>
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- Upload Progress -->
+      <div *ngIf="uploadProgress > 0" class="upload-progress">
+        <nz-progress [nzPercent]="uploadProgress" nzStatus="active"></nz-progress>
+      </div>
+    </form>
+  </nz-modal>
+</div> 

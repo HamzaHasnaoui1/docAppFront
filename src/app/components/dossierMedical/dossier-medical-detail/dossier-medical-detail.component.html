@@ -1,0 +1,47 @@
+<div class="container mt-4">
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+  <div *ngIf="dossierMedical" class="card">
+    <div class="card-header bg-primary text-white">
+      <h2>Dossier Médical #{{ dossierMedical.id }}</h2>
+      <p *ngIf="dossierMedical.patient">
+        Patient: {{ dossierMedical.patient.nom }}
+      </p>
+    </div>
+
+    <div class="card-body">
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <h3>Informations du dossier</h3>
+          <ul class="list-group">
+            <li class="list-group-item"><strong>Groupe sanguin:</strong> {{ dossierMedical.groupeSanguin }}</li>
+            <li class="list-group-item"><strong>Allergies:</strong> {{ dossierMedical.allergies || 'Aucune' }}</li>
+            <li class="list-group-item"><strong>Antécédents:</strong> {{ dossierMedical.antecedents || 'Aucun' }}</li>
+            <li class="list-group-item">
+              <strong>Traitements chroniques:</strong>
+              {{ dossierMedical.traitementsChroniques || 'Aucun' }}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Documents section -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <app-document-attachment 
+            [dossierMedicalId]="dossierMedical.id"
+            [documents]="dossierMedical.documents || []"
+            (documentsUpdated)="onDocumentsUpdated($event)">
+          </app-document-attachment>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

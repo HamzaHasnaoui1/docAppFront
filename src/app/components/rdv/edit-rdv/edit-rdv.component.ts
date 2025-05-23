@@ -338,7 +338,7 @@ export class EditRdvComponent implements OnInit {
           });
         }
       });
-      
+
       this.message.warning('Veuillez remplir tous les champs requis');
       return;
     }
@@ -361,25 +361,25 @@ export class EditRdvComponent implements OnInit {
       }),
       switchMap(updatedRdv => {
         if (!updatedRdv) return of(null);
-        
+
         // Étape 2: Mettre à jour ou créer les données médicales
         // Vérifier si les données médicales existent déjà
         let medicalDataOperation;
-        
+
         if (medicalData.id) {
           // Créer une copie sans rendezVousId pour la mise à jour
           const { rendezVousId, ...updateData } = medicalData as any;
           medicalDataOperation = this.donneesPhysioService.updateDonneesPhysiologiques(
-            medicalData.id, 
+            medicalData.id,
             updateData as DonneesPhysiologiques
           );
         } else {
           medicalDataOperation = this.donneesPhysioService.saveDonneesPhysiologiques(
-            medicalData, 
+            medicalData,
             this.rdvId
           );
         }
-        
+
         return medicalDataOperation.pipe(
           catchError(err => {
             console.error('Erreur données physiologiques:', err);
@@ -389,11 +389,11 @@ export class EditRdvComponent implements OnInit {
           switchMap(() => {
             // Étape 3: Gérer l'ordonnance et les médicaments
             const ordId = updatedRdv.ordonnance?.id;
-            
+
             // Si l'ordonnance existe déjà, la mettre à jour
             if (ordId && ordonnanceData) {
               return this.ordonnanceService.updateOrdonnance(
-                ordId, 
+                ordId,
                 {
                   id: ordId,
                   ...ordonnanceData
@@ -422,7 +422,7 @@ export class EditRdvComponent implements OnInit {
                 archivee: false,
                 rendezVous: { id: this.rdvId } as any
               };
-              
+
               return this.ordonnanceService.createOrdonnance(newOrdonnance).pipe(
                 catchError(err => {
                   console.error('Erreur création ordonnance:', err);
@@ -437,7 +437,7 @@ export class EditRdvComponent implements OnInit {
                 })
               );
             }
-            
+
             return of(null);
           })
         );
@@ -476,7 +476,7 @@ export class EditRdvComponent implements OnInit {
 
   prepareMedicalData(): DonneesPhysiologiques {
     const formValue = this.medicalDataForm.value;
-    
+
     // Base object with common properties
     const baseData = {
       id: formValue.id,
@@ -494,7 +494,7 @@ export class EditRdvComponent implements OnInit {
       imc: formValue.imc || 0,
       rendezVousDate: formValue.rendezVousDate || new Date().toISOString()
     };
-    
+
     // Add rendezVousId only for new records
     if (!formValue.id) {
       return {
@@ -502,7 +502,7 @@ export class EditRdvComponent implements OnInit {
         rendezVousId: this.rdvId
       };
     }
-    
+
     return baseData as DonneesPhysiologiques;
   }
 
@@ -513,10 +513,10 @@ export class EditRdvComponent implements OnInit {
   prepareOrdonnanceData(): any {
     const ordonnanceGroup = this.rdvForm.get('ordonnance');
     if (!ordonnanceGroup) return null;
-    
+
     const ordonnanceValue = ordonnanceGroup.value;
     if (!ordonnanceValue) return null;
-    
+
     return {
       contenu: ordonnanceValue.contenu || '',
       remarques: ordonnanceValue.remarques || '',
@@ -529,10 +529,10 @@ export class EditRdvComponent implements OnInit {
     // Debug log
     console.log('Processing medicaments for ordonnance:', ordonnanceId);
     console.log('Medicaments data:', medicamentsData);
-    
+
     // Ensure ordonnanceId is a number
     const safeOrdonnanceId = Number(ordonnanceId);
-    
+
     // Plutôt que de mettre à jour chaque médicament individuellement,
     // nous allons d'abord récupérer l'ordonnance complète
     return this.ordonnanceService.getOrdonnanceById(safeOrdonnanceId).pipe(
@@ -542,7 +542,7 @@ export class EditRdvComponent implements OnInit {
       }),
       switchMap(ordonnance => {
         if (!ordonnance) return of(null);
-        
+
         // Créer des requêtes pour chaque médicament
         const medicamentRequests = medicamentsData.map(medicament => {
           // Créer le DTO avec le format attendu par le backend
@@ -555,15 +555,15 @@ export class EditRdvComponent implements OnInit {
             duree: medicament.duree || '',
             frequence: medicament.frequence || ''
           };
-          
+
           // Ajouter l'ID si existant
           if (medicament.id) {
             dto.id = medicament.id;
           }
-          
+
           // Debug: log the DTO being sent
           console.log('Sending medicament DTO:', JSON.stringify(dto));
-          
+
           if (medicament.id) {
             return this.ordonnanceMedicamentService.updateMedicament(
               medicament.id,
