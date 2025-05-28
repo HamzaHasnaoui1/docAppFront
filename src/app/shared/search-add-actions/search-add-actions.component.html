@@ -2,13 +2,11 @@
   <div class="title-container" *ngIf="title">
     <h2>{{ title }}</h2>
   </div>
-  
+
   <div class="actions-container">
     <form [formGroup]="searchForm" class="search-form">
       <nz-input-group nzSearch [nzAddOnAfter]="searchButton">
-        <input type="text" formControlName="keyword" nz-input
-          [placeholder]="searchPlaceholder"
-        />
+        <input type="text" formControlName="keyword" nz-input [placeholder]="searchPlaceholder" />
         <ng-template #searchButton>
           <button nz-button nzType="primary" nzSearch>
             <span nz-icon nzType="search"></span>
@@ -22,7 +20,7 @@
         <span nz-icon nzType="plus" nzTheme="outline"></span>
         {{ addButtonText }}
       </button>
-      
+
       <a *ngIf="addButtonLink" [routerLink]="addButtonLink" nz-button nzType="primary" class="add-btn">
         <span nz-icon nzType="plus" nzTheme="outline"></span>
         {{ addButtonText }}

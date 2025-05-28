@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { UserService } from '../../../service/user.service';
 import { AuthService } from '../../auth/auth.service';
 import { NzCardComponent } from 'ng-zorro-antd/card';
 import { CommonModule } from '@angular/common';
@@ -13,6 +12,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzIconDirective } from 'ng-zorro-antd/icon';
+import {UserService} from '../../../service/user.service';
 
 @Component({
   selector: 'app-edit-profile',

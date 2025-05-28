@@ -13,8 +13,8 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { DirectivesModule } from '../../../directives/directives.module';
 import { User } from '../../../models/auth-response.model';
 import { Role, Permission } from '../../../models/permission.model';
-import { PermissionService } from '../../../services/permission.service';
-import { UserService } from '../../../services/user.service';
+import { PermissionService } from '../../../service/permission.service';
+import { UserService } from '../../../service/user.service';
 
 @Component({
   selector: 'app-user-permissions',
@@ -100,9 +100,9 @@ export class UserPermissionsComponent implements OnInit {
     console.log('Mise à jour des rôles pour:', this.selectedUser);
     console.log('ID utilisateur:', this.selectedUser.userId || this.selectedUser.id);
     console.log('Rôles sélectionnés:', this.selectedRoles);
-    
+
     const userId = this.selectedUser.userId || this.selectedUser.id;
-    
+
     if (!userId) {
       this.message.error('ID utilisateur non défini - problème avec l\'objet utilisateur');
       console.error('ID utilisateur manquant dans:', this.selectedUser);
@@ -157,4 +157,4 @@ export class UserPermissionsComponent implements OnInit {
     this.selectedUser = null;
     this.selectedRoles = [];
   }
-} 
+}

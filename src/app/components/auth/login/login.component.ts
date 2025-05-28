@@ -41,7 +41,8 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
@@ -58,17 +59,22 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     }
+
     this.errorMessage = null;
     this.loading = true;
 
-    this.authService.login(this.loginForm.value)
-      .subscribe({
-        next: () => {
-          this.router.navigate(['/doc/dashboard']);
-        },
-        error: (error) => {
-          this.loading = false;
-          this.errorMessage = error.message || "Une erreur est survenue. Veuillez réessayer plus tard.";
-        }
-      });
-  }}
+    this.authService.login(this.loginForm.value).subscribe({
+      next: () => {
+        this.router.navigate(['/doc/dashboard']);
+      },
+      error: (error) => {
+        this.loading = false;
+        this.errorMessage =
+          error?.error?.message ||
+          error?.message ||
+          "Nom d'utilisateur ou mot de passe incorrect.";
+        setTimeout(() => this.errorMessage = null, 50000);
+      }
+    });
+  }
+}

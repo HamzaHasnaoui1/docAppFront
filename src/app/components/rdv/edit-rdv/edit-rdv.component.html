@@ -74,11 +74,11 @@
           <div class="form-actions">
             <button nz-button (click)="onCancel()" type="button">Annuler</button>
             <button nz-button nzType="primary" (click)="activeTab = 1" type="button" [disabled]="rdvForm.invalid">Suivant</button>
-            <button 
-              nz-button 
-              nzType="default" 
-              (click)="generatePrescription()" 
-              type="button" 
+            <button
+              nz-button
+              nzType="default"
+              (click)="generatePrescription()"
+              type="button"
               [disabled]="!rdvForm.get('ordonnance.id')?.value || medicaments.length === 0 || generatingPdf"
               *ngIf="rdvForm.get('ordonnance.id')?.value">
               <i nz-icon nzType="file-pdf" nzTheme="outline" *ngIf="!generatingPdf"></i>
@@ -168,11 +168,11 @@
           <div class="form-actions">
             <button nz-button (click)="activeTab = 0" type="button">Précédent</button>
             <button nz-button nzType="primary" (click)="activeTab = 2" type="button">Suivant</button>
-            <button 
-              nz-button 
-              nzType="default" 
-              (click)="generatePrescription()" 
-              type="button" 
+            <button
+              nz-button
+              nzType="default"
+              (click)="generatePrescription()"
+              type="button"
               [disabled]="!rdvForm.get('ordonnance.id')?.value || medicaments.length === 0 || generatingPdf"
               *ngIf="rdvForm.get('ordonnance.id')?.value">
               <i nz-icon nzType="file-pdf" nzTheme="outline" *ngIf="!generatingPdf"></i>

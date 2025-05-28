@@ -1,21 +1,40 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {environment} from '../../environments/environment';
-import {User} from '../models/auth-response.model';
+import { User } from '../models/auth-response.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
+  private apiUrl = `${environment.apiUrl}/admin`;
 
   constructor(private http: HttpClient) { }
 
-  getUserById(userId: string): Observable<any> {
-    return this.http.get<any>(`${environment.apiUrl}/admin/auth/users/${userId}`);
+  getAllUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/users`);
   }
 
-  updateUser(userId: string, userData: any): Observable<any> {
-    return this.http.put(`${environment.apiUrl}/admin/auth/update-user/${userId}`, userData);
+  getUserById(id: string): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/users/${id}`);
   }
+
+  createUser(user: User): Observable<User> {
+    return this.http.post<User>(`${this.apiUrl}/users`, user);
+  }
+
+  updateUser(id: string, user: User): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/users/${id}`, user);
+  }
+
+  deleteUser(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/users/${id}`);
+  }
+
+  updateUserRoles(id: string, roles: string[]): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/users/${id}/roles`, { roles });
+  }
+
+
 }

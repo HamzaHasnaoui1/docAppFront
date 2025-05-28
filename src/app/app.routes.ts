@@ -13,13 +13,13 @@ export const routes: Routes = [
   },
   // Routes d'accès direct
   {
-    path: 'gestion-roles',
+    path: 'gestion-permissions',
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['ADMIN'] },
     loadComponent: () => import('./components/admin/role-management/role-management.component').then(c => c.RoleManagementComponent),
   },
   {
-    path: 'gestion-permissions',
+    path: 'gestion-roles',
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['ADMIN'] },
     loadComponent: () => import('./components/admin/user-permissions/user-permissions.component').then(c => c.UserPermissionsComponent),

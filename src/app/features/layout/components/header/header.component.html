@@ -6,7 +6,6 @@
       <li><a routerLink="patients" routerLinkActive="active">Patients</a></li>
       <li><a routerLink="medecin" routerLinkActive="active">Médecins</a></li>
       <li><a routerLink="rdv" routerLinkActive="active">Rendez-vous</a></li>
-
       <li>
         <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="mainMenu" [nzPlacement]="'bottomRight'">
     <span class="menu-label">
@@ -21,7 +20,7 @@
             <li nz-menu-item routerLink="/factures">
               <i nz-icon nzType="file-protect"></i> Factures
             </li>
-            
+
             <!-- Section Administration -->
             <ng-container *appHasPermission="'ROLE_LIST'">
               <li nz-menu-divider></li>
@@ -36,7 +35,7 @@
                 </ul>
               </li>
             </ng-container>
-            
+
             <li nz-menu-divider></li>
             <li nz-menu-item (click)="edit()">
               <i nz-icon nzType="user"></i> Profil
