@@ -1,21 +1,9 @@
+// src/app/services/ordonnance-medicament.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { map } from 'rxjs/operators';
-
-export interface OrdonnanceMedicamentDTO {
-  id?: number;
-  medicamentId: number; // Make this required since it's used in getMedicamentById
-  medicament?: {
-    id: number;
-    nom?: string;
-  };
-  ordonnanceId?: number; // Already optional
-  dosage: string;
-  duree: string;
-  frequence: string;
-}
+import { OrdonnanceMedicament } from '../models/OrdonnanceMedicament.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,31 +11,23 @@ export interface OrdonnanceMedicamentDTO {
 export class OrdonnanceMedicamentService {
   constructor(private http: HttpClient) {}
 
-  getMedicamentsByOrdonnance(ordonnanceId: number): Observable<OrdonnanceMedicamentDTO[]> {
-    return this.http.get<OrdonnanceMedicamentDTO[]>(
+  getMedicamentsByOrdonnance(ordonnanceId: number): Observable<OrdonnanceMedicament[]> {
+    return this.http.get<OrdonnanceMedicament[]>(
       `${environment.apiUrl}/user/ordonnances/${ordonnanceId}/medicaments`
     );
   }
 
-  ajouterMedicament(ordonnanceId: number, medicament: OrdonnanceMedicamentDTO): Observable<OrdonnanceMedicamentDTO> {
-    // Transform the DTO to match the backend expectations
-    const backendDTO = this.transformToBackendFormat(medicament);
-    console.log('Sending to backend (add):', backendDTO);
-    
-    return this.http.post<OrdonnanceMedicamentDTO>(
+  ajouterMedicament(ordonnanceId: number, medicament: OrdonnanceMedicament): Observable<OrdonnanceMedicament> {
+    return this.http.post<OrdonnanceMedicament>(
       `${environment.apiUrl}/admin/ordonnances/${ordonnanceId}/medicaments`,
-      backendDTO
+      this.toDto(medicament)
     );
   }
 
-  updateMedicament(id: number, medicament: OrdonnanceMedicamentDTO): Observable<OrdonnanceMedicamentDTO> {
-    // Transform the DTO to match the backend expectations
-    const backendDTO = this.transformToBackendFormat(medicament);
-    console.log('Sending to backend (update):', backendDTO);
-    
-    return this.http.put<OrdonnanceMedicamentDTO>(
+  updateMedicament(id: number, medicament: OrdonnanceMedicament): Observable<OrdonnanceMedicament> {
+    return this.http.put<OrdonnanceMedicament>(
       `${environment.apiUrl}/admin/ordonnances/medicaments/${id}`,
-      backendDTO
+      this.toDto(medicament)
     );
   }
 
@@ -56,28 +36,16 @@ export class OrdonnanceMedicamentService {
       `${environment.apiUrl}/admin/ordonnances/medicaments/${id}`
     );
   }
-  
-  // Helper method to transform the DTO to match backend expectations
-  private transformToBackendFormat(dto: OrdonnanceMedicamentDTO): any {
-    // Create a new object with the expected structure
-    const backendDTO: any = {
-      dosage: dto.dosage,
-      duree: dto.duree,
-      frequence: dto.frequence
+
+  private toDto(medicament: OrdonnanceMedicament): any {
+    return {
+      id: medicament.id,
+      ordonnanceId: medicament.ordonnanceId,
+      medicament: medicament.medicament ? { id: medicament.medicament.id } : undefined,
+      posologie: medicament.posologie,
+      duree: medicament.duree,
+      frequence: medicament.frequence,
+      instructions: medicament.instructions
     };
-    
-    // Add ID if it exists
-    if (dto.id) {
-      backendDTO.id = dto.id;
-    }
-    
-    // Add medicament ID in the format expected by the backend
-    if (dto.medicament && dto.medicament.id) {
-      backendDTO.medicament = { id: dto.medicament.id };
-    } else if (dto.medicamentId) {
-      backendDTO.medicament = { id: dto.medicamentId };
-    }
-    
-    return backendDTO;
   }
 }

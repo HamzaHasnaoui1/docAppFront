@@ -43,51 +43,55 @@ export class RdvListComponent implements OnInit {
 
   loadAllRdvs(): void {
     this.rdvService.getAllRdvs().pipe(
-      map((response: RendezVous[]) => response), // Supprime le mapping de .rdvs car l'API retourne directement le tableau
+      map((response: RendezVous[]) => response),
       catchError(err => {
         this.message.error('Erreur de chargement des rendez-vous');
         return of([]);
       })
     ).subscribe(rdvs => {
       this.allRdvs = rdvs;
-      console.log('Rendez-vous chargés:', this.allRdvs); // Debug
+      console.log('Rendez-vous chargés:', this.allRdvs);
     });
   }
 
   initWeekDays(): void {
     const today = new Date();
     const dayOfWeek = today.getDay();
-    const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Lundi comme premier jour
+    const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
 
-    this.weekStart = new Date(today.setDate(diff));
+    this.weekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1));
     this.weekEnd = new Date(this.weekStart);
     this.weekEnd.setDate(this.weekStart.getDate() + 6);
 
     this.generateWeekDays();
+    console.log('Semaine initialisée:', this.weekStart, 'à', this.weekEnd);
   }
 
   generateWeekDays(): void {
     this.weekDays = [];
-    const currentDate = new Date(this.weekStart);
 
     for (let i = 0; i < 7; i++) {
-      const day = new Date(currentDate);
+      const day = new Date(this.weekStart);
+      day.setDate(this.weekStart.getDate() + i);
       this.weekDays.push(day);
-      currentDate.setDate(currentDate.getDate() + 1);
     }
-    console.log('Jours de la semaine:', this.weekDays); // Debug
+    console.log('Jours de la semaine générés:', this.weekDays);
   }
 
   previousWeek(): void {
-    this.weekStart.setDate(this.weekStart.getDate() - 7);
-    this.weekEnd.setDate(this.weekEnd.getDate() - 7);
+    this.weekStart = new Date(this.weekStart.getTime() - 7 * 24 * 60 * 60 * 1000);
+    this.weekEnd = new Date(this.weekEnd.getTime() - 7 * 24 * 60 * 60 * 1000);
+
     this.generateWeekDays();
+    console.log('Semaine précédente:', this.weekStart, 'à', this.weekEnd);
   }
 
   nextWeek(): void {
-    this.weekStart.setDate(this.weekStart.getDate() + 7);
-    this.weekEnd.setDate(this.weekEnd.getDate() + 7);
+    this.weekStart = new Date(this.weekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
+    this.weekEnd = new Date(this.weekEnd.getTime() + 7 * 24 * 60 * 60 * 1000);
+
     this.generateWeekDays();
+    console.log('Semaine suivante:', this.weekStart, 'à', this.weekEnd);
   }
 
   getDayRdvs(day: Date): RendezVous[] {
@@ -106,7 +110,6 @@ export class RdvListComponent implements OnInit {
       return new Date(a.date).getTime() - new Date(b.date).getTime();
     });
 
-    console.log(`RDVs pour ${day.toDateString()}:`, dayRdvs); // Debug
     return dayRdvs;
   }
 
