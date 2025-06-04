@@ -156,19 +156,19 @@ export class AuthService {
     if (!user) return false;
     return user.roles.some(r => r.toLowerCase() === role.toLowerCase());
   }
-  
+
   hasPermission(permission: string): boolean {
     const user = this.currentUserSubject.value;
     if (!user || !user.permissions) return false;
     return user.permissions.some(p => p === permission);
   }
-  
+
   hasAnyPermission(permissions: string[]): boolean {
     const user = this.currentUserSubject.value;
     if (!user || !user.permissions) return false;
     return permissions.some(permission => user.permissions?.includes(permission));
   }
-  
+
   hasAllPermissions(permissions: string[]): boolean {
     const user = this.currentUserSubject.value;
     if (!user || !user.permissions) return false;

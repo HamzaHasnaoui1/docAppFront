@@ -14,23 +14,25 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import {NzInputDirective} from 'ng-zorro-antd/input';
 
 @Component({
   selector: 'app-document-attachment',
   standalone: true,
   imports: [
-    CommonModule, 
-    ReactiveFormsModule, 
-    NzModalModule, 
-    NzButtonModule, 
-    NzUploadModule, 
-    NzMessageModule, 
+    CommonModule,
+    ReactiveFormsModule,
+    NzModalModule,
+    NzButtonModule,
+    NzUploadModule,
+    NzMessageModule,
     NzFormModule,
     NzSelectModule,
     NzTableModule,
     NzIconModule,
     NzSpinModule,
-    NzProgressModule
+    NzProgressModule,
+    NzInputDirective
   ],
   templateUrl: './document-attachment.component.html',
   styleUrls: ['./document-attachment.component.scss']
@@ -39,7 +41,7 @@ export class DocumentAttachmentComponent implements OnInit {
   @Input() dossierMedicalId!: number;
   @Input() documents: Document[] = [];
   @Output() documentsUpdated = new EventEmitter<Document[]>();
-  
+
   documentForm: FormGroup;
   selectedFile: File | null = null;
   loading = false;
@@ -47,7 +49,7 @@ export class DocumentAttachmentComponent implements OnInit {
   successMessage = '';
   errorMessage = '';
   isModalVisible = false;
-  
+
   documentTypes = [
     { value: 'radiographie', label: 'Radiographie' },
     { value: 'ordonnance', label: 'Ordonnance' },
@@ -55,7 +57,7 @@ export class DocumentAttachmentComponent implements OnInit {
     { value: 'compte-rendu', label: 'Compte-rendu médical' },
     { value: 'autre', label: 'Autre' }
   ];
-  
+
   documentCategories = [
     { value: 'resultat_analyse', label: 'Résultat d\'analyse' },
     { value: 'compte_rendu', label: 'Compte rendu' },
@@ -63,7 +65,7 @@ export class DocumentAttachmentComponent implements OnInit {
     { value: 'prescription', label: 'Prescription' },
     { value: 'autre', label: 'Autre' }
   ];
-  
+
   constructor(
     private fb: FormBuilder,
     private dossierMedicalService: DossierMedicalService,
@@ -76,11 +78,11 @@ export class DocumentAttachmentComponent implements OnInit {
       categorie: ['']
     });
   }
-  
+
   ngOnInit(): void {
     this.loadDossierMedical();
   }
-  
+
   loadDossierMedical(): void {
     if (this.dossierMedicalId) {
       this.loading = true;
@@ -101,16 +103,16 @@ export class DocumentAttachmentComponent implements OnInit {
       });
     }
   }
-  
+
   showModal(): void {
     this.isModalVisible = true;
   }
-  
+
   handleCancel(): void {
     this.isModalVisible = false;
     this.resetForm();
   }
-  
+
   resetForm(): void {
     this.documentForm.reset();
     this.selectedFile = null;
@@ -118,21 +120,21 @@ export class DocumentAttachmentComponent implements OnInit {
     this.successMessage = '';
     this.errorMessage = '';
   }
-  
+
   onFileSelect(event: any): void {
     if (event.target.files.length > 0) {
       this.selectedFile = event.target.files[0];
     }
   }
-  
+
   uploadDocument(): void {
     if (this.documentForm.valid && this.selectedFile && this.dossierMedicalId) {
       this.loading = true;
       this.errorMessage = '';
       this.successMessage = '';
-      
+
       const { nom, type, description, categorie } = this.documentForm.value;
-      
+
       this.dossierMedicalService.uploadDocument(
         this.dossierMedicalId,
         nom,
@@ -161,7 +163,7 @@ export class DocumentAttachmentComponent implements OnInit {
       });
     }
   }
-  
+
   downloadDocument(doc: Document): void {
     if (doc.urlAcces) {
       window.open(doc.urlAcces, '_blank');
@@ -169,8 +171,8 @@ export class DocumentAttachmentComponent implements OnInit {
       this.messageService.warning('La fonctionnalité de téléchargement nécessite une mise à jour du backend');
     }
   }
-  
+
   deleteDocument(doc: Document): void {
     this.messageService.warning('La fonctionnalité de suppression nécessite une mise à jour du backend');
   }
-} 
+}

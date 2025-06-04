@@ -1,4 +1,5 @@
 .patient-detail-container {
+  position: relative;
   padding: 20px;
   background-color: #f5f7fa;
   min-height: calc(100vh - 64px);
@@ -130,19 +131,133 @@
   }
 
   .patient-actions {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 20px;
+    display: none;
+  }
+  .fab-container {
+    position: fixed; /* Changé de absolute à fixed */
+    bottom: 24px;
+    right: 24px;
+    z-index: 1000;
+    transition: transform 0.3s ease;
 
-    button {
-      min-width: 180px;
-      height: 40px;
-
-      i {
-        margin-right: 5px;
-      }
+    /* Animation de tremblement pour attirer l'attention */
+    &:hover {
+      animation: pulse 1.5s infinite;
     }
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+
+  .fab-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .fab-main {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #1890ff;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(24, 144, 255, 0.4);
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    position: relative;
+
+
+    &:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 24px rgba(24, 144, 255, 0.5);
+    }
+
+    .icon {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+  }
+
+  .fab-submenu {
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+
+
+    &.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    /* Ajustements pour mobile */
+    .fab-container {
+      bottom: 80px;
+      right: 20px;
+    }
+
+    .fab-main {
+      width: 50px;
+      height: 50px;
+    }
+
+    .fab-item {
+      width: 44px;
+      height: 44px;
+    }
+  }
+
+  .fab-item {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s;
+
+    .icon {
+      width: 20px;
+      height: 20px;
+      fill: white;
+    }
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  .fab-edit {
+    background: #52c41a;
+  }
+
+  .fab-delete {
+    background: #ff4d4f;
   }
 
   .error-container {
@@ -178,10 +293,63 @@
   margin-bottom: 20px;
 }
 
-.tab-header {
+.tab-header-container {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   border-bottom: 1px solid #e8e8e8;
   margin-bottom: 16px;
+  padding-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.tab-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tab-actions {
+  display: flex;
+  gap: 12px;
+  margin-left: auto; // Pousse les boutons à droite
+  padding: 0 8px;
+
+  .tab-action-button {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+
+    i {
+      font-size: 18px; // Taille d'icône plus grande
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &:hover {
+      transform: scale(1.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .tab-header-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tab-actions {
+    margin-left: 0;
+    margin-top: 12px;
+    justify-content: flex-end;
+    padding: 8px 0;
+    border-top: 1px solid #f0f0f0;
+  }
 }
 
 .tab-button {

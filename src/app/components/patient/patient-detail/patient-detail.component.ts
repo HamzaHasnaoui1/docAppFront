@@ -76,6 +76,8 @@ export class PatientDetailComponent implements OnInit {
   patientId: number = 0;
   includeTva: boolean = false;
   activeTab = 0;
+  fabMenuOpen = false;
+
 
   constructor(
     private patientService: PatientService,
@@ -144,6 +146,9 @@ export class PatientDetailComponent implements OnInit {
 
   onEditPatient(patient: Patient): void {
     this.router.navigate(['/doc/patients/edit', patient.id]);
+/*
+    this.closeFabMenu();
+*/
   }
 
   onDeletePatient(patient: Patient): void {
@@ -164,6 +169,9 @@ export class PatientDetailComponent implements OnInit {
           }
         })
     });
+/*
+    this.closeFabMenu();
+*/
   }
 
   onEditRdv(rdv: RendezVous): void {
@@ -232,7 +240,7 @@ export class PatientDetailComponent implements OnInit {
     }
 
     this.loading = true;
-    
+
     this.ordonnanceService.getOrdonnanceById(rdv.ordonnance.id).pipe(
       finalize(() => this.loading = false)
     ).subscribe({
@@ -242,16 +250,16 @@ export class PatientDetailComponent implements OnInit {
           if (!ordonnance.rendezVous) {
             ordonnance.rendezVous = rdv;
           }
-          
+
           // Assurons-nous que les informations patient et médecin sont disponibles
           if (!ordonnance.rendezVous.patient && rdv.patient) {
             ordonnance.rendezVous.patient = rdv.patient;
           }
-          
+
           if (!ordonnance.rendezVous.medecin && rdv.medecin) {
             ordonnance.rendezVous.medecin = rdv.medecin;
           }
-          
+
           this.pdfService.generateOrdonnancePdf(ordonnance)
             .then(() => {
               this.message.success('Ordonnance générée avec succès');
@@ -302,6 +310,14 @@ export class PatientDetailComponent implements OnInit {
     });
   }
 
+  /*toggleFabMenu(): void {
+    this.fabMenuOpen = !this.fabMenuOpen;
+  }
+
+  closeFabMenu(): void {
+    this.fabMenuOpen = false;
+  }*/
+
   onTvaChange(e: any): void {
     this.includeTva = e.some((item: any) => item === 'tva');
   }
@@ -327,7 +343,7 @@ export class PatientDetailComponent implements OnInit {
     // TODO: Implémenter la génération d'ordonnance automatique
     this.message.info('Fonctionnalité en cours de développement');
   }
-  
+
   onDocumentsUpdated(documents: Document[]): void {
     this.patient$ = this.patient$.pipe(
       map(patient => {

@@ -1,0 +1,418 @@
+/* Container principal du FAB */
+.fab-container {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 1000;
+
+  /* Bouton principal FAB */
+  .fab-main {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    z-index: 1002;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    &:hover {
+      transform: scale(1.15) rotate(5deg);
+      box-shadow: 0 12px 40px rgba(102, 126, 234, 0.6);
+
+      &::before {
+        left: 100%;
+      }
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    i {
+      font-size: 22px;
+      color: white;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+  }
+
+  /* Animation de rotation de l'icône avec rebond */
+  &.open .fab-main {
+    transform: scale(1.1) rotate(225deg);
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    box-shadow: 0 12px 40px rgba(255, 107, 107, 0.6);
+
+    i {
+      transform: scale(1.2);
+    }
+  }
+
+  /* Menu des actions */
+  .fab-menu {
+    position: absolute;
+    bottom: 80px;
+    right: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(50px) scale(0.8);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 1002;
+    pointer-events: none;
+
+    &.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .fab-item {
+      width: 52px;
+      height: 52px;
+      border: none;
+      border-radius: 50%;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      z-index: 1003;
+      cursor: pointer;
+      pointer-events: auto;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: all 0.4s ease;
+      }
+
+      &:hover {
+        transform: scale(1.2) rotate(10deg);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+        &::before {
+          opacity: 1;
+        }
+
+        &::after {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      &:active {
+        transform: scale(0.9);
+      }
+
+      i {
+        font-size: 20px;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 1;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+      }
+
+      &:hover i {
+        transform: scale(1.1);
+      }
+    }
+
+    /* Styles améliorés pour les boutons secrétaires */
+    .secretary-fab {
+      background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+      color: white;
+
+      &:hover {
+        background: linear-gradient(135deg, #81ecec 0%, #00b894 100%);
+        transform: scale(1.2) rotate(-5deg);
+      }
+    }
+
+    /* Styles améliorés pour les boutons admin */
+    .admin-fab {
+      background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+      color: white;
+
+      &:hover {
+        background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+        transform: scale(1.2) rotate(5deg);
+      }
+    }
+  }
+
+  /* Overlay amélioré */
+  .fab-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at bottom right, rgba(102, 126, 234, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease;
+    z-index: 999;
+    backdrop-filter: blur(2px);
+
+    &.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}
+
+/* Tooltip moderne avec glassmorphism */
+.fab-item {
+  position: relative;
+
+  &::before {
+    content: attr(title);
+    position: absolute;
+    right: 70px;
+    top: 50%;
+    transform: translateY(-50%) translateX(10px);
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+    z-index: 1004;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 62px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-left-color: rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 1004;
+  }
+
+  &:hover::before {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(0);
+  }
+
+  &:hover::after {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* Responsive design amélioré */
+@media (max-width: 768px) {
+  .fab-container {
+    bottom: 20px;
+    right: 20px;
+
+    .fab-main {
+      width: 56px;
+      height: 56px;
+
+      i {
+        font-size: 20px;
+      }
+    }
+
+    .fab-menu {
+      bottom: 72px;
+      right: 4px;
+      gap: 12px;
+
+      .fab-item {
+        width: 44px;
+        height: 44px;
+
+        i {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+
+  /* Masquer les tooltips sur mobile et ajouter des vibrations */
+  .fab-item::before,
+  .fab-item::after {
+    display: none;
+  }
+
+  .fab-item:active {
+    animation: mobileVibrate 0.1s;
+  }
+}
+
+@keyframes mobileVibrate {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+/* Mode sombre */
+@media (prefers-color-scheme: dark) {
+  .fab-overlay.visible {
+    background: radial-gradient(circle at bottom right, rgba(102, 126, 234, 0.15) 0%, rgba(0, 0, 0, 0.5) 100%);
+  }
+
+  .fab-item::before {
+    background: rgba(30, 30, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .fab-item::after {
+    border-left-color: rgba(30, 30, 30, 0.95);
+  }
+}
+
+/* Animations avancées */
+.fab-container.open .fab-menu.visible .fab-item {
+  animation: fabItemAppear 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+
+  &:nth-child(1) {
+    animation-delay: 0.1s;
+    transform: translateY(100px) scale(0.5) rotate(180deg);
+  }
+  &:nth-child(2) {
+    animation-delay: 0.15s;
+    transform: translateY(100px) scale(0.5) rotate(180deg);
+  }
+  &:nth-child(3) {
+    animation-delay: 0.2s;
+    transform: translateY(100px) scale(0.5) rotate(180deg);
+  }
+  &:nth-child(4) {
+    animation-delay: 0.25s;
+    transform: translateY(100px) scale(0.5) rotate(180deg);
+  }
+  &:nth-child(5) {
+    animation-delay: 0.3s;
+    transform: translateY(100px) scale(0.5) rotate(180deg);
+  }
+  &:nth-child(6) {
+    animation-delay: 0.35s;
+    transform: translateY(100px) scale(0.5) rotate(180deg);
+  }
+  &:nth-child(7) {
+    animation-delay: 0.4s;
+    transform: translateY(100px) scale(0.5) rotate(180deg);
+  }
+}
+
+@keyframes fabItemAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(100px) scale(0.5) rotate(180deg);
+  }
+  60% {
+    transform: translateY(-10px) scale(1.1) rotate(-10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+/* Animation de fermeture */
+.fab-container:not(.open) .fab-menu .fab-item {
+  animation: fabItemDisappear 0.3s ease-in forwards;
+}
+
+@keyframes fabItemDisappear {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.3) rotate(90deg);
+  }
+}
+
+/* Animation de pulsation pour le bouton principal */
+@keyframes fabPulse {
+  0% {
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.6), 0 0 0 10px rgba(102, 126, 234, 0.1);
+  }
+  100% {
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+  }
+}
+
+.fab-main {
+  animation: fabPulse 3s infinite;
+}
+
+/* Effet de particules sur hover */
+.fab-main:hover {
+  animation: none;
+}
+
+/* Animation de rebond sur clic */
+@keyframes fabBounce {
+  0%, 20%, 60%, 100% {
+    transform: scale(1.1) rotate(225deg);
+  }
+  40% {
+    transform: scale(1.3) rotate(225deg);
+  }
+  80% {
+    transform: scale(1.05) rotate(225deg);
+  }
+}
+
+.fab-container.open .fab-main:active {
+  animation: fabBounce 0.6s ease;
+}
