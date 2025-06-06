@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -38,7 +38,8 @@ export class EditMedicamentComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private message: NzMessageService,
-    private medicamentService: MedicamentService
+    private medicamentService: MedicamentService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -86,6 +87,11 @@ export class EditMedicamentComponent implements OnInit {
   }
 
   onCancel(): void {
+  if (window.history.length > 1) {
+    this.location.back();
+  } else {
     this.router.navigate(['/doc/medicament']);
   }
+}
+
 }

@@ -393,42 +393,98 @@ export class EditRdvComponent implements OnInit {
   }
 
   onSubmitMedicament(): void {
-    if (this.medicamentForm.valid) {
+    if (this.medicamentForm.valid && this.ordonnanceId) {
+      this.loading = true;
       const formValue = this.medicamentForm.value;
       const selectedMedicamentId = formValue.medicamentId;
       const selectedMedicament = this.medicamentsList.find(m => m.id === selectedMedicamentId);
 
       if (!selectedMedicament) {
         this.message.error('Veuillez sélectionner un médicament valide');
+        this.loading = false;
         return;
       }
 
-      const medicamentData = {
-        medicamentId: selectedMedicamentId,
-        medicamentNom: selectedMedicament.nom,
+      const medicamentDto = {
+        ordonnanceId: this.ordonnanceId,
+        medicament: {
+          id: selectedMedicamentId,
+          nom: selectedMedicament.nom,
+          description: selectedMedicament.description || '',
+          categorie: selectedMedicament.categorie || '',
+          fabricant: selectedMedicament.fabricant || '',
+          dosageStandard: selectedMedicament.dosageStandard || '',
+          actif: selectedMedicament.actif || true
+        },
         posologie: formValue.posologie,
         duree: formValue.duree,
         frequence: formValue.frequence,
-        instructions: formValue.instructions
+        instructions: formValue.instructions || ''
       };
 
       if (this.currentMedicamentIndex !== undefined) {
+        // Mise à jour d'un médicament existant
         const medGroup = this.medicamentsFormArray.at(this.currentMedicamentIndex);
-        medGroup.patchValue(medicamentData);
-      } else {
-        this.addMedicament(
-          selectedMedicament,
-          formValue.posologie,
-          formValue.duree,
-          formValue.frequence,
-          formValue.instructions
-        );
-      }
+        const medicamentId = medGroup.get('id')?.value;
 
-      this.resetMedicamentForm();
-      this.message.success('Médicament enregistré avec succès');
+        if (medicamentId) {
+          this.ordonnaceMedicamentService.updateMedicament(medicamentId, medicamentDto)
+            .subscribe({
+              next: (updatedMedicament) => {
+                if (this.currentMedicamentIndex !== undefined) {
+                  const medGroup = this.medicamentsFormArray.at(this.currentMedicamentIndex);
+                  if (medGroup) {
+                    medGroup.patchValue({
+                      id: updatedMedicament.id,
+                      medicamentId: selectedMedicamentId,
+                      medicamentNom: selectedMedicament.nom,
+                      posologie: formValue.posologie,
+                      duree: formValue.duree,
+                      frequence: formValue.frequence,
+                      instructions: formValue.instructions
+                    });
+                  }
+                }
+                this.message.success('Médicament mis à jour avec succès');
+                this.resetMedicamentForm();
+                this.loading = false;
+              },
+              error: (error) => {
+                this.message.error('Erreur lors de la mise à jour du médicament');
+                this.loading = false;
+              }
+            });
+        }
+      } else {
+        // Ajout d'un nouveau médicament
+        this.ordonnaceMedicamentService.ajouterMedicament(this.ordonnanceId, medicamentDto)
+          .subscribe({
+            next: (newMedicament) => {
+              this.addMedicament({
+                id: newMedicament.id,
+                medicamentId: selectedMedicamentId,
+                nom: selectedMedicament.nom,
+                posologie: formValue.posologie,
+                duree: formValue.duree,
+                frequence: formValue.frequence,
+                instructions: formValue.instructions
+              });
+              this.message.success('Médicament ajouté avec succès');
+              this.resetMedicamentForm();
+              this.loading = false;
+            },
+            error: (error) => {
+              this.message.error('Erreur lors de l\'ajout du médicament');
+              this.loading = false;
+            }
+          });
+      }
     } else {
-      this.message.error('Veuillez remplir tous les champs obligatoires');
+      if (!this.ordonnanceId) {
+        this.message.warning('Veuillez d\'abord créer une ordonnance');
+      } else {
+        this.message.warning('Veuillez remplir tous les champs obligatoires');
+      }
     }
   }
 
@@ -879,5 +935,12 @@ export class EditRdvComponent implements OnInit {
     if (imc < 30) return 'orange';
     return 'red';
   }
+
+  redirectToCreateMedicament(): void {
+    const currentUrl = `/doc/rdv/edit/${this.rdvId}`;
+    this.router.navigate(['/doc/medicament/create'], {
+      queryParams: { returnUrl: currentUrl }
+    });
   }
+}
 
