@@ -5,6 +5,7 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import {MainLayoutComponent} from './features/layout/components/main-layout/main-layout.component';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +16,8 @@ import { RouterModule } from '@angular/router';
     RouterOutlet,
     NzButtonModule,
     CommonModule,
-    RouterModule
+    RouterModule,
+    MainLayoutComponent,
   ],
   styleUrls: ['./app.component.scss']
 })

@@ -48,7 +48,7 @@ import localeFr from '@angular/common/locales/fr';
     NzSpinModule,
     NzDescriptionsModule,
     FormsModule,
-    NzInputNumberModule, // Correction: changed from NzInputNumberComponent to NzInputNumberModule
+    NzInputNumberModule, 
   ]
 })
 export class CreateRdvComponent implements OnInit {
