@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { PatientService } from '../../../service/patient.service';
 import { Patient } from '../../../models/patient.model';
 import { Titre } from '../../../enums/titre.enum';
+import { AuthService } from '../../../components/auth/auth.service';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -15,8 +16,6 @@ import { NzRadioComponent, NzRadioGroupComponent } from 'ng-zorro-antd/radio';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import {AngularEditorConfig, AngularEditorModule} from '@kolkov/angular-editor';
 import {NzDividerComponent} from 'ng-zorro-antd/divider';
-
-;
 
 @Component({
   selector: 'app-create-patient',
@@ -67,7 +66,8 @@ constructor(
     private fb: FormBuilder,
     private router: Router,
     private patientService: PatientService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -100,7 +100,16 @@ constructor(
       return;
     }
 
-    const newPatient: Patient = this.patientForm.value;
+    const currentUser = this.authService.currentUserValue;
+    if (!currentUser?.medecinId) {
+      this.message.error("Impossible de récupérer l'ID du médecin");
+      return;
+    }
+
+    const newPatient: Patient = {
+      ...this.patientForm.value,
+      medecinId: currentUser.medecinId
+    };
 
     this.patientService.createPatient(newPatient).subscribe({
       next: () => {

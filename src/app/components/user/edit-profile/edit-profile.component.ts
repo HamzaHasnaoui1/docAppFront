@@ -69,7 +69,8 @@ export class EditProfileComponent implements OnInit {
       next: (user) => {
         this.currentUser = {
           ...user,
-          password: ''
+          password: '',
+          medecinId: currentUser.medecinId
         };
         this.isLoading = false;
       },
@@ -82,8 +83,19 @@ export class EditProfileComponent implements OnInit {
 
   onSubmit(): void {
     this.isLoading = true;
+    const currentUser = this.authService.currentUserValue;
 
-    const userToUpdate = { ...this.currentUser };
+    if (!currentUser?.medecinId) {
+      this.message.error("Impossible de récupérer l'ID du médecin");
+      this.isLoading = false;
+      return;
+    }
+
+    const userToUpdate = { 
+      ...this.currentUser,
+      medecinId: currentUser.medecinId
+    };
+    
     if (!userToUpdate.password) {
       delete userToUpdate.password;
     }

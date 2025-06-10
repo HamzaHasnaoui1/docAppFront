@@ -17,6 +17,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import {Router, RouterModule} from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { DirectivesModule } from '../../directives/directives.module';
 
 // Services de l'application
 import { PatientService } from '../../service/patient.service';
@@ -64,7 +65,8 @@ interface ChartData {
     RouterModule,
     FormsModule,
     NzProgressComponent,
-    NzSpinComponent
+    NzSpinComponent,
+    DirectivesModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
@@ -119,133 +121,167 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // En production, le rôle viendrait d'un service d'authentification
-    // this.userRole = this.authService.getUserRole();
-
-    this.loadDashboardData();
+    console.log('DashboardComponent - ngOnInit');
+    // Attendre que l'utilisateur soit chargé
+    if (this.authService.currentUserValue) {
+      console.log('Utilisateur déjà chargé:', this.authService.currentUserValue);
+      this.loadDashboardData();
+    } else {
+      console.log('Attente du chargement de l\'utilisateur...');
+      // Attendre un court instant pour laisser le temps à l'AuthService de charger l'utilisateur
+      setTimeout(() => {
+        console.log('Vérification après délai:', this.authService.currentUserValue);
+        this.loadDashboardData();
+      }, 1000);
+    }
   }
 
   loadDashboardData(): void {
+    console.log('loadDashboardData - début');
+    // Récupérer l'ID du médecin connecté
+    const currentUser = this.authService.currentUserValue;
+    console.log('Utilisateur courant:', currentUser);
+    
+    const medecinId = currentUser?.medecinId;
+    console.log('medecinId:', medecinId);
+
+    if (!medecinId) {
+      console.error('medecinId non disponible');
+      this.message.error("Impossible de récupérer l'ID du médecin");
+      return;
+    }
+
+    console.log('Début des appels API');
     // Utiliser forkJoin pour charger plusieurs sources de données en parallèle
     forkJoin({
-      patients: this.patientService.getPatients(0, "",50).pipe(catchError(err => {
+      patients: this.patientService.getPatients(0, "", 50, medecinId).pipe(catchError(err => {
+        console.error('Erreur chargement patients:', err);
         this.message.error("Erreur lors du chargement des patients");
         return of({ patients: [], totalPages: 0 });
       })),
-      appointments: this.rdvService.getRdvsMedecin().pipe(catchError(err => {
+      appointments: this.rdvService.getRdvsMedecin(medecinId).pipe(catchError(err => {
+        console.error('Erreur chargement rendez-vous:', err);
         this.message.error("Erreur lors du chargement des rendez-vous");
         return of({ rdvs: [] });
       })),
       medecins: this.medecinService.getMedecins(0).pipe(catchError(err => {
+        console.error('Erreur chargement médecins:', err);
         this.message.error("Erreur lors du chargement des médecins");
         return of({ medecins: [], totalPages: 0, currentPage: 0 });
       }))
-    }).subscribe(results => {
-      // Patients
-      const patients = results.patients.patients || [];
-      this.totalPatients = patients.length;
+    }).subscribe({
+      next: (results) => {
+        console.log('Résultats reçus:', results);
+        // Patients
+        const patients = results.patients.patients || [];
+        this.totalPatients = patients.length;
 
-      // Récents patients (5 derniers)
-      this.recentPatients = patients.slice(0, 5);
+        // Récents patients (5 derniers)
+        this.recentPatients = patients.slice(0, 5);
 
-      // Rendez-vous - dans le cas de getRdvsMedecin(), la réponse est directement un tableau
-      const appointments = Array.isArray(results.appointments)
-        ? results.appointments
-        : (results.appointments.rdvs || []);
-      this.totalAppointments = appointments.length;
+        // Rendez-vous - dans le cas de getRdvsMedecin(), la réponse est directement un tableau
+        const appointments = Array.isArray(results.appointments)
+          ? results.appointments
+          : (results.appointments.rdvs || []);
+        this.totalAppointments = appointments.length;
 
-      // Médecins
-      const medecins = results.medecins.medecins || [];
-      this.medecinsAvailable = medecins;
+        // Médecins
+        const medecins = results.medecins.medecins || [];
+        this.medecinsAvailable = medecins;
 
-      // Rendez-vous d'aujourd'hui
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+        // Rendez-vous d'aujourd'hui
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-      this.todayAppointments = appointments.filter((rdv: RendezVous) => {
-        const rdvDate = new Date(rdv.date);
-        rdvDate.setHours(0, 0, 0, 0);
-        return rdvDate.getTime() === today.getTime();
-      });
+        this.todayAppointments = appointments.filter((rdv: RendezVous) => {
+          const rdvDate = new Date(rdv.date);
+          rdvDate.setHours(0, 0, 0, 0);
+          return rdvDate.getTime() === today.getTime();
+        });
 
-      this.todayAppointmentsCount = this.todayAppointments.length;
+        this.todayAppointmentsCount = this.todayAppointments.length;
 
-      // Rendez-vous en attente (PENDING ou EN_ATTENTE)
-      this.pendingAppointments = appointments.filter((rdv: RendezVous) =>
-        rdv.statusRDV === 'PENDING'
-      );
-      this.pendingAppointmentsCount = this.pendingAppointments.length;
+        // Rendez-vous en attente (PENDING ou EN_ATTENTE)
+        this.pendingAppointments = appointments.filter((rdv: RendezVous) =>
+          rdv.statusRDV === 'PENDING'
+        );
+        this.pendingAppointmentsCount = this.pendingAppointments.length;
 
-      // Rendez-vous confirmés
-      this.confirmedAppointmentsCount = appointments.filter((rdv: RendezVous) =>
-        rdv.statusRDV === 'CONFIRMED'
-      ).length;
+        // Rendez-vous confirmés
+        this.confirmedAppointmentsCount = appointments.filter((rdv: RendezVous) =>
+          rdv.statusRDV === 'CONFIRMED'
+        ).length;
 
-      // Rendez-vous à venir
-      const now = new Date();
-      const upcomingRdvs = appointments.filter((rdv: RendezVous) => new Date(rdv.date) > now);
-      this.upcomingAppointments = upcomingRdvs.length;
+        // Rendez-vous à venir
+        const now = new Date();
+        const upcomingRdvs = appointments.filter((rdv: RendezVous) => new Date(rdv.date) > now);
+        this.upcomingAppointments = upcomingRdvs.length;
 
-      // Prochains patients (aujourd'hui et demain)
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      tomorrow.setHours(23, 59, 59);
+        // Prochains patients (aujourd'hui et demain)
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(23, 59, 59);
 
-      // Prendre les rendez-vous entre maintenant et demain soir
-      const nextAppointments = appointments.filter((rdv: RendezVous) => {
-        const rdvDate = new Date(rdv.date);
-        return rdvDate >= now && rdvDate <= tomorrow;
-      });
+        // Prendre les rendez-vous entre maintenant et demain soir
+        const nextAppointments = appointments.filter((rdv: RendezVous) => {
+          const rdvDate = new Date(rdv.date);
+          return rdvDate >= now && rdvDate <= tomorrow;
+        });
 
-      // Extraire les patients de ces rendez-vous
-      const patientIds = new Set();
-      this.nextPatients = nextAppointments
-        .filter((rdv: RendezVous) => {
-          // Filtrer les duplications
-          if (patientIds.has(rdv.patient?.id)) return false;
-          if (rdv.patient?.id) patientIds.add(rdv.patient.id);
-          return rdv.patient !== null;
-        })
-        .map((rdv: RendezVous) => rdv.patient)
-        .slice(0, 5); // Limiter à 5
+        // Extraire les patients de ces rendez-vous
+        const patientIds = new Set();
+        this.nextPatients = nextAppointments
+          .filter((rdv: RendezVous) => {
+            // Filtrer les duplications
+            if (patientIds.has(rdv.patient?.id)) return false;
+            if (rdv.patient?.id) patientIds.add(rdv.patient.id);
+            return rdv.patient !== null;
+          })
+          .map((rdv: RendezVous) => rdv.patient)
+          .slice(0, 5); // Limiter à 5
 
-      // Patients du mois en cours pour le médecin
-      const currentMonth = today.getMonth();
-      const currentYear = today.getFullYear();
+        // Patients du mois en cours pour le médecin
+        const currentMonth = today.getMonth();
+        const currentYear = today.getFullYear();
 
-      this.patientsThisMonth = appointments.filter((rdv: RendezVous) => {
-        const rdvDate = new Date(rdv.date);
-        return rdvDate.getMonth() === currentMonth && rdvDate.getFullYear() === currentYear;
-      }).length;
+        this.patientsThisMonth = appointments.filter((rdv: RendezVous) => {
+          const rdvDate = new Date(rdv.date);
+          return rdvDate.getMonth() === currentMonth && rdvDate.getFullYear() === currentYear;
+        }).length;
 
-      // Patients fréquents pour le médecin (comptage des rendez-vous par patient)
-      const patientAppointments = new Map();
+        // Patients fréquents pour le médecin (comptage des rendez-vous par patient)
+        const patientAppointments = new Map();
 
-      appointments.forEach((rdv: RendezVous) => {
-        if (rdv.patient && rdv.patient.id) {
-          const patientId = rdv.patient.id;
-          if (!patientAppointments.has(patientId)) {
-            patientAppointments.set(patientId, {
-              patient: rdv.patient,
-              count: 0
-            });
+        appointments.forEach((rdv: RendezVous) => {
+          if (rdv.patient && rdv.patient.id) {
+            const patientId = rdv.patient.id;
+            if (!patientAppointments.has(patientId)) {
+              patientAppointments.set(patientId, {
+                patient: rdv.patient,
+                count: 0
+              });
+            }
+            patientAppointments.get(patientId).count++;
           }
-          patientAppointments.get(patientId).count++;
-        }
-      });
+        });
 
-      this.frequentPatients = Array.from(patientAppointments.values())
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 5);
+        this.frequentPatients = Array.from(patientAppointments.values())
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 5);
 
-      // Générer les données pour les graphiques du médecin
-      this.generateChartData(appointments);
+        // Générer les données pour les graphiques du médecin
+        this.generateChartData(appointments);
 
-      // Terminer le chargement
-      this.loading = false;
-      this.loadingPatients = false;
-      this.loadingAppointments = false;
-      this.loadingMedecins = false;
+        // Terminer le chargement
+        this.loading = false;
+        this.loadingPatients = false;
+        this.loadingAppointments = false;
+        this.loadingMedecins = false;
+      },
+      error: (error) => {
+        console.error('Erreur dans forkJoin:', error);
+        this.message.error("Une erreur est survenue lors du chargement des données");
+      }
     });
   }
 

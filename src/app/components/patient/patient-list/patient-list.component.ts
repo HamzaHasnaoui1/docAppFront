@@ -26,49 +26,50 @@ import { NzDescriptionsComponent, NzDescriptionsItemComponent } from 'ng-zorro-a
 import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 import { RdvService } from '../../../service/rdv.service';
-import {PatientWithRdvs} from '../../../models/PatientWithRdvs.model';
-import {NzListComponent, NzListItemComponent, NzListItemMetaComponent, NzListModule} from 'ng-zorro-antd/list';
-import {NzAvatarComponent} from 'ng-zorro-antd/avatar';
-import {NzSpinComponent} from "ng-zorro-antd/spin";
+import { PatientWithRdvs } from '../../../models/PatientWithRdvs.model';
+import { NzListComponent, NzListItemComponent, NzListItemMetaComponent, NzListModule } from 'ng-zorro-antd/list';
+import { NzAvatarComponent } from 'ng-zorro-antd/avatar';
+import { NzSpinComponent } from "ng-zorro-antd/spin";
+import { AuthService } from '../../../components/auth/auth.service';
 
 @Component({
   selector: 'app-patient-list',
   templateUrl: './patient-list.component.html',
   styleUrl: './patient-list.component.scss',
   standalone: true,
-    imports: [
-        AsyncPipe,
-        CommonModule,
-        DatePipe,
-        NzTableModule,
-        NzTagModule,
-        NzButtonModule,
-        NzIconModule,
-        NzCardModule,
-        NzAlertModule,
-        NzSpaceModule,
-        NzPopconfirmDirective,
-        NzModalModule,
-        NzToolTipModule,
-        NzInputGroupComponent,
-        FormsModule,
-        ReactiveFormsModule,
-        SearchAddActionsComponent,
-        NzModalModule,
-        NzCollapsePanelComponent,
-        NzCollapseComponent,
-        NzEmptyComponent,
-        NzDescriptionsItemComponent,
-        NzDescriptionsComponent,
-        NzSelectComponent,
-        NzOptionComponent,
-        NzListComponent,
-        NzListItemComponent,
-        NzListItemMetaComponent,
-        NzListModule,
-        NzAvatarComponent,
-        NzSpinComponent
-    ],
+  imports: [
+    AsyncPipe,
+    CommonModule,
+    DatePipe,
+    NzTableModule,
+    NzTagModule,
+    NzButtonModule,
+    NzIconModule,
+    NzCardModule,
+    NzAlertModule,
+    NzSpaceModule,
+    NzPopconfirmDirective,
+    NzModalModule,
+    NzToolTipModule,
+    NzInputGroupComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    SearchAddActionsComponent,
+    NzModalModule,
+    NzCollapsePanelComponent,
+    NzCollapseComponent,
+    NzEmptyComponent,
+    NzDescriptionsItemComponent,
+    NzDescriptionsComponent,
+    NzSelectComponent,
+    NzOptionComponent,
+    NzListComponent,
+    NzListItemComponent,
+    NzListItemMetaComponent,
+    NzListModule,
+    NzAvatarComponent,
+    NzSpinComponent
+  ],
   animations: [
     trigger('listAnimation', [
       transition('* => *', [
@@ -102,18 +103,31 @@ export class PatientListComponent implements OnInit {
   totalPagesArray: number[] = [];
   loading: boolean = true;
   searchKeyword: string = '';
+  medecinId: number | undefined;
 
   constructor(
     private patientService: PatientService,
     private router: Router,
     private message: NzMessageService,
-    private modal: NzModalService
+    private modal: NzModalService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    this.setupSearch();
-    this.loadPage(0);
-    this.loading = false;
+    console.log('PatientListComponent - ngOnInit');
+    const currentUser = this.authService.currentUserValue;
+    console.log('Utilisateur courant:', currentUser);
+    
+    const medecinId = currentUser?.medecinId;
+    console.log('medecinId:', medecinId);
+
+    if (!medecinId) {
+      console.error('medecinId non disponible');
+      this.message.error("Impossible de récupérer l'ID du médecin");
+      return;
+    }
+
+    this.loadPage();
   }
 
   private setupSearch(): void {
@@ -126,22 +140,37 @@ export class PatientListComponent implements OnInit {
     });
   }
 
-  loadPage(page: number, keyword: string = this.searchKeyword): void {
-    this.loading = true;
-    this.errorMessage = '';
+  loadPage(page: number = 0, keyword: string = ''): void {
+    console.log('loadPage - début', { page, keyword });
+    const currentUser = this.authService.currentUserValue;
+    console.log('Utilisateur courant:', currentUser);
+    
+    const medecinId = currentUser?.medecinId;
+    console.log('medecinId:', medecinId);
 
-    this.patientService.getPatients(page, keyword, this.pageSize).pipe(
-      catchError(err => {
-        this.errorMessage = err.message;
-        return of({ patients: [], totalPages: 0, currentPage: 0 });
-      })
-    ).subscribe(response => {
-      this.patients$ = of(response.patients);
-      this.totalPages = response.totalPages;
-      this.currentPage = response.currentPage;
-      this.initPagesArray();
-      this.loading = false;
-    });
+    if (!medecinId) {
+      console.error('medecinId non disponible');
+      this.message.error("Impossible de récupérer l'ID du médecin");
+      return;
+    }
+
+    this.loading = true;
+    this.patientService.getPatients(page, keyword, this.pageSize, medecinId)
+      .pipe(
+        catchError(error => {
+          console.error('Erreur lors du chargement des patients:', error);
+          this.message.error("Erreur lors du chargement des patients");
+          this.loading = false;
+          return of({ patients: [], totalPages: 0, currentPage: 0 });
+        })
+      )
+      .subscribe(response => {
+        this.patients$ = of(response.patients);
+        this.totalPages = response.totalPages;
+        this.currentPage = response.currentPage;
+        this.initPagesArray();
+        this.loading = false;
+      });
   }
 
   onSearch(keyword: string): void {

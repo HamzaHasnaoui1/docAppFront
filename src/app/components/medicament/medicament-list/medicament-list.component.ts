@@ -27,6 +27,7 @@ import { NzSelectComponent, NzOptionComponent } from 'ng-zorro-antd/select';
 import { NzEmptyComponent } from 'ng-zorro-antd/empty';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { Medicament } from '../../../models/Medicament.model';
+import { AuthService } from '../../../components/auth/auth.service';
 
 @Component({
   selector: 'app-medicament-list',
@@ -67,10 +68,13 @@ export class MedicamentListComponent implements OnInit {
   totalPagesArray: number[] = [];
   isLoading = false;
 
-  constructor(private medicamentService: MedicamentService,
-              private router: Router,
-              private message: NzMessageService,
-              private modal: NzModalService) {}
+  constructor(
+    private medicamentService: MedicamentService,
+    private router: Router,
+    private message: NzMessageService,
+    private modal: NzModalService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.setupSearch();
@@ -79,11 +83,20 @@ export class MedicamentListComponent implements OnInit {
 
   private setupSearch(): void {
     this.isLoading = true;
+    const currentUser = this.authService.currentUserValue;
+    const medecinId = currentUser?.medecinId;
+
+    if (!medecinId) {
+      this.message.error("Impossible de récupérer l'ID du médecin");
+      this.isLoading = false;
+      return;
+    }
+
     this.searchTerm$.pipe(
       debounceTime(300),
       distinctUntilChanged(),
       switchMap(keyword =>
-        this.medicamentService.getMedicaments(0, keyword).pipe(
+        this.medicamentService.getMedicaments(0, keyword, 10, medecinId).pipe(
           catchError(err => {
             this.errorMessage = err.message;
             this.isLoading = false;
@@ -100,13 +113,18 @@ export class MedicamentListComponent implements OnInit {
     });
   }
 
-  onSearch(keyword: string): void {
-    this.searchTerm$.next(keyword);
-  }
-
   loadPage(page: number): void {
     this.isLoading = true;
-    this.medicamentService.getMedicaments(page).pipe(
+    const currentUser = this.authService.currentUserValue;
+    const medecinId = currentUser?.medecinId;
+
+    if (!medecinId) {
+      this.message.error("Impossible de récupérer l'ID du médecin");
+      this.isLoading = false;
+      return;
+    }
+
+    this.medicamentService.getMedicaments(page, '', 10, medecinId).pipe(
       catchError(err => {
         this.errorMessage = err.message;
         this.isLoading = false;
@@ -121,26 +139,35 @@ export class MedicamentListComponent implements OnInit {
     });
   }
 
-  onEdit(m: Medicament): void {
-    this.router.navigate(['/doc/medicament/edit', m.id]);
+  onSearch(keyword: string): void {
+    this.searchTerm$.next(keyword);
   }
 
-  onDelete(m: Medicament): void {
+  onAdd(): void {
+    this.router.navigate(['/doc/medicament/create']);
+  }
+
+  onEdit(medicament: Medicament): void {
+    this.router.navigate(['/doc/medicament/edit', medicament.id]);
+  }
+
+  onDelete(medicament: Medicament): void {
     this.modal.confirm({
-      nzTitle: `Voulez-vous supprimer ${m.nom} ?`,
-      nzOkText: 'Supprimer',
+      nzTitle: 'Êtes-vous sûr de vouloir supprimer ce médicament ?',
+      nzContent: `Le médicament "${medicament.nom}" sera définitivement supprimé.`,
+      nzOkText: 'Oui',
+      nzOkType: 'primary',
       nzOkDanger: true,
-      nzCancelText: 'Annuler',
-      nzOnOk: () =>
-        this.medicamentService.deleteMedicament(m.id).subscribe({
+      nzOnOk: () => {
+        this.medicamentService.deleteMedicament(medicament.id).subscribe({
           next: () => {
-            this.message.success(`Médicament "${m.nom}" supprimé avec succès`);
-            this.animateRemoval(m.id);
+            this.message.success('Médicament supprimé avec succès');
+            this.loadPage(this.currentPage);
           },
-          error: (err) => {
-            this.message.error(`Erreur : ${err.message}`);
-          }
-        })
+          error: () => this.message.error('Erreur lors de la suppression du médicament')
+        });
+      },
+      nzCancelText: 'Non'
     });
   }
 
@@ -150,10 +177,6 @@ export class MedicamentListComponent implements OnInit {
       this.loadPage(this.currentPage);
       this.deletedIds = this.deletedIds.filter(x => x !== id);
     }, 400);
-  }
-
-  onAdd(): void {
-    this.router.navigate(['/doc/medicament/create']);
   }
 
   prevPage(): void {

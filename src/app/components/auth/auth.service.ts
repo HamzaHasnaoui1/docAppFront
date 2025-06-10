@@ -37,7 +37,8 @@ export class AuthService {
             permissions: response.permissions,
             active: true,
             firstName: '',
-            lastName: ''
+            lastName: '',
+            medecinId: response.medecinId
           };
 
           this.currentUserSubject.next(user);
@@ -106,7 +107,8 @@ export class AuthService {
               permissions: authData.permissions,
               active: true,
               firstName: '',
-              lastName: ''
+              lastName: '',
+              medecinId: authData.medecinId
             };
 
             this.currentUserSubject.next(user);

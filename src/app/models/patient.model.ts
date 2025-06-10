@@ -16,5 +16,6 @@ export interface Patient {
   titre: Titre;
   dossierMedical:DossierMedical;
   rendezVousList: RendezVous[];
+  medecinId?: number;
 }
 

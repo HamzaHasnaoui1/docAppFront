@@ -6,4 +6,5 @@ export interface Medicament {
   fabricant?: string;
   dosageStandard?: string;
   actif?: boolean;
+  medecinId?: number;
 }

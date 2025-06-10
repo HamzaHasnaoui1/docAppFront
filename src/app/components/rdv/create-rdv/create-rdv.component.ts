@@ -26,6 +26,9 @@ import {CreateRendezVous} from '../../../models/CreateRendezVous';
 import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
 import { NzI18nService, fr_FR } from 'ng-zorro-antd/i18n';
 import localeFr from '@angular/common/locales/fr';
+import { AuthService } from '../../../components/auth/auth.service';
+import { forkJoin } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-create-rdv',
@@ -48,7 +51,7 @@ import localeFr from '@angular/common/locales/fr';
     NzSpinModule,
     NzDescriptionsModule,
     FormsModule,
-    NzInputNumberModule, // Correction: changed from NzInputNumberComponent to NzInputNumberModule
+    NzInputNumberModule,
   ]
 })
 export class CreateRdvComponent implements OnInit {
@@ -58,6 +61,10 @@ export class CreateRdvComponent implements OnInit {
   currentStep = 0;
   isLoading = false;
   availableTimes: string[] = [];
+  medecinId: number | undefined;
+  loading = false;
+  error: string | null = null;
+  success: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -66,7 +73,8 @@ export class CreateRdvComponent implements OnInit {
     private patientService: PatientService,
     private medecinService: MedecinService,
     private message: NzMessageService,
-    private i18n: NzI18nService
+    private i18n: NzI18nService,
+    private authService: AuthService
   ) {
     this.rdvForm = this.fb.group({
       date: [null, Validators.required],
@@ -98,33 +106,47 @@ export class CreateRdvComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Récupérer l'ID du médecin connecté
+    const currentUser = this.authService.currentUserValue;
+    this.medecinId = currentUser?.id ? Number(currentUser.id) : undefined;
+
     this.loadPatients();
     this.loadMedecins();
     this.generateAvailableTimes();
   }
 
   loadPatients(): void {
-    this.patientService.getPatients(0).subscribe({
-      next: (res) => {
-        this.patients = res.patients;
-      },
-      error: (err) => {
-        console.error('Erreur chargement patients:', err);
-        this.message.error('Erreur lors du chargement des patients');
-      }
-    });
+    const currentUser = this.authService.currentUserValue;
+    if (!currentUser?.medecinId) {
+      this.error = "Impossible de récupérer l'ID du médecin";
+      return;
+    }
+
+    this.patientService.getPatients(0, '', 50, currentUser.medecinId)
+      .pipe(
+        catchError(error => {
+          console.error('Erreur lors du chargement des patients:', error);
+          this.error = "Erreur lors du chargement des patients";
+          return [];
+        })
+      )
+      .subscribe(response => {
+        this.patients = response.patients;
+      });
   }
 
   loadMedecins(): void {
-    this.medecinService.getMedecins(0).subscribe({
-      next: (res) => {
-        this.medecins = res.medecins;
-      },
-      error: (err) => {
-        console.error('Erreur chargement médecins:', err);
-        this.message.error('Erreur lors du chargement des médecins');
-      }
-    });
+    this.medecinService.getMedecins(0)
+      .pipe(
+        catchError(error => {
+          console.error('Erreur lors du chargement des médecins:', error);
+          this.error = "Erreur lors du chargement des médecins";
+          return [];
+        })
+      )
+      .subscribe(response => {
+        this.medecins = response.medecins;
+      });
   }
 
   generateAvailableTimes(): void {
@@ -162,7 +184,10 @@ export class CreateRdvComponent implements OnInit {
       return;
     }
 
-    this.isLoading = true;
+    this.loading = true;
+    this.error = null;
+    this.success = null;
+
     const formValue = this.rdvForm.value;
     const startTime = formValue.time;
     const duration = formValue.duration;
@@ -178,17 +203,23 @@ export class CreateRdvComponent implements OnInit {
       prix: formValue.prix
     };
 
-    this.rdvService.createRdv(newRdv).subscribe({
-      next: () => {
-        this.message.success('Rendez-vous créé avec succès');
-        this.router.navigate(['/rdv/list']);
-      },
-      error: (err) => {
-        console.error('Erreur création RDV:', err);
-        this.message.error(err.error?.message || 'Erreur lors de la création du rendez-vous');
-        this.isLoading = false;
-      }
-    });
+    this.rdvService.createRdv(newRdv)
+      .pipe(
+        catchError(error => {
+          console.error('Erreur lors de la création du rendez-vous:', error);
+          this.error = error.error?.message || "Erreur lors de la création du rendez-vous";
+          this.loading = false;
+          return [];
+        })
+      )
+      .subscribe(response => {
+        this.success = "Rendez-vous créé avec succès";
+        this.loading = false;
+        this.rdvForm.reset();
+        setTimeout(() => {
+          this.router.navigate(['/rdv/list']);
+        }, 2000);
+      });
   }
 
   getSelectedPatient(): Patient | undefined {
@@ -201,3 +232,4 @@ export class CreateRdvComponent implements OnInit {
     return this.medecins.find(m => m.id === medecinId);
   }
 }
+

@@ -10,11 +10,15 @@ import {Patient} from '../models/patient.model';
 export class PatientService {
   constructor(private http: HttpClient) {}
 
-  getPatients(page: number = 0, keyword: string = '', size: number = 15): Observable<any> {
-    const params = new HttpParams()
-      .set('page', page)
-      .set('size', size)
+  getPatients(page: number = 0, keyword: string = '', size: number = 15, medecinId?: number): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
       .set('keyword', keyword);
+    
+    if (medecinId) {
+      params = params.set('medecinId', medecinId.toString());
+    }
 
     return this.http.get<any>(`${environment.apiUrl}/user/patients`, { params });
   }

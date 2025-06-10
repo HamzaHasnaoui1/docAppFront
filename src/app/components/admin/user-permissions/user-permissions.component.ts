@@ -15,6 +15,7 @@ import { User } from '../../../models/auth-response.model';
 import { Role, Permission } from '../../../models/permission.model';
 import { PermissionService } from '../../../services/permission.service';
 import { UserService } from '../../../services/user.service';
+import { AuthService } from '../../../components/auth/auth.service';
 
 @Component({
   selector: 'app-user-permissions',
@@ -46,7 +47,8 @@ export class UserPermissionsComponent implements OnInit {
   constructor(
     private userService: UserService,
     private permissionService: PermissionService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -56,10 +58,18 @@ export class UserPermissionsComponent implements OnInit {
 
   loadUsers(): void {
     this.loading = true;
+    const currentUser = this.authService.currentUserValue;
+    if (!currentUser?.medecinId) {
+      this.message.error("Impossible de récupérer l'ID du médecin");
+      this.loading = false;
+      return;
+    }
+
     this.userService.getAllUsers().subscribe({
       next: (users) => {
-        this.users = users;
-        console.log('Utilisateurs chargés:', users);
+        // Filtrer les utilisateurs par medecinId
+        this.users = users.filter(user => user.medecinId === currentUser.medecinId);
+        console.log('Utilisateurs chargés:', this.users);
         this.loading = false;
       },
       error: (error) => {
@@ -75,7 +85,6 @@ export class UserPermissionsComponent implements OnInit {
     this.permissionService.getAllRoles().subscribe({
       next: (roles) => {
         this.roles = roles;
-        this.loading = false;
       },
       error: (error) => {
         this.message.error('Erreur lors du chargement des rôles');
@@ -97,20 +106,32 @@ export class UserPermissionsComponent implements OnInit {
       return;
     }
 
+    const currentUser = this.authService.currentUserValue;
+    if (!currentUser?.medecinId) {
+      this.message.error("Impossible de récupérer l'ID du médecin");
+      return;
+    }
+
     console.log('Mise à jour des rôles pour:', this.selectedUser);
     console.log('ID utilisateur:', this.selectedUser.userId || this.selectedUser.id);
     console.log('Rôles sélectionnés:', this.selectedRoles);
-    
+
     const userId = this.selectedUser.userId || this.selectedUser.id;
-    
+
     if (!userId) {
       this.message.error('ID utilisateur non défini - problème avec l\'objet utilisateur');
       console.error('ID utilisateur manquant dans:', this.selectedUser);
       return;
     }
 
+    const userToUpdate = {
+      ...this.selectedUser,
+      roles: this.selectedRoles,
+      medecinId: currentUser.medecinId
+    };
+
     this.loading = true;
-    this.userService.updateUserRoles(userId, this.selectedRoles).subscribe({
+    this.userService.updateUser(userId, userToUpdate).subscribe({
       next: () => {
         this.message.success('Rôles mis à jour avec succès');
         this.loadUsers();
@@ -157,4 +178,4 @@ export class UserPermissionsComponent implements OnInit {
     this.selectedUser = null;
     this.selectedRoles = [];
   }
-} 
+}

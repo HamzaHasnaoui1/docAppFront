@@ -1,35 +1,37 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzCardComponent } from 'ng-zorro-antd/card';
+import { NzRadioComponent, NzRadioGroupComponent } from 'ng-zorro-antd/radio';
 import { Router } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { MedicamentService } from '../../../service/medicament.service';
+import { Medicament } from '../../../models/Medicament.model';
+import { AuthService } from '../../../components/auth/auth.service';
 import * as XLSX from 'xlsx';
-import {MedicamentService} from '../../../service/medicament.service';
-import {NzButtonComponent} from 'ng-zorro-antd/button';
-import {NzFormControlComponent, NzFormDirective, NzFormItemComponent, NzFormLabelComponent} from 'ng-zorro-antd/form';
-import {NzColDirective, NzRowDirective} from 'ng-zorro-antd/grid';
-import {NzSwitchComponent} from 'ng-zorro-antd/switch';
-import {NzInputDirective} from 'ng-zorro-antd/input';
-import {NzCardComponent} from 'ng-zorro-antd/card';
-import {NzIconDirective} from 'ng-zorro-antd/icon';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'app-create-medicament',
-  templateUrl: './create-medicament.component.html',
   standalone: true,
   imports: [
-    NzButtonComponent,
-    NzFormItemComponent,
-    NzFormControlComponent,
-    NzFormLabelComponent,
-    NzColDirective,
-    NzSwitchComponent,
+    CommonModule,
     ReactiveFormsModule,
-    NzInputDirective,
-    NzRowDirective,
+    NzFormModule,
+    NzInputModule,
+    NzButtonModule,
+    NzSelectModule,
     NzCardComponent,
-    NzFormDirective,
+    NzRadioComponent,
+    NzRadioGroupComponent,
     NzIconDirective
   ],
-  styleUrls: ['./create-medicament.component.scss']
+  templateUrl: './create-medicament.component.html',
+  styleUrl: './create-medicament.component.scss'
 })
 export class CreateMedicamentComponent implements OnInit {
   medicamentForm!: FormGroup;
@@ -37,13 +39,19 @@ export class CreateMedicamentComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private router: Router,
+    private message: NzMessageService,
     private medicamentService: MedicamentService,
-    private router: Router
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
+    this.initForm();
+  }
+
+  initForm(): void {
     this.medicamentForm = this.fb.group({
-      nom: ['', [Validators.required]],
+      nom: ['', Validators.required],
       description: [''],
       categorie: [''],
       fabricant: [''],
@@ -52,24 +60,36 @@ export class CreateMedicamentComponent implements OnInit {
     });
   }
 
-  // Fonction pour soumettre le formulaire
   onSubmit(): void {
-    if (this.medicamentForm.valid) {
-      const medicamentData = this.medicamentForm.value;
-      this.medicamentService.createMedicament(medicamentData).subscribe(() => {
-        this.router.navigate(['/medicaments']).then(() => {
-          // On met à jour localement après création
-        });
-      });
+    if (this.medicamentForm.invalid) {
+      this.medicamentForm.markAllAsTouched();
+      return;
     }
+
+    const currentUser = this.authService.currentUserValue;
+    if (!currentUser?.medecinId) {
+      this.message.error("Impossible de récupérer l'ID du médecin");
+      return;
+    }
+
+    const newMedicament: Medicament = {
+      ...this.medicamentForm.value,
+      medecinId: currentUser.medecinId
+    };
+
+    this.medicamentService.createMedicament(newMedicament).subscribe({
+      next: () => {
+        this.message.success('Médicament créé avec succès');
+        this.router.navigate(['/doc/medicament/list']);
+      },
+      error: () => this.message.error('Erreur lors de la création du médicament')
+    });
   }
 
-  // Fonction pour annuler la création et revenir à la liste des médicaments
   onCancel(): void {
-    this.router.navigate(['/doc/medicament']);
+    this.router.navigate(['/doc/medicament/list']);
   }
 
-  // Fonction pour télécharger un échantillon Excel
   downloadSampleExcel(): void {
     const ws = XLSX.utils.json_to_sheet([
       { nom: 'Exemple Médicament 1', description: 'Description', categorie: 'Catégorie', fabricant: 'Fabricant', dosageStandard: '500mg', actif: true },
@@ -80,7 +100,6 @@ export class CreateMedicamentComponent implements OnInit {
     XLSX.writeFile(wb, 'sample_medicaments.xlsx');
   }
 
-  // Fonction pour importer des médicaments depuis un fichier Excel
   onFileChange(event: any): void {
     const file = event.target.files[0];
     if (file) {
@@ -93,8 +112,7 @@ export class CreateMedicamentComponent implements OnInit {
         const ws = wb.Sheets[wb.SheetNames[0]];
         const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
-        // Traitez ici les données pour les insérer dans le backend ou faire ce que vous voulez
-        console.log(data); // Affiche les données du fichier CSV
+        console.log(data);
       };
     }
   }

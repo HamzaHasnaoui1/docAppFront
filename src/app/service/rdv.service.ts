@@ -12,22 +12,25 @@ import {CreateRendezVous} from '../models/CreateRendezVous';
 export class RdvService {
   constructor(private http: HttpClient) {}
 
-  getRdvs(page: number = 0, size: number = 5): Observable<any> {
-    const params = new HttpParams()
-      .set('page', page)
-      .set('size', size)
+  getRdvs(page: number = 0, size: number = 5, medecinId?: number): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+    
+    if (medecinId) {
+      params = params.set('medecinId', medecinId.toString());
+    }
 
     return this.http.get<any>(`${environment.apiUrl}/user/rdv`, { params });
   }
 
-  getRdvsMedecin(medecinId: number = 1): Observable<any> {
+  getRdvsMedecin(medecinId: number): Observable<any> {
     return this.http.get<any>(`${environment.apiUrl}/user/medecins/${medecinId}/rdv`);
   }
 
   createRdv(rdv: CreateRendezVous): Observable<RendezVous> {
     return this.http.post<RendezVous>(`${environment.apiUrl}/admin/rdv`, rdv);
   }
-
 
   updateRdv(id: number, rdv: any): Observable<RendezVous> {
     return this.http.put<RendezVous>(`${environment.apiUrl}/admin/rdv/${id}`, rdv, {
@@ -45,7 +48,6 @@ export class RdvService {
   getRdvsByPatient(patientId: number): Observable<RendezVous[]> {
     return this.http.get<RendezVous[]>(`${environment.apiUrl}/user/patients/${patientId}/rdv`);
   }
-
 
   deleteRdv(id: number): Observable<void> {
     return this.http.delete<void>(`${environment.apiUrl}/admin/rdv/${id}`);

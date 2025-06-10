@@ -50,6 +50,7 @@ export interface JwtResponse {
   email: string;
   roles: string[];
   permissions: string[];
+  medecinId?: number;
 }
 
 export interface SignupRequest {
@@ -72,4 +73,5 @@ export interface User {
   active: boolean;
   roles: string[];
   permissions?: string[];
+  medecinId?: number;
 }
