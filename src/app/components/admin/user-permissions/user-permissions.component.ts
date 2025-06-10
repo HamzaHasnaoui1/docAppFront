@@ -13,8 +13,8 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { DirectivesModule } from '../../../directives/directives.module';
 import { User } from '../../../models/auth-response.model';
 import { Role, Permission } from '../../../models/permission.model';
-import { PermissionService } from '../../../services/permission.service';
-import { UserService } from '../../../services/user.service';
+import { PermissionService } from '../../../service/permission.service';
+import { UserService } from '../../../service/user.service';
 import { AuthService } from '../../../components/auth/auth.service';
 
 @Component({
