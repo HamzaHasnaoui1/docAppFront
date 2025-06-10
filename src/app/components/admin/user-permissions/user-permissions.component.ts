@@ -85,6 +85,7 @@ export class UserPermissionsComponent implements OnInit {
     this.permissionService.getAllRoles().subscribe({
       next: (roles) => {
         this.roles = roles;
+        this.loading = false;
       },
       error: (error) => {
         this.message.error('Erreur lors du chargement des rôles');

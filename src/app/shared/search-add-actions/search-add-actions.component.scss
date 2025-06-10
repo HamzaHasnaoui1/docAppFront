@@ -1,48 +1,66 @@
-/* shared/components/search-add-actions/search-add-actions.component.scss */
 .search-add-container {
+  margin-bottom: 24px;
+  padding: 22px;
+  backdrop-filter: blur(8px);
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  gap: 16px;
+  flex-direction: column;
+  gap: 12px;
 
-  .search-form {
-    flex: 1;
-    max-width: 400px;
+  .title-container {
+    h2 {
+      margin: 0;
+    }
   }
 
-  .add-btn {
-    background-color: #1890ff;  // Couleur de fond principale de NG-ZORRO (ou une couleur personnalisée)
-    color: white;               // Texte blanc
-    border: none;               // Pas de bordure
-    cursor: pointer;            // Changer le curseur au survol
-    padding: 10px 20px;         // Ajouter du padding pour le texte
-    font-size: 16px;            // Taille de la police
-    border-radius: 4px;         // Coins arrondis pour un effet plus doux
-    display: inline-flex;
-    align-items: center;        // Aligner le texte et l'icône au centre
-    transition: background-color 0.3s;
+  .actions-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
 
-    i {
-      font-size: 14px;
+    .search-form {
+      flex: 1;
+      min-width: 200px;
+      max-width: 400px;
     }
 
-    &:hover {
-      background-color: #40a9ff;
-    }
+    .add-btn {
+      white-space: nowrap;
+      background-color: #1890ff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      transition: background-color 0.3s;
 
-    &:focus {
-      outline: none;
-      box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+      &:hover {
+        background-color: #40a9ff;
+      }
+
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+      }
     }
   }
 
   @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: stretch;
+    .actions-container {
+      flex-direction: column;
+      align-items: stretch;
 
-    .search-form {
-      max-width: 100%;
+      .search-form,
+      .add-btn {
+        width: 100%;
+      }
     }
   }
 }

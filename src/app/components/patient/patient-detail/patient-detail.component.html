@@ -44,6 +44,14 @@
               (click)="activeTab = 2">
               Historique des Rendez-vous
             </button>
+            <div class="tab-actions">
+              <button nz-button nzType="primary" nzSize="default" (click)="onEditPatient(patient)" nzShape="circle" class="tab-action-button">
+                <i nz-icon nzType="edit" nzTheme="outline"></i>
+              </button>
+              <button nz-button nzType="primary" nzDanger nzSize="default" (click)="onDeletePatient(patient)" nzShape="circle" class="tab-action-button">
+                <i nz-icon nzType="delete" nzTheme="outline"></i>
+              </button>
+            </div>
           </div>
 
           <!-- Tab content -->
@@ -84,10 +92,10 @@
                     </nz-descriptions-item>
                   </nz-descriptions>
                 </div>
-                
+
                 <!-- Documents du patient -->
                 <div class="documents-section">
-                  <app-document-attachment 
+                  <app-document-attachment
                     [dossierMedicalId]="patient.dossierMedical.id"
                     [documents]="patient.dossierMedical.documents || []"
                     (documentsUpdated)="onDocumentsUpdated($event)">
@@ -193,17 +201,34 @@
           </div>
         </div>
       </nz-card>
+      <div class="fab-container">
+        <div class="fab-wrapper">
+          <div class="fab-submenu" [class.visible]="fabMenuOpen">
+            <button class="fab-item fab-edit"
+                    title="Modifier le patient"
+                    (click)="onEditPatient(patient)">
+              <svg class="icon" viewBox="0 0 24 24">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+              </svg>
+            </button>
+            <button class="fab-item fab-delete"
+                    title="Supprimer le patient"
+                    (click)="onDeletePatient(patient)">
+              <svg class="icon" viewBox="0 0 24 24">
+                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+              </svg>
+            </button>
+          </div>
 
-      <!-- Actions patient -->
-      <div class="patient-actions">
-        <button nz-button nzType="primary" nzShape="round" (click)="onEditPatient(patient)">
-          <i nz-icon nzType="edit" nzTheme="outline"></i> Modifier le patient
-        </button>
-        <button nz-button nzType="default" nzShape="round" nzDanger (click)="onDeletePatient(patient)">
-          <i nz-icon nzType="delete" nzTheme="outline"></i> Supprimer le patient
-        </button>
+          <!--<button class="fab-main" (click)="toggleFabMenu()">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+          </button>-->
+        </div>
       </div>
     </ng-container>
+
 
     <ng-template #patientNotFound>
       <div *ngIf="!loading" class="patient-not-found">

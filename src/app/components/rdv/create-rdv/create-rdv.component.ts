@@ -106,7 +106,6 @@ export class CreateRdvComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Récupérer l'ID du médecin connecté
     const currentUser = this.authService.currentUserValue;
     this.medecinId = currentUser?.id ? Number(currentUser.id) : undefined;
 

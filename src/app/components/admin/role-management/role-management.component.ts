@@ -5,7 +5,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { Permission, Role } from '../../../models/permission.model';
-import { PermissionService } from '../../../services/permission.service';
+import { PermissionService } from '../../../service/permission.service';
 import { CommonModule } from '@angular/common';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -53,12 +53,12 @@ export class RoleManagementComponent implements OnInit {
   permissions: Permission[] = [];
   permissionsByCategory: { [key: string]: Permission[] } = {};
   categories: string[] = [];
-  
+
   roleForm: FormGroup;
   selectedRole: Role | null = null;
-  
+
   displayedColumns: string[] = ['roleName', 'description', 'actions'];
-  
+
   constructor(
     private permissionService: PermissionService,
     private fb: FormBuilder,
@@ -71,13 +71,13 @@ export class RoleManagementComponent implements OnInit {
       permissions: [[]]
     });
   }
-  
+
   ngOnInit(): void {
     console.log('RoleManagementComponent initialized');
     this.loadRoles();
     this.loadPermissions();
   }
-  
+
   loadRoles(): void {
     console.log('Loading roles...');
     this.permissionService.getAllRoles().subscribe({
@@ -91,7 +91,7 @@ export class RoleManagementComponent implements OnInit {
       }
     });
   }
-  
+
   loadPermissions(): void {
     console.log('Loading permissions...');
     this.permissionService.getAllPermissions().subscribe({
@@ -106,11 +106,11 @@ export class RoleManagementComponent implements OnInit {
       }
     });
   }
-  
+
   organizePermissionsByCategory(): void {
     this.permissionsByCategory = {};
     this.categories = [];
-    
+
     this.permissions.forEach(permission => {
       if (!this.permissionsByCategory[permission.category]) {
         this.permissionsByCategory[permission.category] = [];
@@ -119,7 +119,7 @@ export class RoleManagementComponent implements OnInit {
       this.permissionsByCategory[permission.category].push(permission);
     });
   }
-  
+
   selectRole(role: Role): void {
     this.selectedRole = role;
     this.roleForm.patchValue({
@@ -128,27 +128,27 @@ export class RoleManagementComponent implements OnInit {
       permissions: role.permissions.map(p => p.id)
     });
   }
-  
+
   clearForm(): void {
     this.selectedRole = null;
     this.roleForm.reset();
   }
-  
+
   saveRole(): void {
     if (this.roleForm.invalid) {
       return;
     }
-    
+
     const roleData = this.roleForm.value;
     const selectedPermissions = this.permissions
       .filter(p => roleData.permissions.includes(p.id))
       .map(p => ({ id: p.id, name: p.name, description: p.description, category: p.category }));
-    
+
     const role: Role = {
       ...roleData,
       permissions: selectedPermissions
     };
-    
+
     if (this.selectedRole) {
       // Mise à jour d'un rôle existant
       this.permissionService.updateRole(this.selectedRole.roleId, role).subscribe({
@@ -177,7 +177,7 @@ export class RoleManagementComponent implements OnInit {
       });
     }
   }
-  
+
   deleteRole(role: Role): void {
     this.modalService.confirm({
       nzTitle: 'Êtes-vous sûr de vouloir supprimer ce rôle?',
@@ -202,22 +202,22 @@ export class RoleManagementComponent implements OnInit {
       }
     });
   }
-  
+
   isPermissionSelected(permissionId: number): boolean {
     const permissions = this.roleForm.get('permissions')?.value || [];
     return permissions.includes(permissionId);
   }
-  
+
   togglePermission(permissionId: number): void {
     const permissions = [...(this.roleForm.get('permissions')?.value || [])];
     const index = permissions.indexOf(permissionId);
-    
+
     if (index === -1) {
       permissions.push(permissionId);
     } else {
       permissions.splice(index, 1);
     }
-    
+
     this.roleForm.patchValue({ permissions });
   }
-} 
+}

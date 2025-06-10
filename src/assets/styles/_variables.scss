@@ -6,3 +6,26 @@ $second-color: rgba(0, 0, 0, 0.08);
 $border-color: #ddd;
 $border-radius-button: 8px;
 $border-radius-input: 6px;
+
+// Layout
+$header-height: 64px;
+$sidebar-width: 250px;
+$sidebar-collapsed-width: 80px;
+
+// Breakpoints
+$screen-xs: 480px;
+$screen-sm: 576px;
+$screen-md: 768px;
+$screen-lg: 992px;
+$screen-xl: 1200px;
+
+// Colors
+$primary-color: #1890ff;
+$success-color: #52c41a;
+$error-color: #f5222d;
+$warning-color: #faad14;
+$text-color: rgba(0, 0, 0, 0.85);
+$text-color-secondary: rgba(0, 0, 0, 0.45);
+$disabled-color: rgba(0, 0, 0, 0.25);
+$border-color: #d9d9d9;
+$background-color: #f0f2f5;

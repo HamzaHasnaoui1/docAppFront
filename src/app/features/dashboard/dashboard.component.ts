@@ -549,6 +549,9 @@ export class DashboardComponent implements OnInit {
  /* toggleRole(): void {
     this.userRole = this.userRole === 'MEDECIN' ? 'SECRETAIRE' : 'MEDECIN';
   }*/
+  get isAdmin(): boolean {
+    return this.authService.hasRole('ADMIN');
+  }
 
   navigateToDetails(patientId: number): void {
     this.router.navigate(['/doc/patients/detail', patientId]);
