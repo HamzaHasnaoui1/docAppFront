@@ -1,6 +1,5 @@
-<app-main-layout></app-main-layout>
-
-<router-outlet></router-outlet>
+<ng-container *ngIf="isAuthenticated">
+  <app-main-layout></app-main-layout>
 
 <div class="fab-container" [class.open]="fabMenuOpen">
   <button nz-button
@@ -91,3 +90,6 @@
        [class.visible]="fabMenuOpen"
        (click)="toggleFabMenu()"></div>
 </div>
+</ng-container>
+
+<router-outlet></router-outlet>

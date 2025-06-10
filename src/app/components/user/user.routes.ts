@@ -3,12 +3,14 @@ import { Routes } from '@angular/router';
 export const USER_ROUTES: Routes = [
   {
     path: 'edit-profile',
-    title: 'Édition du profil',
+    title: 'Profil', 
     loadComponent: () =>
       import('./edit-profile/edit-profile.component').then(
         (c) => c.EditProfileComponent
       ),
     data: {
+      title: 'Profil', 
+      childTitle: 'Édition du profil', 
       breadcrumb: 'Édition du profil'
     }
   },

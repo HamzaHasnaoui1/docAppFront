@@ -3,34 +3,40 @@ import { Routes } from '@angular/router';
 export const MEDICAMENT_ROUTES: Routes = [
   {
     path: 'list',
-    title: 'Liste des médicaments',
+    title: 'Médicaments', 
     loadComponent: () =>
       import('./medicament-list/medicament-list.component').then(
         (c) => c.MedicamentListComponent
       ),
     data: {
+      title: 'Médicaments', 
+      childTitle: 'Liste des médicaments', 
       breadcrumb: 'Liste'
     }
   },
   {
     path: 'create',
-    title: 'Nouveau médicament',
+    title: 'Médicaments', 
     loadComponent: () =>
       import('./create-medicament/create-medicament.component').then(
         (c) => c.CreateMedicamentComponent
       ),
     data: {
+      title: 'Médicaments', 
+      childTitle: 'Nouveau médicament', 
       breadcrumb: 'Création'
     }
   },
   {
     path: 'edit/:id',
-    title: 'Édition médicament',
+    title: 'Médicaments', 
     loadComponent: () =>
       import('./edit-medicament/edit-medicament.component').then(
         (c) => c.EditMedicamentComponent
       ),
     data: {
+      title: 'Médicaments', 
+      childTitle: 'Édition médicament',
       breadcrumb: 'Édition'
     }
   },

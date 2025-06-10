@@ -3,45 +3,49 @@ import { Routes } from '@angular/router';
 export const PATIENT_ROUTES: Routes = [
   {
     path: 'list',
-    title: 'Liste des patients',
     loadComponent: () =>
       import('./patient-list/patient-list.component').then(
         (c) => c.PatientListComponent
       ),
     data: {
+      title: 'Patients',                 
+      childTitle: 'Liste des patients',   
       breadcrumb: 'Liste'
     }
   },
   {
     path: 'create',
-    title: 'Nouveau patient',
     loadComponent: () =>
       import('./create-patient/create-patient.component').then(
         (c) => c.CreatePatientComponent
       ),
     data: {
+      title: 'Patients',                 
+      childTitle: 'Création d\'un patient', 
       breadcrumb: 'Création'
     }
   },
   {
     path: 'edit/:id',
-    title: 'Édition patient',
     loadComponent: () =>
       import('./edit-patient/edit-patient.component').then(
         (c) => c.EditPatientComponent
       ),
     data: {
+      title: 'Patients',                
+      childTitle: 'Modification patient', 
       breadcrumb: 'Édition'
     }
   },
   {
     path: 'detail/:id',
-    title: 'Detail patient',
     loadComponent: () =>
       import('./patient-detail/patient-detail.component').then(
         (c) => c.PatientDetailComponent
       ),
     data: {
+      title: 'Patients',                 
+      childTitle: 'Détails du patient',   
       breadcrumb: 'Detail'
     }
   },

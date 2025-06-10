@@ -1,3 +1,4 @@
+/* === COLLAPSE TOGGLE BUTTON === */
 .collapse-toggle-header {
   background: #096dd9;
   border: none;
@@ -9,19 +10,18 @@
   align-items: center;
   justify-content: center;
   margin-right: 16px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: background 0.3s;
   top: 35px;
   position: relative;
   right: 40px;
 
-
   &:hover {
-    background: darken(#096dd9, 5%);
+    background: #075bb9;
   }
 }
 
-/* other header styles retained */
+/* === HEADER === */
 .app-header.clean {
   background: white;
   padding: 0 24px;
@@ -37,6 +37,9 @@
     font-size: 18px;
     color: black;
     flex-grow: 1;
+    padding: 0 24px;
+
+    
 
     .parent-title {
       font-weight: 700;
@@ -66,7 +69,7 @@
         padding: 6px 10px;
         border-radius: 20px;
         background: white;
-        box-shadow: 0 0 0 1px rgba(0,0,0,0.05);
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
         cursor: pointer;
 
         .user-avatar {
@@ -81,182 +84,265 @@
       }
     }
   }
+  
+  /* === FOOTER === */
+  .app-footer {
+    background: #f9fafc !important;
+    color: #4a5568;
+    font-size: 15px;
+    padding: 18px 0;
+    border-top: 1px solid #e6e8ec;
+  
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+  
+      > div:first-child {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+  
+      .footer-links {
+        display: flex;
+        gap: 24px;
+  
+        a {
+          color: #1d4ed8;
+          text-decoration: none;
+          font-weight: 500;
+          transition: color 0.2s;
+          cursor: pointer;
+  
+          &:hover {
+            color: #0e2a7b;
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+  
+  @media (max-width: 700px) {
+    .app-footer .footer-content {
+      flex-direction: column;
+      gap: 10px;
+      text-align: center;
+  
+      .footer-links {
+        gap: 16px;
+      }
+    }
+  }
 }
-.custom-sider {
-  background: #f9fafc;
-  border-right: 1px solid #e6e8ec;
-  box-shadow: inset -1px 0 0 #eaeaea;
 
-  .logo {
-    height: 72px;
+/* === SIDEBAR === */
+.custom-sider {
+  background: #f9fafc !important;
+  border-right: 1px solid #e6e8ec;
+  box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.03);
+
+  .logo, .logo-full {
     display: flex;
     align-items: center;
-    justify-content: center;
+    height: 72px;
     padding: 0 20px;
     border-bottom: 1px solid #e6e8ec;
-    background: #ffffff;
-
-    .logo-full {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    background: #fff;
 
     .logo-icon {
-      width: 26px;
+      width: 32px;
+      height: 32px;
+      margin-right: 10px;
     }
 
     .logo-text {
+      font-size: 20px;
       font-weight: 700;
-      font-size: 18px;
-      color: #2c3e50;
+      color: #000000;
+      letter-spacing: 1px;
     }
   }
 
-  .custom-menu {
+  /* Uniformiser les styles pour nz-menu, nz-submenu, et nz-menu-item */
+.custom-menu {
+  margin-top: 8px;
+  background: transparent !important;
+  border: none;
+
+  /* Style de base pour les éléments de menu */
+  li[nz-menu-item],
+  li[nz-submenu] > div {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 20px;
+    height: 48px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #111 !important;
     background: transparent;
-    padding: 12px 0;
-
-    li {
-      margin: 4px 12px;
-      border-radius: 8px;
-      overflow: hidden;
-      transition: all 0.3s ease-in-out;
-      position: relative;
-
-      a {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 12px 20px;
-        color: #4a5568;
-        font-weight: 500;
-        border-radius: 8px;
-        text-decoration: none !important; /* Supprimer le soulignement */
-        transition: all 0.3s ease;
-        position: relative;
-
-        nz-icon {
-          font-size: 18px;
-          color: #4a5568;
-          transition: color 0.3s ease;
-        }
-
-        span {
-          display: inline;
-        }
-
-        &:hover {
-          background: linear-gradient(135deg, #e8f0fe 0%, #f1f7ff 100%);
-          color: #1d4ed8;
-          text-decoration: none !important;
-          transform: translateX(2px);
-          box-shadow: 0 2px 8px rgba(29, 78, 216, 0.1);
-
-          nz-icon {
-            color: #1d4ed8;
-          }
-        }
-
-        &:focus {
-          text-decoration: none !important;
-          outline: none;
-        }
-      }
-
-      &.ant-menu-item-selected, &.active {
-        background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%) !important;
-        box-shadow:
-          0 3px 12px rgba(29, 78, 216, 0.15),
-          inset 0 1px 0 rgba(255, 255, 255, 0.5);
-        transform: translateX(3px);
-        border: 1px solid rgba(29, 78, 216, 0.2);
-
-        a {
-          color: #1d4ed8 !important;
-          font-weight: 600;
-          text-decoration: none !important;
-
-          nz-icon {
-            color: #1d4ed8;
-          }
-        }
-
-        &::before {
-          content: '';
-          position: absolute;
-          left: 0;
-          top: 0;
-          bottom: 0;
-          width: 4px;
-          background: linear-gradient(180deg, #1d4ed8 0%, #3b82f6 100%);
-          border-radius: 0 4px 4px 0;
-          box-shadow: 0 0 8px rgba(29, 78, 216, 0.3);
-        }
-
-        &::after {
-          content: '';
-          position: absolute;
-          right: 8px;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 6px;
-          height: 6px;
-          background: #1d4ed8;
-          border-radius: 50%;
-          box-shadow: 0 0 4px rgba(29, 78, 216, 0.5);
-        }
-      }
-    }
+    transition: background 0.2s, color 0.2s;
   }
 
+  /* Style pour les icônes */
+  li[nz-menu-item] nz-icon,
+  li[nz-submenu] > div nz-icon {
+    font-size: 22px !important;
+    color: #000000 !important;
+    margin-right: 14px;
+    min-width: 22px;
+    text-align: center;
+    transition: color 0.2s;
+  }
+
+  /* Style pour le texte */
+  li[nz-menu-item] span,
+  li[nz-submenu] > div span {
+    font-weight: 500;
+    color: #111 !important;
+    display: inline-block;
+    font-size: 16px;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  /* Style pour les sous-éléments de menu */
+  li[nz-submenu] ul li[nz-menu-item] {
+    padding-left: 48px !important;
+  }
+
+  /* Style pour les éléments de menu au survol ou sélectionnés */
+  li[nz-menu-item]:hover,
+  li[nz-submenu] > div:hover,
+  li[nz-menu-item].ant-menu-item-selected,
+  li[nz-menu-item].active {
+    background: #e8f0fe !important;
+    color: #000000 !important;
+
+    nz-icon,
+    span {
+      color: #000000 !important;
+    }
+  }
+}
+
+.custom-sub-menu {
+  margin-top: 8px;
+  background: transparent !important;
+  border: none;
+
+  /* Style de base pour les éléments de menu */
+  li[nz-menu-item],
+  li[nz-submenu] > div {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 20px;
+    height: 48px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #111 !important;
+    background: transparent;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  /* Style pour les icônes */
+  li[nz-menu-item] nz-icon,
+  li[nz-submenu] > div nz-icon {
+    font-size: 22px !important;
+    color: #000000 !important;
+    margin-right: 14px;
+    min-width: 22px;
+    text-align: center;
+    transition: color 0.2s;
+  }
+
+  /* Style pour le texte */
+  li[nz-menu-item] span,
+  li[nz-submenu] > div span {
+    font-weight: 500;
+    color: #111 !important;
+    display: inline-block;
+    font-size: 16px;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  /* Style pour les sous-éléments de menu */
+  li[nz-submenu] ul li[nz-menu-item] {
+    padding-left: 48px !important;
+  }
+
+  /* Style pour les éléments de menu au survol ou sélectionnés */
+  li[nz-menu-item]:hover,
+  li[nz-submenu] > div:hover,
+  li[nz-menu-item].ant-menu-item-selected,
+  li[nz-menu-item].active {
+    background: #e8f0fe !important;
+    color: #000000 !important;
+
+    nz-icon,
+    span {
+      color: #000000 !important;
+    }
+  }
+}
+
+/* Style pour la sidebar fermée */
+.custom-sider.ant-layout-sider-collapsed {
+  .custom-menu li[nz-menu-item] span,
+  .custom-menu li[nz-submenu] > div span {
+    display: none !important;
+  }
+
+  .custom-menu li[nz-menu-item] nz-icon,
+  .custom-menu li[nz-submenu] > div nz-icon {
+    margin-right: 0 !important;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .custom-menu li[nz-menu-item],
+  .custom-menu li[nz-submenu] > div {
+    justify-content: center;
+    padding: 12px 0;
+    gap: 0;
+  }
+}
+
+
+  // Sidebar fermée : icônes centrées, texte masqué
   &.ant-layout-sider-collapsed {
-    .custom-menu li a span {
+    .custom-menu li[nz-menu-item] span,
+    .custom-menu li[nz-submenu] > .ant-menu-submenu-title span {
       display: none !important;
     }
-
-    .custom-menu li a {
+    .custom-menu li[nz-menu-item] nz-icon,
+    .custom-menu li[nz-submenu] > .ant-menu-submenu-title nz-icon {
+      margin-right: 0 !important;
+      min-width: 0;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+    .custom-menu li[nz-menu-item],
+    .custom-menu li[nz-submenu] > .ant-menu-submenu-title {
       justify-content: center;
       padding: 12px 0;
       gap: 0;
     }
-
-    .custom-menu li {
-      margin: 4px 8px;
-
-      &.ant-menu-item-selected, &.active {
-        transform: translateX(0);
-
-        &::after {
-          display: none;
-        }
-      }
-    }
-
-    .logo {
-      justify-content: center;
-
-      .logo-text {
-        display: none;
-      }
-    }
   }
 }
 
-/* Styles globaux pour supprimer tous les soulignements */
-.custom-sider a,
-.custom-sider a:hover,
-.custom-sider a:focus,
-.custom-sider a:active,
-.custom-sider a:visited {
-  text-decoration: none !important;
-}
-
-/* Animation d'entrée pour les éléments de menu */
-.custom-menu li {
-  animation: slideIn 0.3s ease-out;
-}
-
+/* === ANIMATIONS & HOVER === */
 @keyframes slideIn {
   from {
     opacity: 0;
@@ -268,59 +354,67 @@
   }
 }
 
-/* Amélioration du survol avec une animation plus fluide */
-.custom-menu li:hover {
-  transform: translateX(1px);
-}
-
-/* Style pour les icônes en mode collapsed */
-.custom-sider.ant-layout-sider-collapsed .custom-menu li a nz-icon {
-  font-size: 20px;
-}
-
-/* Tooltip pour les éléments en mode collapsed */
-.custom-sider.ant-layout-sider-collapsed .custom-menu li {
-  position: relative;
-
-  &:hover::before {
-    content: attr(data-title);
-    position: absolute;
-    left: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #2c3e50;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    white-space: nowrap;
-    z-index: 1000;
-    margin-left: 10px;
-    font-size: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    opacity: 0;
-    animation: fadeInTooltip 0.2s ease-out 0.5s forwards;
-  }
-
-  &:hover::after {
-    content: '';
-    position: absolute;
-    left: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    margin-left: 4px;
-    width: 0;
-    height: 0;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
-    border-right: 6px solid #2c3e50;
-    z-index: 1000;
-    opacity: 0;
-    animation: fadeInTooltip 0.2s ease-out 0.5s forwards;
-  }
-}
-
 @keyframes fadeInTooltip {
   to {
     opacity: 1;
+  }
+}
+
+.custom-menu li {
+  transition: transform 0.1s;
+  animation: slideIn 0.3s ease-out;
+
+  &:hover {
+    transform: translateX(2px) scale(1.03);
+    box-shadow: 0 2px 8px rgba(29, 78, 216, 0.07);
+  }
+}
+
+.custom-sider a,
+.custom-sider a:hover,
+.custom-sider a:focus,
+.custom-sider a:active,
+.custom-sider a:visited {
+  text-decoration: none !important;
+}
+
+/* === FOOTER === */
+.app-footer {
+  background: #f9fafc !important;
+  color: #4a5568;
+  font-size: 15px;
+  padding: 18px 0;
+  border-top: 1px solid #e6e8ec;
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+
+    > div:first-child {
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+
+      a {
+        color: #1d4ed8;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+        cursor: pointer;
+
+        &:hover {
+          color: #0e2a7b;
+          text-decoration: underline;
+        }
+      }
+    }
   }
 }

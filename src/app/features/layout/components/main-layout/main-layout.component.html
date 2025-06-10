@@ -1,5 +1,5 @@
 <nz-layout class="main-layout">
-  <nz-sider
+    <nz-sider
     nzCollapsible
     [(nzCollapsed)]="isCollapsed"
     [nzTrigger]="null"
@@ -8,38 +8,68 @@
     class="custom-sider">
 
     <div class="logo">
-      <img src="assets/images/logopng.PNG" class="logo-icon" *ngIf="isCollapsed" >
+      <img src="assets/images/logopng.PNG" class="logo-icon" *ngIf="isCollapsed">
       <div class="logo-full" *ngIf="!isCollapsed">
         <img src="assets/images/logopng.PNG" class="logo-icon">
         <span class="logo-text">DocApp</span>
       </div>
     </div>
 
-    <ul nz-menu nzMode="inline" class="custom-menu">
+    <ul nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed" class="custom-menu">
       <li nz-menu-item [routerLinkActive]="['active']">
-        <a routerLink="dashboard">
+        <a routerLink="dashboard" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Dashboard' : null">
           <nz-icon nzType="appstore"></nz-icon>
           <span>Dashboard</span>
         </a>
       </li>
-      <li nz-menu-item [routerLinkActive]="['active']">
-        <a [routerLink]="['/doc/patients/list']">
-          <nz-icon nzType="user"></nz-icon>
-          <span>Patients</span>
-        </a>
+
+      <li nz-submenu nzIcon="user" nzTitle="Patients" class="custom-sub-menu">
+        <ul>
+          <li nz-menu-item [routerLinkActive]="['active']" class="custom-menu">
+            <a [routerLink]="['/doc/patients/list']" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Liste des Patients' : null">
+              <nz-icon nzType="profile"></nz-icon>
+              <span>Liste des Patients</span>
+            </a>
+          </li>
+          <li nz-menu-item [routerLinkActive]="['active']" class="custom-menu">
+            <a [routerLink]="['/doc/patients/create']" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Ajouter un Patient' : null">
+              <nz-icon nzType="plus"></nz-icon>
+              <span>Ajouter un Patient</span>
+            </a>
+          </li>
+        </ul>
       </li>
-      <li nz-menu-item [routerLinkActive]="['active']">
-        <a [routerLink]="['/doc/medecin/list']">
+
+      <li nz-menu-item [routerLinkActive]="['active']" class="custom-menu">
+        <a [routerLink]="['/doc/medecin/list']" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Médecins' : null">
           <nz-icon nzType="team"></nz-icon>
           <span>Médecins</span>
         </a>
       </li>
-      <li nz-menu-item [routerLinkActive]="['active']">
-        <a [routerLink]="['/doc/rdv/list']">
-          <nz-icon nzType="calendar"></nz-icon>
-          <span>Rendez-vous</span>
+
+      <li nz-submenu nzIcon="calendar" nzTitle="Rendez-vous" class="custom-sub-menu" >
+        <ul>
+          <li nz-menu-item [routerLinkActive]="['active']" class="custom-menu">
+            <a [routerLink]="['/doc/rdv/list']" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Liste des RDV' : null">
+              <nz-icon nzType="unordered-list"></nz-icon>
+              <span>Liste des RDV</span>
+            </a>
+          </li>
+          <li nz-menu-item [routerLinkActive]="['active']" class="custom-menu">
+            <a [routerLink]="['/doc/rdv/create']" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Ajouter un RDV' : null">
+              <nz-icon nzType="plus"></nz-icon>
+              <span>Ajouter un RDV</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li nz-menu-item [routerLinkActive]="['active']" class="custom-menu">
+        <a [routerLink]="['/doc/medicament/list']" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Médicaments' : null">
+          <nz-icon nzType="file-done"></nz-icon>
+          <span>Médicament</span>
         </a>
       </li>
+    
     </ul>
   </nz-sider>
   <nz-layout class="white-layout">
@@ -48,11 +78,16 @@
         <nz-icon [nzType]="isCollapsed ? 'arrow-right' : 'arrow-left'"></nz-icon>
       </button>
 
-      <div class="breadcrumb-wrapper">
-        <span class="parent-title">{{ currentPageTitle }}</span>
-        <span class="divider">›</span>
-        <span class="child-title">Données</span>
-      </div>
+      
+
+      <nz-breadcrumb>
+  <nz-breadcrumb-item>
+    {{ currentPageTitle }}
+  </nz-breadcrumb-item>
+  <nz-breadcrumb-item *ngIf="childTitle">
+    {{ childTitle }}
+  </nz-breadcrumb-item>
+</nz-breadcrumb>
 
       <div class="header-right">
         <div nz-dropdown [nzDropdownMenu]="menu" class="user-dropdown">

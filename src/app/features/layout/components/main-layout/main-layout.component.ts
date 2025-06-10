@@ -8,6 +8,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import {AuthService} from '../../../../components/auth/auth.service';
@@ -25,6 +26,7 @@ import {AuthService} from '../../../../components/auth/auth.service';
     NzBreadCrumbModule,
     NzAvatarModule,
     NzDropDownModule,
+    NzToolTipModule,
     RouterLink,
     RouterLinkActive
   ],
@@ -34,6 +36,7 @@ import {AuthService} from '../../../../components/auth/auth.service';
 export class MainLayoutComponent {
   isCollapsed = false;
   currentPageTitle = 'Accueil';
+childTitle: string | null = null; // Nouvelle propriété pour le sous-titre
 
   constructor(
     public authService: AuthService,
@@ -42,15 +45,36 @@ export class MainLayoutComponent {
   ) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
-      map(() => {
-        let route = this.activatedRoute;
-        while (route.firstChild) route = route.firstChild;
-        return route.snapshot.data['title'] || 'Accueil';
-      })
-    ).subscribe(title => {
-      this.currentPageTitle = title;
+      map(() => this.getRouteTitles())
+    ).subscribe(({ mainTitle, childTitle }) => {
+      this.currentPageTitle = mainTitle;
+      this.childTitle = childTitle;
     });
   }
+
+  private getRouteTitles(): { mainTitle: string; childTitle: string | null } {
+    let route = this.activatedRoute;
+    let mainTitle = 'Accueil';
+    let childTitle: string | null = null;
+
+    // Parcours des routes enfants
+    while (route.firstChild) {
+      route = route.firstChild;
+      
+      // Récupération du titre principal
+      if (route.snapshot.data['title']) {
+        mainTitle = route.snapshot.data['title'];
+      }
+      
+      // Récupération du sous-titre enfant
+      if (route.snapshot.data['childTitle']) {
+        childTitle = route.snapshot.data['childTitle'];
+      }
+    }
+
+    return { mainTitle, childTitle };
+  }
+
 
   logout(): void {
     localStorage.clear();

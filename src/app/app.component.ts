@@ -35,9 +35,13 @@ export class AppComponent implements OnInit {
     this.getUserRole();
   }
 
-  getUserRole() {
+  get isAuthenticated(): boolean {
+    return this.authService.isAuthenticated();
+  }
 
-    this.userRole = 'ADMIN';
+   getUserRole() {
+    const user = this.authService.currentUserValue;
+    this.userRole = user?.roles?.[0] || '';
   }
 
   toggleFabMenu() {

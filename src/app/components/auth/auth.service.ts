@@ -174,4 +174,8 @@ export class AuthService {
     if (!user || !user.permissions) return false;
     return permissions.every(permission => user.permissions?.includes(permission));
   }
+
+  isAuthenticated(): boolean {
+  return !!this.currentUserValue; 
+}
 }
