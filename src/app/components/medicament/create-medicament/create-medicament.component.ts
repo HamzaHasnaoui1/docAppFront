@@ -14,6 +14,7 @@ import { Medicament } from '../../../models/Medicament.model';
 import { AuthService } from '../../../components/auth/auth.service';
 import * as XLSX from 'xlsx';
 import { NzIconDirective } from 'ng-zorro-antd/icon';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
 
 @Component({
   selector: 'app-create-medicament',
@@ -28,7 +29,8 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
     NzCardComponent,
     NzRadioComponent,
     NzRadioGroupComponent,
-    NzIconDirective
+    NzIconDirective,
+    NzSwitchModule
   ],
   templateUrl: './create-medicament.component.html',
   styleUrl: './create-medicament.component.scss'

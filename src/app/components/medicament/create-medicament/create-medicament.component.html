@@ -47,16 +47,16 @@
           <nz-form-item>
             <nz-form-label nzFor="dosageStandard" >Dosage Standard</nz-form-label>
             <nz-form-control [nzErrorTip]="'Le dosage est requis'">
-              <input nz-input id="dosageStandard" formControlName="dosageStandard" placeholder="Dosage Standard" />
+              <input nz-input id="dosageStandard" formControlName="dosageStandard" placeholder="Dosage standard" />
             </nz-form-control>
           </nz-form-item>
         </div>
 
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label nzFor="actif" >Actif</nz-form-label>
-            <nz-form-control [nzErrorTip]="'Le statut actif est requis'">
-              <nz-switch formControlName="actif" nzCheckedChildren="Oui" nzUnCheckedChildren="Non"></nz-switch>
+            <nz-form-label nzFor="actif" >Statut</nz-form-label>
+            <nz-form-control>
+              <nz-switch formControlName="actif" nzCheckedChildren="Actif" nzUnCheckedChildren="Inactif"></nz-switch>
             </nz-form-control>
           </nz-form-item>
         </div>
