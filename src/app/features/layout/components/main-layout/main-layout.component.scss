@@ -39,7 +39,7 @@
     flex-grow: 1;
     padding: 0 24px;
 
-    
+
 
     .parent-title {
       font-weight: 700;
@@ -84,7 +84,7 @@
       }
     }
   }
-  
+
   /* === FOOTER === */
   .app-footer {
     background: #f9fafc !important;
@@ -92,7 +92,7 @@
     font-size: 15px;
     padding: 18px 0;
     border-top: 1px solid #e6e8ec;
-  
+
     .footer-content {
       display: flex;
       justify-content: space-between;
@@ -100,23 +100,23 @@
       max-width: 1200px;
       margin: 0 auto;
       width: 100%;
-  
+
       > div:first-child {
         font-weight: 600;
         letter-spacing: 0.5px;
       }
-  
+
       .footer-links {
         display: flex;
         gap: 24px;
-  
+
         a {
           color: #1d4ed8;
           text-decoration: none;
           font-weight: 500;
           transition: color 0.2s;
           cursor: pointer;
-  
+
           &:hover {
             color: #0e2a7b;
             text-decoration: underline;
@@ -125,13 +125,13 @@
       }
     }
   }
-  
+
   @media (max-width: 700px) {
     .app-footer .footer-content {
       flex-direction: column;
       gap: 10px;
       text-align: center;
-  
+
       .footer-links {
         gap: 16px;
       }
@@ -141,7 +141,7 @@
 
 /* === SIDEBAR === */
 .custom-sider {
-  background: #ffffff !important; // Fond blanc uniforme
+  background: #ffffff !important;
   border-right: 1px solid #e6e8ec;
   box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.03);
   width: 220px !important;
@@ -149,27 +149,36 @@
   .logo, .logo-full {
     display: flex;
     align-items: center;
-    height: 64px;
+    height: 72px;
     padding: 0 20px;
     border-bottom: 1px solid #e6e8ec;
     background: #ffffff;
 
     .logo-icon {
-      width: 28px;
-      height: 28px;
-      margin-right: 12px;
+      width: 40px;
+      height: 40px;
+      margin-right: 16px;
+      object-fit: contain;
+    }
+
+    .logo-text {
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a237e;
+      white-space: nowrap;
+      letter-spacing: -0.5px;
     }
   }
 
   .custom-menu {
     background: #ffffff !important;
-    
+
     li[nz-menu-item],
     li[nz-submenu] > div {
       background: transparent;
       margin: 4px 8px;
       border-radius: 6px;
-      
+
       nz-icon {
         font-size: 20px !important;
         width: 20px;
@@ -187,8 +196,10 @@
     .logo, .logo-full {
       padding: 0;
       justify-content: center;
-      
+
       .logo-icon {
+        width: 36px;
+        height: 36px;
         margin: 0;
       }
     }
@@ -230,7 +241,7 @@
     &:hover,
     &.ant-menu-item-selected {
       background-color: #e8f0fe !important;
-      
+
       nz-icon {
         color: #1d4ed8 !important;
       }
@@ -243,12 +254,12 @@
   padding: 16px 20px 8px;
   color: #6b7280;
   font-weight: 600;
-  
+
   nz-icon {
     font-size: 16px;
     color: #1d4ed8;
   }
-  
+
   span {
     font-size: 12px;
     text-transform: uppercase;
@@ -341,12 +352,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  
+
   nz-icon {
     font-size: 16px;
     color: #1d4ed8;
   }
-  
+
   span {
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -363,13 +374,13 @@
   padding: 16px 24px;
   display: flex;
   align-items: center;
-  
+
   ::ng-deep {
     .ant-breadcrumb {
       display: flex;
       align-items: center;
       gap: 12px;
-      
+
       .ant-breadcrumb-separator {
         color: #94a3b8;
         margin: 0;
@@ -383,7 +394,7 @@
       font-size: 16px;
       font-weight: 700;
       color: #1a237e;
-      
+
       nz-icon {
         font-size: 20px;
         color: #4051b5;
