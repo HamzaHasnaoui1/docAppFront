@@ -77,7 +77,8 @@ export class DashboardComponent implements OnInit {
       return 'SECRETAIRE';
     }
     return 'SECRETAIRE';
-  }  today: Date = new Date();
+  }  
+  today: Date = new Date();
 
   // Données partagées entre médecin et secrétaire
   totalPatients: number = 0;

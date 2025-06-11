@@ -47,6 +47,20 @@
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
     }
+
+    i[nz-icon] {
+      font-size: 24px;
+      color: #ffffff;
+      transition: all 0.3s ease;
+
+      &[nzTheme="filled"] {
+        transform: scale(0.9);
+      }
+
+      &[nzTheme="outline"] {
+        animation: pulse 1.5s infinite;
+      }
+    }
   }
 
   /* Animation de rotation de l'icône avec rebond */
@@ -415,4 +429,16 @@
 
 .fab-container.open .fab-main:active {
   animation: fabBounce 0.6s ease;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }

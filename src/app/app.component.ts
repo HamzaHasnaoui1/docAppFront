@@ -24,7 +24,7 @@ import {MainLayoutComponent} from './features/layout/components/main-layout/main
 export class AppComponent implements OnInit {
   title = 'doc-frontend';
   fabMenuOpen = false;
-  userRole: string = '';
+  isAdmin: boolean = false;
 
   constructor(
     private router: Router,
@@ -32,16 +32,24 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getUserRole();
+    this.checkUserRole();
   }
 
   get isAuthenticated(): boolean {
     return this.authService.isAuthenticated();
   }
 
-   getUserRole() {
-    const user = this.authService.currentUserValue;
-    this.userRole = user?.roles?.[0] || '';
+  get userRole(): 'MEDECIN' | 'SECRETAIRE' {
+    if (this.authService.hasRole('ADMIN')) {
+      return 'MEDECIN';
+    } else if (this.authService.hasRole('USER')) {
+      return 'SECRETAIRE';
+    }
+    return 'SECRETAIRE';
+  }
+
+  private checkUserRole(): void {
+    this.isAdmin = this.authService.hasRole('ADMIN');
   }
 
   toggleFabMenu() {
@@ -60,14 +68,6 @@ export class AppComponent implements OnInit {
   }
 
   hasPermission(roles: string[]): boolean {
-    return roles.includes(this.userRole);
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: any) {
-    const fabContainer = document.querySelector('.fab-container');
-    if (fabContainer && !fabContainer.contains(event.target)) {
-      this.fabMenuOpen = false;
-    }
+    return roles.some(role => this.authService.hasRole(role));
   }
 }

@@ -9,7 +9,7 @@
           class="fab-main"
           (click)="toggleFabMenu()"
           [attr.aria-label]="fabMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu d\'accès rapide'">
-    <i nz-icon [nzType]="fabMenuOpen ? 'close' : 'plus'" nzTheme="outline"></i>
+    <i nz-icon nzType="heart" [nzTheme]="fabMenuOpen ? 'fill' : 'outline'"></i>
   </button>
 
   <div class="fab-menu" [class.visible]="fabMenuOpen">
