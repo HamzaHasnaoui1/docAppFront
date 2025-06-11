@@ -62,6 +62,8 @@
     gap: 16px;
 
     .user-dropdown {
+      position: relative;
+
       .user-profile {
         display: flex;
         align-items: center;
@@ -72,6 +74,10 @@
         box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
         cursor: pointer;
 
+        &:hover {
+          box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+        }
+
         .user-avatar {
           width: 28px;
           height: 28px;
@@ -79,7 +85,56 @@
 
         nz-icon {
           font-size: 12px;
-          color: #d9d9d9;
+          color: #94a3b8;
+          transition: transform 0.3s ease;
+        }
+
+        &:hover nz-icon {
+          transform: rotate(180deg);
+        }
+      }
+
+      // Nouveau style pour le menu dropdown
+      ::ng-deep .ant-dropdown-menu {
+        padding: 8px;
+        min-width: 220px;
+        border-radius: 8px;
+        
+        .ant-dropdown-menu-item {
+          padding: 8px 12px;
+          border-radius: 6px;
+          margin: 2px 0;
+
+          a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #1e293b;
+
+            nz-icon {
+              font-size: 16px;
+              color: #64748b;
+
+              &.subscription-check {
+                margin-left: auto;
+                color: #10b981;
+              }
+            }
+          }
+
+          &:last-child {
+            margin-top: 8px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 12px;
+
+            a {
+              color: #ef4444;
+              
+              nz-icon {
+                color: #ef4444;
+              }
+            }
+          }
         }
       }
     }
@@ -198,7 +253,7 @@
       justify-content: center;
 
       .logo-icon {
-        width: 36px;
+        width: 36px; 
         height: 36px;
         margin: 0;
       }
@@ -345,7 +400,7 @@
 }
 
 .menu-section-title {
-  padding: 16px 20px 8px;
+  padding: 0px 12px 0px;
   color: #6b7280;
   font-size: 13px;
   font-weight: 600;
@@ -418,5 +473,77 @@
         }
       }
     }
+  }
+}
+
+::ng-deep .custom-dropdown {
+  min-width: 200px !important;  // Dropdown plus large
+  padding: 8px !important;
+  border-radius: 12px;
+  
+  li[nz-menu-item] {
+    height: 44px !important;  // Items plus hauts
+    line-height: 44px !important;
+    margin: 4px 0;
+    border-radius: 8px;
+
+    a {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      
+      nz-icon {
+        font-size: 18px;
+        margin-right: 16px;  // Plus d'espace entre l'icône et le texte
+        color: #64748b;
+      }
+
+      span {
+        font-size: 14px;
+        font-weight: 500;
+      }
+    }
+
+    &:hover {
+      background-color: #f8fafc;
+      
+      a {
+        color: #2563eb;
+        
+        nz-icon {
+          color: #2563eb;
+        }
+      }
+    }
+
+    &.danger-item {
+      a {
+        color: #dc2626 !important;  // Rouge pour le texte de déconnexion
+        
+        nz-icon {
+          color: #dc2626 !important;  // Rouge pour l'icône de déconnexion
+        }
+      }
+
+      &:hover {
+        background-color: #fef2f2 !important;  // Fond rouge clair au survol
+      }
+    }
+  }
+
+  // Style pour le séparateur
+  li[nz-menu-divider] {
+    margin: 8px 0;
+    background-color: #e5e7eb;
+  }
+}
+
+// Style pour le trigger du dropdown
+.user-profile {
+  padding: 6px 16px !important;  // Plus d'espace horizontal
+  
+  .user-avatar {
+    width: 28px !important;  // Avatar légèrement plus grand
+    height: 28px !important;
   }
 }

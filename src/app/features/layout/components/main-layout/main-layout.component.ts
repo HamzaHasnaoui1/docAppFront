@@ -57,16 +57,13 @@ childTitle: string | null = null; // Nouvelle propriété pour le sous-titre
     let mainTitle = 'Dashboard';
     let childTitle: string | null = null;
 
-    // Parcours des routes enfants
     while (route.firstChild) {
       route = route.firstChild;
       
-      // Récupération du titre principal
       if (route.snapshot.data['title']) {
         mainTitle = route.snapshot.data['title'];
       }
       
-      // Récupération du sous-titre enfant
       if (route.snapshot.data['childTitle']) {
         childTitle = route.snapshot.data['childTitle'];
       }
@@ -89,7 +86,7 @@ childTitle: string | null = null; // Nouvelle propriété pour le sous-titre
 
   getBreadcrumbIcon(): string {
     switch (this.currentPageTitle?.toLowerCase()) {
-      case 'dashboard':  // Changé de 'dashboard' à 'dashboards'
+      case 'dashboard':  
         return 'dashboard';
       case 'patients':
         return 'user';
@@ -99,8 +96,10 @@ childTitle: string | null = null; // Nouvelle propriété pour le sous-titre
         return 'team';
       case 'administration':
         return 'setting';
+      case 'profil':
+        return 'setting';
       default:
-        return 'right';
+        return '';
     }
   }
 }

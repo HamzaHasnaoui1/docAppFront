@@ -98,29 +98,31 @@
 </nz-breadcrumb>
 
       <div class="header-right">
-        <div nz-dropdown [nzDropdownMenu]="menu" class="user-dropdown">
-          <div class="user-profile" nz-dropdownTrigger>
-            <nz-avatar [nzSrc]="'assets/images/avatar.svg'" class="user-avatar"></nz-avatar>
-            <nz-icon nzType="down"></nz-icon>
-          </div>
-        </div>
-        <nz-dropdown-menu #menu="nzDropdownMenu">
-          <ul nz-menu>
-            <li nz-menu-item>
-              <a (click)="edit()">
-                <nz-icon nzType="update"></nz-icon>
-                Edit Profil
-              </a>
-            </li>
-            <li nz-menu-item>
-              <a (click)="logout()">
-                <nz-icon nzType="logout"></nz-icon>
-                Déconnexion
-              </a>
-            </li>
-          </ul>
-        </nz-dropdown-menu>
-      </div>
+  <div nz-dropdown [nzDropdownMenu]="menu" class="user-dropdown">
+    <div class="user-profile" nz-dropdownTrigger>
+      <nz-avatar [nzSrc]="'assets/images/avatar.svg'" class="user-avatar"></nz-avatar>
+      <nz-icon nzType="down"></nz-icon>
+    </div>
+  </div>
+  <nz-dropdown-menu #menu="nzDropdownMenu">
+    <ul nz-menu class="custom-dropdown">
+      <li nz-menu-item>
+        <a (click)="edit()">
+          <nz-icon nzType="user"></nz-icon>
+          <span>Mon Profil</span>
+        </a>
+      </li>
+    
+      <li nz-menu-divider></li>
+      <li nz-menu-item class="danger-item">
+        <a (click)="logout()">
+          <nz-icon nzType="logout"></nz-icon>
+          <span>Déconnexion</span>
+        </a>
+      </li>
+    </ul>
+  </nz-dropdown-menu>
+</div>
     </nz-header>
 
     <nz-content class="app-content">
