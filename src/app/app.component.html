@@ -1,6 +1,5 @@
-<app-main-layout></app-main-layout>
-
-<router-outlet></router-outlet>
+<ng-container *ngIf="isAuthenticated">
+  <app-main-layout></app-main-layout>
 
 <div class="fab-container" [class.open]="fabMenuOpen">
   <button nz-button
@@ -10,7 +9,7 @@
           class="fab-main"
           (click)="toggleFabMenu()"
           [attr.aria-label]="fabMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu d\'accès rapide'">
-    <i nz-icon [nzType]="fabMenuOpen ? 'close' : 'plus'" nzTheme="outline"></i>
+    <i nz-icon nzType="heart" [nzTheme]="fabMenuOpen ? 'fill' : 'outline'"></i>
   </button>
 
   <div class="fab-menu" [class.visible]="fabMenuOpen">
@@ -91,3 +90,6 @@
        [class.visible]="fabMenuOpen"
        (click)="toggleFabMenu()"></div>
 </div>
+</ng-container>
+
+<router-outlet></router-outlet>

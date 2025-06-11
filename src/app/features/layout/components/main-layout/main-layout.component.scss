@@ -1,3 +1,4 @@
+/* === COLLAPSE TOGGLE BUTTON === */
 .collapse-toggle-header {
   background: #096dd9;
   border: none;
@@ -9,19 +10,18 @@
   align-items: center;
   justify-content: center;
   margin-right: 16px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: background 0.3s;
   top: 35px;
   position: relative;
   right: 40px;
 
-
   &:hover {
-    background: darken(#096dd9, 5%);
+    background: #075bb9;
   }
 }
 
-/* other header styles retained */
+/* === HEADER === */
 .app-header.clean {
   background: white;
   padding: 0 24px;
@@ -37,6 +37,9 @@
     font-size: 18px;
     color: black;
     flex-grow: 1;
+    padding: 0 24px;
+
+
 
     .parent-title {
       font-weight: 700;
@@ -59,6 +62,8 @@
     gap: 16px;
 
     .user-dropdown {
+      position: relative;
+
       .user-profile {
         display: flex;
         align-items: center;
@@ -66,8 +71,12 @@
         padding: 6px 10px;
         border-radius: 20px;
         background: white;
-        box-shadow: 0 0 0 1px rgba(0,0,0,0.05);
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
         cursor: pointer;
+
+        &:hover {
+          box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+        }
 
         .user-avatar {
           width: 28px;
@@ -76,187 +85,244 @@
 
         nz-icon {
           font-size: 12px;
-          color: #d9d9d9;
+          color: #94a3b8;
+          transition: transform 0.3s ease;
         }
+
+        &:hover nz-icon {
+          transform: rotate(180deg);
+        }
+      }
+
+      // Nouveau style pour le menu dropdown
+      ::ng-deep .ant-dropdown-menu {
+        padding: 8px;
+        min-width: 220px;
+        border-radius: 8px;
+        
+        .ant-dropdown-menu-item {
+          padding: 8px 12px;
+          border-radius: 6px;
+          margin: 2px 0;
+
+          a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #1e293b;
+
+            nz-icon {
+              font-size: 16px;
+              color: #64748b;
+
+              &.subscription-check {
+                margin-left: auto;
+                color: #10b981;
+              }
+            }
+          }
+
+          &:last-child {
+            margin-top: 8px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 12px;
+
+            a {
+              color: #ef4444;
+              
+              nz-icon {
+                color: #ef4444;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* === FOOTER === */
+  .app-footer {
+    background: #f9fafc !important;
+    color: #4a5568;
+    font-size: 15px;
+    padding: 18px 0;
+    border-top: 1px solid #e6e8ec;
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+
+      > div:first-child {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 24px;
+
+        a {
+          color: #1d4ed8;
+          text-decoration: none;
+          font-weight: 500;
+          transition: color 0.2s;
+          cursor: pointer;
+
+          &:hover {
+            color: #0e2a7b;
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 700px) {
+    .app-footer .footer-content {
+      flex-direction: column;
+      gap: 10px;
+      text-align: center;
+
+      .footer-links {
+        gap: 16px;
       }
     }
   }
 }
-.custom-sider {
-  background: #f9fafc;
-  border-right: 1px solid #e6e8ec;
-  box-shadow: inset -1px 0 0 #eaeaea;
 
-  .logo {
-    height: 72px;
+/* === SIDEBAR === */
+.custom-sider {
+  background: #ffffff !important;
+  border-right: 1px solid #e6e8ec;
+  box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.03);
+  width: 220px !important;
+
+  .logo, .logo-full {
     display: flex;
     align-items: center;
-    justify-content: center;
+    height: 72px;
     padding: 0 20px;
     border-bottom: 1px solid #e6e8ec;
     background: #ffffff;
 
-    .logo-full {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
     .logo-icon {
-      width: 26px;
+      width: 40px;
+      height: 40px;
+      margin-right: 16px;
+      object-fit: contain;
     }
 
     .logo-text {
+      font-size: 26px;
       font-weight: 700;
-      font-size: 18px;
-      color: #2c3e50;
+      color: #1a237e;
+      white-space: nowrap;
+      letter-spacing: -0.5px;
     }
   }
 
   .custom-menu {
-    background: transparent;
-    padding: 12px 0;
+    background: #ffffff !important;
 
-    li {
-      margin: 4px 12px;
-      border-radius: 8px;
-      overflow: hidden;
-      transition: all 0.3s ease-in-out;
-      position: relative;
+    li[nz-menu-item],
+    li[nz-submenu] > div {
+      background: transparent;
+      margin: 4px 8px;
+      border-radius: 6px;
 
-      a {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 12px 20px;
-        color: #4a5568;
-        font-weight: 500;
-        border-radius: 8px;
-        text-decoration: none !important; /* Supprimer le soulignement */
-        transition: all 0.3s ease;
-        position: relative;
-
-        nz-icon {
-          font-size: 18px;
-          color: #4a5568;
-          transition: color 0.3s ease;
-        }
-
-        span {
-          display: inline;
-        }
-
-        &:hover {
-          background: linear-gradient(135deg, #e8f0fe 0%, #f1f7ff 100%);
-          color: #1d4ed8;
-          text-decoration: none !important;
-          transform: translateX(2px);
-          box-shadow: 0 2px 8px rgba(29, 78, 216, 0.1);
-
-          nz-icon {
-            color: #1d4ed8;
-          }
-        }
-
-        &:focus {
-          text-decoration: none !important;
-          outline: none;
-        }
-      }
-
-      &.ant-menu-item-selected, &.active {
-        background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%) !important;
-        box-shadow:
-          0 3px 12px rgba(29, 78, 216, 0.15),
-          inset 0 1px 0 rgba(255, 255, 255, 0.5);
-        transform: translateX(3px);
-        border: 1px solid rgba(29, 78, 216, 0.2);
-
-        a {
-          color: #1d4ed8 !important;
-          font-weight: 600;
-          text-decoration: none !important;
-
-          nz-icon {
-            color: #1d4ed8;
-          }
-        }
-
-        &::before {
-          content: '';
-          position: absolute;
-          left: 0;
-          top: 0;
-          bottom: 0;
-          width: 4px;
-          background: linear-gradient(180deg, #1d4ed8 0%, #3b82f6 100%);
-          border-radius: 0 4px 4px 0;
-          box-shadow: 0 0 8px rgba(29, 78, 216, 0.3);
-        }
-
-        &::after {
-          content: '';
-          position: absolute;
-          right: 8px;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 6px;
-          height: 6px;
-          background: #1d4ed8;
-          border-radius: 50%;
-          box-shadow: 0 0 4px rgba(29, 78, 216, 0.5);
-        }
+      nz-icon {
+        font-size: 20px !important;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
       }
     }
   }
 
+  // Mode collapsed
   &.ant-layout-sider-collapsed {
-    .custom-menu li a span {
-      display: none !important;
-    }
+    width: 64px !important;
 
-    .custom-menu li a {
+    .logo, .logo-full {
+      padding: 0;
       justify-content: center;
-      padding: 12px 0;
-      gap: 0;
+
+      .logo-icon {
+        width: 36px; 
+        height: 36px;
+        margin: 0;
+      }
     }
 
-    .custom-menu li {
-      margin: 4px 8px;
+    .custom-menu {
+      li[nz-menu-item],
+      li[nz-submenu] > div {
+        padding: 0;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-      &.ant-menu-item-selected, &.active {
-        transform: translateX(0);
+        nz-icon {
+          margin: 0;
+          font-size: 20px !important;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
 
-        &::after {
+        span {
           display: none;
         }
       }
     }
 
-    .logo {
-      justify-content: center;
+    // Masquer les titres de section en mode replié
+    .menu-section-title {
+      display: none;
+    }
+  }
+}
 
-      .logo-text {
-        display: none;
+// Amélioration des états hover et actif
+.custom-menu {
+  li[nz-menu-item],
+  li[nz-submenu] > div {
+    &:hover,
+    &.ant-menu-item-selected {
+      background-color: #e8f0fe !important;
+
+      nz-icon {
+        color: #1d4ed8 !important;
       }
     }
   }
 }
 
-/* Styles globaux pour supprimer tous les soulignements */
-.custom-sider a,
-.custom-sider a:hover,
-.custom-sider a:focus,
-.custom-sider a:active,
-.custom-sider a:visited {
-  text-decoration: none !important;
+// Style des titres de section
+.menu-section-title {
+  padding: 16px 20px 8px;
+  color: #6b7280;
+  font-weight: 600;
+
+  nz-icon {
+    font-size: 16px;
+    color: #1d4ed8;
+  }
+
+  span {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 }
 
-/* Animation d'entrée pour les éléments de menu */
-.custom-menu li {
-  animation: slideIn 0.3s ease-out;
-}
-
+// Ajustement des animations pour un meilleur rendu
 @keyframes slideIn {
   from {
     opacity: 0;
@@ -268,59 +334,216 @@
   }
 }
 
-/* Amélioration du survol avec une animation plus fluide */
-.custom-menu li:hover {
-  transform: translateX(1px);
-}
-
-/* Style pour les icônes en mode collapsed */
-.custom-sider.ant-layout-sider-collapsed .custom-menu li a nz-icon {
-  font-size: 20px;
-}
-
-/* Tooltip pour les éléments en mode collapsed */
-.custom-sider.ant-layout-sider-collapsed .custom-menu li {
-  position: relative;
-
-  &:hover::before {
-    content: attr(data-title);
-    position: absolute;
-    left: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #2c3e50;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    white-space: nowrap;
-    z-index: 1000;
-    margin-left: 10px;
-    font-size: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    opacity: 0;
-    animation: fadeInTooltip 0.2s ease-out 0.5s forwards;
-  }
-
-  &:hover::after {
-    content: '';
-    position: absolute;
-    left: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    margin-left: 4px;
-    width: 0;
-    height: 0;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
-    border-right: 6px solid #2c3e50;
-    z-index: 1000;
-    opacity: 0;
-    animation: fadeInTooltip 0.2s ease-out 0.5s forwards;
-  }
-}
-
 @keyframes fadeInTooltip {
   to {
     opacity: 1;
+  }
+}
+
+.custom-menu li {
+  transition: transform 0.1s;
+  animation: slideIn 0.3s ease-out;
+
+  &:hover {
+    transform: translateX(2px) scale(1.03);
+    box-shadow: 0 2px 8px rgba(29, 78, 216, 0.07);
+  }
+}
+
+.custom-sider a,
+.custom-sider a:hover,
+.custom-sider a:focus,
+.custom-sider a:active,
+.custom-sider a:visited {
+  text-decoration: none !important;
+}
+
+/* === FOOTER === */
+.app-footer {
+  background: #f9fafc !important;
+  color: #4a5568;
+  font-size: 15px;
+  padding: 18px 0;
+  border-top: 1px solid #e6e8ec;
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+
+    > div:first-child {
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+
+      a {
+        color: #1d4ed8;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+        cursor: pointer;
+
+        &:hover {
+          color: #0e2a7b;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+.menu-section-title {
+  padding: 0px 12px 0px;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  nz-icon {
+    font-size: 16px;
+    color: #1d4ed8;
+  }
+
+  span {
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+// Ajouter un peu d'espace avant chaque nouvelle section
+.menu-section-title:not(:first-child) {
+  margin-top: 24px;
+}
+
+/* === BREADCRUMB === */
+.custom-breadcrumb {
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+
+  ::ng-deep {
+    .ant-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .ant-breadcrumb-separator {
+        color: #94a3b8;
+        margin: 0;
+      }
+    }
+
+    .main-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a237e;
+
+      nz-icon {
+        font-size: 20px;
+        color: #4051b5;
+      }
+    }
+
+    .child-title {
+      font-size: 16px;
+      color: #64748b;
+      font-weight: 500;
+      margin-left: 8px;
+    }
+
+    nz-breadcrumb-item {
+      display: flex;
+      align-items: center;
+
+      &:last-child {
+        .ant-breadcrumb-separator {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+::ng-deep .custom-dropdown {
+  min-width: 200px !important;  // Dropdown plus large
+  padding: 8px !important;
+  border-radius: 12px;
+  
+  li[nz-menu-item] {
+    height: 44px !important;  // Items plus hauts
+    line-height: 44px !important;
+    margin: 4px 0;
+    border-radius: 8px;
+
+    a {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      
+      nz-icon {
+        font-size: 18px;
+        margin-right: 16px;  // Plus d'espace entre l'icône et le texte
+        color: #64748b;
+      }
+
+      span {
+        font-size: 14px;
+        font-weight: 500;
+      }
+    }
+
+    &:hover {
+      background-color: #f8fafc;
+      
+      a {
+        color: #2563eb;
+        
+        nz-icon {
+          color: #2563eb;
+        }
+      }
+    }
+
+    &.danger-item {
+      a {
+        color: #dc2626 !important;  // Rouge pour le texte de déconnexion
+        
+        nz-icon {
+          color: #dc2626 !important;  // Rouge pour l'icône de déconnexion
+        }
+      }
+
+      &:hover {
+        background-color: #fef2f2 !important;  // Fond rouge clair au survol
+      }
+    }
+  }
+
+  // Style pour le séparateur
+  li[nz-menu-divider] {
+    margin: 8px 0;
+    background-color: #e5e7eb;
+  }
+}
+
+// Style pour le trigger du dropdown
+.user-profile {
+  padding: 6px 16px !important;  // Plus d'espace horizontal
+  
+  .user-avatar {
+    width: 28px !important;  // Avatar légèrement plus grand
+    height: 28px !important;
   }
 }

@@ -1,5 +1,5 @@
 <nz-layout class="main-layout">
-  <nz-sider
+    <nz-sider
     nzCollapsible
     [(nzCollapsed)]="isCollapsed"
     [nzTrigger]="null"
@@ -8,38 +8,75 @@
     class="custom-sider">
 
     <div class="logo">
-      <img src="assets/images/logopng.PNG" class="logo-icon" *ngIf="isCollapsed" >
+      <img src="assets/images/logopng.PNG" class="logo-icon" *ngIf="isCollapsed">
       <div class="logo-full" *ngIf="!isCollapsed">
         <img src="assets/images/logopng.PNG" class="logo-icon">
         <span class="logo-text">DocApp</span>
       </div>
     </div>
 
-    <ul nz-menu nzMode="inline" class="custom-menu">
+    <ul nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed" class="custom-menu">
+      <!-- Dashboard inchangé -->
       <li nz-menu-item [routerLinkActive]="['active']">
-        <a routerLink="dashboard">
+        <a routerLink="dashboard" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Dashboard' : null">
           <nz-icon nzType="appstore"></nz-icon>
           <span>Dashboard</span>
         </a>
       </li>
+
+      <!-- Section Patients -->
+      <div class="menu-section-title" *ngIf="!isCollapsed">
+        <nz-icon nzType="user"></nz-icon>
+        <span>Gestion des Patients</span>
+      </div>
       <li nz-menu-item [routerLinkActive]="['active']">
-        <a [routerLink]="['/doc/patients/list']">
-          <nz-icon nzType="user"></nz-icon>
-          <span>Patients</span>
+        <a [routerLink]="['/doc/patients/list']" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Liste des Patients' : null">
+          <nz-icon nzType="profile"></nz-icon>
+          <span>Liste des Patients</span>
         </a>
       </li>
       <li nz-menu-item [routerLinkActive]="['active']">
-        <a [routerLink]="['/doc/medecin/list']">
-          <nz-icon nzType="team"></nz-icon>
-          <span>Médecins</span>
+        <a [routerLink]="['/doc/patients/create']" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Ajouter un Patient' : null">
+          <nz-icon nzType="plus"></nz-icon>
+          <span>Ajouter un Patient</span>
+        </a>
+      </li>
+
+      <!-- Section Rendez-vous -->
+      <div class="menu-section-title" *ngIf="!isCollapsed">
+        <nz-icon nzType="calendar"></nz-icon>
+        <span>Gestion des RDV</span>
+      </div>
+      <li nz-menu-item [routerLinkActive]="['active']">
+        <a [routerLink]="['/doc/rdv/list']" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Liste des RDV' : null">
+          <nz-icon nzType="unordered-list"></nz-icon>
+          <span>Liste des RDV</span>
         </a>
       </li>
       <li nz-menu-item [routerLinkActive]="['active']">
-        <a [routerLink]="['/doc/rdv/list']">
-          <nz-icon nzType="calendar"></nz-icon>
-          <span>Rendez-vous</span>
+        <a [routerLink]="['/doc/rdv/create']" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Ajouter un RDV' : null">
+          <nz-icon nzType="plus"></nz-icon>
+          <span>Ajouter un RDV</span>
         </a>
       </li>
+
+      <!-- Section Administration (visible uniquement pour les admins) -->
+        <div class="menu-section-title" *ngIf="!isCollapsed">
+          <nz-icon nzType="setting"></nz-icon>
+          <span>Administration</span>
+        </div>
+        <li nz-menu-item [routerLinkActive]="['active']">
+          <a [routerLink]="['/doc/admin/roles']" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Gestion des rôles' : null">
+            <nz-icon nzType="safety-certificate"></nz-icon>
+            <span>Gestion des rôles</span>
+          </a>
+        </li>
+        <li nz-menu-item [routerLinkActive]="['active']">
+          <a [routerLink]="['/doc/admin/permissions']" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Gestion des permissions' : null">
+            <nz-icon nzType="lock"></nz-icon>
+            <span>Gestion des permissions</span>
+          </a>
+        </li>
     </ul>
   </nz-sider>
   <nz-layout class="white-layout">
@@ -48,36 +85,44 @@
         <nz-icon [nzType]="isCollapsed ? 'arrow-right' : 'arrow-left'"></nz-icon>
       </button>
 
-      <div class="breadcrumb-wrapper">
-        <span class="parent-title">{{ currentPageTitle }}</span>
-        <span class="divider">›</span>
-        <span class="child-title">Données</span>
-      </div>
+      <nz-breadcrumb class="custom-breadcrumb">
+  <nz-breadcrumb-item>
+    <span class="main-title">
+      <nz-icon [nzType]="getBreadcrumbIcon()"></nz-icon>
+      {{ currentPageTitle }}
+    </span>
+  </nz-breadcrumb-item>
+  <nz-breadcrumb-item *ngIf="childTitle">
+    <span class="child-title">{{ childTitle }}</span>
+  </nz-breadcrumb-item>
+</nz-breadcrumb>
 
       <div class="header-right">
-        <div nz-dropdown [nzDropdownMenu]="menu" class="user-dropdown">
-          <div class="user-profile" nz-dropdownTrigger>
-            <nz-avatar [nzSrc]="'assets/images/avatar.svg'" class="user-avatar"></nz-avatar>
-            <nz-icon nzType="down"></nz-icon>
-          </div>
-        </div>
-        <nz-dropdown-menu #menu="nzDropdownMenu">
-          <ul nz-menu>
-            <li nz-menu-item>
-              <a (click)="edit()">
-                <nz-icon nzType="update"></nz-icon>
-                Edit Profil
-              </a>
-            </li>
-            <li nz-menu-item>
-              <a (click)="logout()">
-                <nz-icon nzType="logout"></nz-icon>
-                Déconnexion
-              </a>
-            </li>
-          </ul>
-        </nz-dropdown-menu>
-      </div>
+  <div nz-dropdown [nzDropdownMenu]="menu" class="user-dropdown">
+    <div class="user-profile" nz-dropdownTrigger>
+      <nz-avatar [nzSrc]="'assets/images/avatar.svg'" class="user-avatar"></nz-avatar>
+      <nz-icon nzType="down"></nz-icon>
+    </div>
+  </div>
+  <nz-dropdown-menu #menu="nzDropdownMenu">
+    <ul nz-menu class="custom-dropdown">
+      <li nz-menu-item>
+        <a (click)="edit()">
+          <nz-icon nzType="user"></nz-icon>
+          <span>Mon Profil</span>
+        </a>
+      </li>
+    
+      <li nz-menu-divider></li>
+      <li nz-menu-item class="danger-item">
+        <a (click)="logout()">
+          <nz-icon nzType="logout"></nz-icon>
+          <span>Déconnexion</span>
+        </a>
+      </li>
+    </ul>
+  </nz-dropdown-menu>
+</div>
     </nz-header>
 
     <nz-content class="app-content">
