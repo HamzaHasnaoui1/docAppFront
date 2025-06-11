@@ -141,208 +141,122 @@
 
 /* === SIDEBAR === */
 .custom-sider {
-  background: #f9fafc !important;
+  background: #ffffff !important; // Fond blanc uniforme
   border-right: 1px solid #e6e8ec;
   box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.03);
+  width: 220px !important;
 
   .logo, .logo-full {
     display: flex;
     align-items: center;
-    height: 72px;
+    height: 64px;
     padding: 0 20px;
     border-bottom: 1px solid #e6e8ec;
-    background: #fff;
+    background: #ffffff;
 
     .logo-icon {
-      width: 32px;
-      height: 32px;
-      margin-right: 10px;
-    }
-
-    .logo-text {
-      font-size: 20px;
-      font-weight: 700;
-      color: #000000;
-      letter-spacing: 1px;
+      width: 28px;
+      height: 28px;
+      margin-right: 12px;
     }
   }
 
-  /* Uniformiser les styles pour nz-menu, nz-submenu, et nz-menu-item */
-.custom-menu {
-  margin-top: 8px;
-  background: transparent !important;
-  border: none;
-
-  /* Style de base pour les éléments de menu */
-  li[nz-menu-item],
-  li[nz-submenu] > div {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 12px 20px;
-    height: 48px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 500;
-    color: #111 !important;
-    background: transparent;
-    transition: background 0.2s, color 0.2s;
-  }
-
-  /* Style pour les icônes */
-  li[nz-menu-item] nz-icon,
-  li[nz-submenu] > div nz-icon {
-    font-size: 22px !important;
-    color: #000000 !important;
-    margin-right: 14px;
-    min-width: 22px;
-    text-align: center;
-    transition: color 0.2s;
-  }
-
-  /* Style pour le texte */
-  li[nz-menu-item] span,
-  li[nz-submenu] > div span {
-    font-weight: 500;
-    color: #111 !important;
-    display: inline-block;
-    font-size: 16px;
-    line-height: 1;
-    transition: color 0.2s;
-  }
-
-  /* Style pour les sous-éléments de menu */
-  li[nz-submenu] ul li[nz-menu-item] {
-    padding-left: 48px !important;
-  }
-
-  /* Style pour les éléments de menu au survol ou sélectionnés */
-  li[nz-menu-item]:hover,
-  li[nz-submenu] > div:hover,
-  li[nz-menu-item].ant-menu-item-selected,
-  li[nz-menu-item].active {
-    background: #e8f0fe !important;
-    color: #000000 !important;
-
-    nz-icon,
-    span {
-      color: #000000 !important;
+  .custom-menu {
+    background: #ffffff !important;
+    
+    li[nz-menu-item],
+    li[nz-submenu] > div {
+      background: transparent;
+      margin: 4px 8px;
+      border-radius: 6px;
+      
+      nz-icon {
+        font-size: 20px !important;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
+      }
     }
   }
-}
 
-.custom-sub-menu {
-  margin-top: 8px;
-  background: transparent !important;
-  border: none;
-
-  /* Style de base pour les éléments de menu */
-  li[nz-menu-item],
-  li[nz-submenu] > div {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 12px 20px;
-    height: 48px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 500;
-    color: #111 !important;
-    background: transparent;
-    transition: background 0.2s, color 0.2s;
-  }
-
-  /* Style pour les icônes */
-  li[nz-menu-item] nz-icon,
-  li[nz-submenu] > div nz-icon {
-    font-size: 22px !important;
-    color: #000000 !important;
-    margin-right: 14px;
-    min-width: 22px;
-    text-align: center;
-    transition: color 0.2s;
-  }
-
-  /* Style pour le texte */
-  li[nz-menu-item] span,
-  li[nz-submenu] > div span {
-    font-weight: 500;
-    color: #111 !important;
-    display: inline-block;
-    font-size: 16px;
-    line-height: 1;
-    transition: color 0.2s;
-  }
-
-  /* Style pour les sous-éléments de menu */
-  li[nz-submenu] ul li[nz-menu-item] {
-    padding-left: 48px !important;
-  }
-
-  /* Style pour les éléments de menu au survol ou sélectionnés */
-  li[nz-menu-item]:hover,
-  li[nz-submenu] > div:hover,
-  li[nz-menu-item].ant-menu-item-selected,
-  li[nz-menu-item].active {
-    background: #e8f0fe !important;
-    color: #000000 !important;
-
-    nz-icon,
-    span {
-      color: #000000 !important;
-    }
-  }
-}
-
-/* Style pour la sidebar fermée */
-.custom-sider.ant-layout-sider-collapsed {
-  .custom-menu li[nz-menu-item] span,
-  .custom-menu li[nz-submenu] > div span {
-    display: none !important;
-  }
-
-  .custom-menu li[nz-menu-item] nz-icon,
-  .custom-menu li[nz-submenu] > div nz-icon {
-    margin-right: 0 !important;
-    min-width: 0;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-  }
-
-  .custom-menu li[nz-menu-item],
-  .custom-menu li[nz-submenu] > div {
-    justify-content: center;
-    padding: 12px 0;
-    gap: 0;
-  }
-}
-
-
-  // Sidebar fermée : icônes centrées, texte masqué
+  // Mode collapsed
   &.ant-layout-sider-collapsed {
-    .custom-menu li[nz-menu-item] span,
-    .custom-menu li[nz-submenu] > .ant-menu-submenu-title span {
-      display: none !important;
-    }
-    .custom-menu li[nz-menu-item] nz-icon,
-    .custom-menu li[nz-submenu] > .ant-menu-submenu-title nz-icon {
-      margin-right: 0 !important;
-      min-width: 0;
-      display: flex;
+    width: 64px !important;
+
+    .logo, .logo-full {
+      padding: 0;
       justify-content: center;
-      width: 100%;
+      
+      .logo-icon {
+        margin: 0;
+      }
     }
-    .custom-menu li[nz-menu-item],
-    .custom-menu li[nz-submenu] > .ant-menu-submenu-title {
-      justify-content: center;
-      padding: 12px 0;
-      gap: 0;
+
+    .custom-menu {
+      li[nz-menu-item],
+      li[nz-submenu] > div {
+        padding: 0;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        nz-icon {
+          margin: 0;
+          font-size: 20px !important;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        span {
+          display: none;
+        }
+      }
+    }
+
+    // Masquer les titres de section en mode replié
+    .menu-section-title {
+      display: none;
     }
   }
 }
 
-/* === ANIMATIONS & HOVER === */
+// Amélioration des états hover et actif
+.custom-menu {
+  li[nz-menu-item],
+  li[nz-submenu] > div {
+    &:hover,
+    &.ant-menu-item-selected {
+      background-color: #e8f0fe !important;
+      
+      nz-icon {
+        color: #1d4ed8 !important;
+      }
+    }
+  }
+}
+
+// Style des titres de section
+.menu-section-title {
+  padding: 16px 20px 8px;
+  color: #6b7280;
+  font-weight: 600;
+  
+  nz-icon {
+    font-size: 16px;
+    color: #1d4ed8;
+  }
+  
+  span {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+// Ajustement des animations pour un meilleur rendu
 @keyframes slideIn {
   from {
     opacity: 0;
@@ -413,6 +327,83 @@
         &:hover {
           color: #0e2a7b;
           text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+.menu-section-title {
+  padding: 16px 20px 8px;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  nz-icon {
+    font-size: 16px;
+    color: #1d4ed8;
+  }
+  
+  span {
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+// Ajouter un peu d'espace avant chaque nouvelle section
+.menu-section-title:not(:first-child) {
+  margin-top: 24px;
+}
+
+/* === BREADCRUMB === */
+.custom-breadcrumb {
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  
+  ::ng-deep {
+    .ant-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      
+      .ant-breadcrumb-separator {
+        color: #94a3b8;
+        margin: 0;
+      }
+    }
+
+    .main-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a237e;
+      
+      nz-icon {
+        font-size: 20px;
+        color: #4051b5;
+      }
+    }
+
+    .child-title {
+      font-size: 16px;
+      color: #64748b;
+      font-weight: 500;
+      margin-left: 8px;
+    }
+
+    nz-breadcrumb-item {
+      display: flex;
+      align-items: center;
+
+      &:last-child {
+        .ant-breadcrumb-separator {
+          display: none;
         }
       }
     }

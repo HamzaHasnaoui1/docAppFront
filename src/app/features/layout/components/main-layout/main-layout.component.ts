@@ -35,7 +35,7 @@ import {AuthService} from '../../../../components/auth/auth.service';
 })
 export class MainLayoutComponent {
   isCollapsed = false;
-  currentPageTitle = 'Accueil';
+  currentPageTitle = 'Dashboard';
 childTitle: string | null = null; // Nouvelle propriété pour le sous-titre
 
   constructor(
@@ -54,7 +54,7 @@ childTitle: string | null = null; // Nouvelle propriété pour le sous-titre
 
   private getRouteTitles(): { mainTitle: string; childTitle: string | null } {
     let route = this.activatedRoute;
-    let mainTitle = 'Accueil';
+    let mainTitle = 'Dashboard';
     let childTitle: string | null = null;
 
     // Parcours des routes enfants
@@ -85,5 +85,22 @@ childTitle: string | null = null; // Nouvelle propriété pour le sous-titre
 
   edit() {
     this.router.navigate(['/doc/user/edit-profile']);
+  }
+
+  getBreadcrumbIcon(): string {
+    switch (this.currentPageTitle?.toLowerCase()) {
+      case 'dashboard':  // Changé de 'dashboard' à 'dashboards'
+        return 'dashboard';
+      case 'patients':
+        return 'user';
+      case 'rendez-vous':
+        return 'calendar';
+      case 'médecins':
+        return 'team';
+      case 'administration':
+        return 'setting';
+      default:
+        return 'right';
+    }
   }
 }

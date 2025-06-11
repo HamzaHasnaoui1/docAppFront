@@ -11,8 +11,10 @@ export const ADMIN_ROUTES: Routes = [
       ),
     canActivate: [RoleGuard],
     data: {
-      roles: ['ADMIN'],
-      breadcrumb: 'Rôles'
+      title: 'Administration',
+      childTitle: 'Gestion des rôles',
+      breadcrumb: 'Rôles',
+      roles: ['ADMIN']
     }
   },
   {
@@ -24,8 +26,10 @@ export const ADMIN_ROUTES: Routes = [
       ),
     canActivate: [RoleGuard],
     data: {
-      roles: ['ADMIN'],
-      breadcrumb: 'Permissions utilisateurs'
+      title: 'Administration',
+      childTitle: 'Gestion des permissions utilisateurs',
+      breadcrumb: 'Permissions utilisateurs',
+      roles: ['ADMIN']
     }
   },
   // Redirections
@@ -38,4 +42,4 @@ export const ADMIN_ROUTES: Routes = [
     path: '**',
     redirectTo: 'roles'
   }
-]; 
+];
