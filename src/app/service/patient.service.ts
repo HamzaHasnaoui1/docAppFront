@@ -26,7 +26,7 @@ export class PatientService {
 
 
   createPatient( patient:Patient):Observable<Patient> {
-    return this.http.post<Patient>(`${environment.apiUrl}/admin/patients`, patient);
+    return this.http.post<Patient>(`${environment.apiUrl}/user/patients`, patient);
   }
 
   updatePatient(id:number , patient:Patient):Observable<Patient> {
