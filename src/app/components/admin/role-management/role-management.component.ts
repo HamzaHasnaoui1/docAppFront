@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -8,7 +8,7 @@ import { Permission, Role } from '../../../models/permission.model';
 import { PermissionService } from '../../../service/permission.service';
 import { CommonModule } from '@angular/common';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzCardComponent, NzCardModule } from 'ng-zorro-antd/card';
 import { DirectivesModule } from '../../../directives/directives.module';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -16,8 +16,8 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzListModule } from 'ng-zorro-antd/list';
-import { NzTagModule } from 'ng-zorro-antd/tag';
-import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzTagComponent, NzTagModule } from 'ng-zorro-antd/tag';
+import { NzAvatarComponent, NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
@@ -53,6 +53,8 @@ export class RoleManagementComponent implements OnInit {
   permissions: Permission[] = [];
   permissionsByCategory: { [key: string]: Permission[] } = {};
   categories: string[] = [];
+  loading = false;
+
 
   roleForm: FormGroup;
   selectedRole: Role | null = null;

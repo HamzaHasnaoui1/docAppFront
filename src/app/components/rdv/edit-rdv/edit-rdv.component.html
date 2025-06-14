@@ -50,6 +50,8 @@
           </ng-template>
 
           <form nz-form [formGroup]="rdvForm" (ngSubmit)="onSubmitRdv()">
+            <!-- Informations temporelles -->
+            <nz-divider nzText="Informations Temporelles" nzOrientation="left"></nz-divider>
             <div nz-row nzGutter="24">
               <!-- Date de début -->
               <div nz-col nzSpan="12">
@@ -84,6 +86,8 @@
               </div>
             </div>
 
+            <!-- Informations administratives -->
+            <nz-divider nzText="Informations Administratives" nzOrientation="left"></nz-divider>
             <div nz-row nzGutter="24">
               <!-- Statut -->
               <div nz-col nzSpan="12">
@@ -103,7 +107,7 @@
               <!-- Prix -->
               <div nz-col nzSpan="12">
                 <nz-form-item>
-                  <nz-form-label nzRequired>Prix (€)</nz-form-label>
+                  <nz-form-label nzRequired>Prix </nz-form-label>
                   <nz-form-control>
                     <nz-input-number
                       formControlName="prix"
@@ -118,15 +122,31 @@
             </div>
 
             <!-- Rapport médical -->
+            <nz-divider nzText="Rapport Médical" nzOrientation="left"></nz-divider>
             <nz-form-item>
-              <nz-form-label>Rapport médical</nz-form-label>
-              <nz-form-control>
-                <angular-editor
-                  formControlName="rapport"
-                  [placeholder]="'Entrer le rapport médical...'"
-                ></angular-editor>
-              </nz-form-control>
-            </nz-form-item>
+  <nz-form-label>Remarques</nz-form-label>
+  <nz-form-control>
+    <div class="textarea-wrapper">
+      <textarea 
+        nz-input 
+        formControlName="remarques" 
+        rows="3" 
+        placeholder="Observations particulières..."
+      ></textarea>
+      <button 
+        nz-button 
+        nzType="text" 
+        nzSize="small" 
+        class="clear-button"
+        (click)="clearPhysioRemarques($event)"
+        nz-tooltip
+        nzTooltipPlacement="left"
+        title="Effacer les remarques">
+        <i nz-icon nzType="delete"></i>
+      </button>
+    </div>
+  </nz-form-control>
+</nz-form-item>
           </form>
         </nz-card>
       </div>
@@ -192,19 +212,19 @@
             <!-- Signes vitaux -->
             <nz-divider nzText="Signes Vitaux" nzOrientation="left"></nz-divider>
             <div nz-row nzGutter="24">
-              <div nz-col nzSpan="12">
+              <div nz-col nzSpan="11">
                 <nz-form-item>
                   <nz-form-label>Tension artérielle (mmHg)</nz-form-label>
                   <nz-form-control>
                     <nz-input-group nzCompact>
-                      <nz-input-number formControlName="tensionSystolique" nzPlaceholder="Systolique" nzMin="0" style="width: 45%"></nz-input-number>
-                      <input nz-input style="width: 10%; text-align: center; background: #f5f5f5;" placeholder="/" disabled>
-                      <nz-input-number formControlName="tensionDiastolique" nzPlaceholder="Diastolique" nzMin="0" style="width: 45%"></nz-input-number>
+                      <nz-input-number formControlName="tensionSystolique" nzPlaceholder="Systolique" nzMin="0" style="width: 30%"></nz-input-number>
+                      <input nz-input style="width: 15%; text-align: center; background: #f5f5f5;" placeholder="/" disabled>
+                      <nz-input-number formControlName="tensionDiastolique" nzPlaceholder="Diastolique" nzMin="0" style="width: 30%"></nz-input-number>
                     </nz-input-group>
                   </nz-form-control>
                 </nz-form-item>
               </div>
-              <div nz-col nzSpan="6">
+              <div nz-col nzSpan="7">
                 <nz-form-item>
                   <nz-form-label>Fréquence cardiaque (bpm)</nz-form-label>
                   <nz-form-control>
@@ -216,7 +236,7 @@
                 <nz-form-item>
                   <nz-form-label>Température (°C)</nz-form-label>
                   <nz-form-control>
-                    <nz-input-number formControlName="temperature" nzMin="0" nzStep="0.1" style="width: 100%"></nz-input-number>
+                    <nz-input-number formControlName="temperature" nzMin="0" nzStep="0.1" style="width: 70%"></nz-input-number>
                   </nz-form-control>
                 </nz-form-item>
               </div>
@@ -251,20 +271,38 @@
               </div>
             </div>
 
-            <nz-form-item>
-              <nz-form-label>Remarques</nz-form-label>
-              <nz-form-control>
-                <textarea nz-input formControlName="remarques" rows="3" placeholder="Observations particulières..."></textarea>
-              </nz-form-control>
-            </nz-form-item>
+           <nz-form-item>
+  <nz-form-label>Remarques</nz-form-label>
+  <nz-form-control>
+    <div class="textarea-wrapper">
+      <textarea 
+        nz-input 
+        formControlName="remarques" 
+        rows="3" 
+        placeholder="Observations particulières..."
+      ></textarea>
+      <button 
+        nz-button 
+        nzType="text" 
+        nzSize="small" 
+        class="clear-button"
+        (click)="clearPhysioRemarques($event)"
+        nz-tooltip
+        nzTooltipPlacement="left"
+        title="Effacer les remarques">
+        <i nz-icon nzType="delete"></i>
+      </button>
+    </div>
+  </nz-form-control>
+</nz-form-item>
           </form>
         </nz-card>
       </div>
     </nz-tab>
 
     <!-- Onglet 3: Ordonnance -->
-    <nz-tab nzTitle="Ordonnance" >
-      <ng-template >
+    <nz-tab nzTitle="Ordonnance">
+      <ng-template nz-tab>
         <div class="tab-icon">
           <i nz-icon nzType="file-text"></i>
           Ordonnance
@@ -287,39 +325,89 @@
           </ng-template>
 
           <form nz-form [formGroup]="ordonnaceForm" (ngSubmit)="onSubmitOrdonnance()">
+            <!-- Informations principales -->
+            <nz-divider nzText="Informations Générales" nzOrientation="left"></nz-divider>
+            
             <div nz-row nzGutter="24">
-              <div nz-col nzSpan="16">
-                <nz-form-item>
-                  <nz-form-label>Contenu de l'ordonnance</nz-form-label>
-                  <nz-form-control>
-                    <textarea
-                      nz-input
-                      formControlName="contenu"
-                      rows="8"
-                      placeholder="Détails de l'ordonnance..."
-                    ></textarea>
-                  </nz-form-control>
-                </nz-form-item>
-              </div>
               <div nz-col nzSpan="8">
                 <nz-form-item>
                   <nz-form-label>Date d'émission</nz-form-label>
                   <nz-form-control>
                     <nz-date-picker
                       formControlName="dateEmission"
+                      nzFormat="dd/MM/yyyy"
                       style="width: 100%"
                     ></nz-date-picker>
                   </nz-form-control>
                 </nz-form-item>
+              </div>
+            </div>
+
+            <!-- Contenu principal -->
+            <nz-divider nzText="Prescription" nzOrientation="left"></nz-divider>
+            
+            <div nz-row nzGutter="24">
+              <div nz-col nzSpan="24">
                 <nz-form-item>
-                  <nz-form-label>Remarques</nz-form-label>
+                  <nz-form-label nzRequired>
+                    Contenu de l'ordonnance                
+                  </nz-form-label>
                   <nz-form-control>
-                    <textarea
-                      nz-input
-                      formControlName="remarques"
-                      rows="4"
-                      placeholder="Remarques supplémentaires..."
-                    ></textarea>
+                    <div class="editor-wrapper">
+                      <angular-editor
+                        formControlName="contenu"
+                        [placeholder]="'Détails de la prescription...'"
+                        [config]="{
+                          height: '120px',
+                          editable: true,
+                          spellcheck: true,
+                          translate: 'yes'
+                        }"
+                      ></angular-editor>
+                      <button 
+                        nz-button 
+                        nzType="text" 
+                        nzSize="small" 
+                        class="clear-editor-button"
+                        (click)="clearOrdonnanceContent($event)"
+                        nz-tooltip
+                        nzTooltipPlacement="left"
+                        title="Effacer le contenu">
+                        <i nz-icon nzType="delete"></i>
+                      </button>
+                    </div>
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+            </div>
+
+            <!-- Informations complémentaires -->
+            <nz-divider nzText="Informations Complémentaires" nzOrientation="left"></nz-divider>
+            
+            <div nz-row nzGutter="24">
+              <div nz-col nzSpan="24">
+                <nz-form-item>
+                  <nz-form-label>Remarques et instructions spéciales</nz-form-label>
+                  <nz-form-control>
+                    <div class="textarea-wrapper">
+                      <textarea
+                        nz-input
+                        formControlName="remarques"
+                        rows="4"
+                        placeholder="Remarques supplémentaires, contre-indications, précautions..."
+                      ></textarea>
+                      <button 
+                        nz-button 
+                        nzType="text" 
+                        nzSize="small" 
+                        class="clear-button"
+                        (click)="clearRemarques($event)"
+                        nz-tooltip
+                        nzTooltipPlacement="left"
+                        title="Effacer les remarques">
+                        <i nz-icon nzType="delete"></i>
+                      </button>
+                    </div>
                   </nz-form-control>
                 </nz-form-item>
               </div>

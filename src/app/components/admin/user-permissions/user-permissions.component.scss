@@ -1,35 +1,100 @@
-.permissions-container {
-  max-height: 300px;
-  overflow-y: auto;
-  padding: 10px;
-  border: 1px solid #e8e8e8;
-  border-radius: 4px;
+/* Styles améliorés */
+.user-table {
+  .user-info {
+    line-height: 1.4;
+    
+    .username {
+      font-weight: 500;
+    }
+    
+    .email {
+      font-size: 12px;
+    }
+  }
+
+  .roles-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .role-tag {
+    margin-right: 4px;
+    margin-bottom: 4px;
+  }
 }
 
-.role-permissions {
-  padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 4px;
+.permissions-card {
+  .roles-selector {
+    .role-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+
+      .role-info {
+        display: flex;
+        flex-direction: column;
+
+        .role-name {
+          font-weight: 500;
+          color: #1f1f1f;
+        }
+
+        .role-description {
+          color: #8c8c8c;
+          font-size: 12px;
+          margin-top: 2px;
+        }
+      }
+
+      .role-count {
+        margin-left: 8px;
+      }
+    }
+  }
+
+  .permissions-container {
+    margin-top: 16px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 8px;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    
+    .permissions-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+  }
+
+  .actions-footer {
+    margin-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+  }
 }
 
-.permission-badges {
-  margin-top: 5px;
+/* Couleurs pour les rôles */
+:host ::ng-deep {
+  .role-admin {
+    background: #f50;
+    color: white;
+  }
+  
+  .role-manager {
+    background: #2db7f5;
+    color: white;
+  }
+  
+  .role-editor {
+    background: #87d068;
+    color: white;
+  }
+  
+  .role-viewer {
+    background: #108ee9;
+    color: white;
+  }
 }
-
-.badge {
-  font-size: 0.8rem;
-  padding: 0.3em 0.6em;
-}
-
-.badge.bg-primary {
-  background-color: #1890ff !important;
-}
-
-.badge.bg-info {
-  background-color: #13c2c2 !important;
-}
-
-h6 {
-  margin-bottom: 5px;
-  font-weight: 500;
-} 

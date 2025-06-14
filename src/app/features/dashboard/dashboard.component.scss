@@ -14,6 +14,15 @@
   margin: 0 auto;
 }
 
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #fafafa;
+  }
+}
+
 /* Section titre de bienvenue amélioré */
 .welcome-section {
   margin-bottom: 24px;

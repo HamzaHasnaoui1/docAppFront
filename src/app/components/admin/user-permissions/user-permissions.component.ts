@@ -15,12 +15,25 @@ import { User } from '../../../models/auth-response.model';
 import { Role, Permission } from '../../../models/permission.model';
 import { PermissionService } from '../../../service/permission.service';
 import { UserService } from '../../../service/user.service';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzCollapseModule } from 'ng-zorro-antd/collapse';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 @Component({
   selector: 'app-user-permissions',
   standalone: true,
   imports: [
+    NzCollapseModule,
+    NzTagModule,
+    NzDividerModule,
+    NzEmptyModule,
     CommonModule,
+    NzGridModule,
+    CommonModule,
+    NzTagModule,
     FormsModule,
     ReactiveFormsModule,
     NzTableModule,
@@ -31,7 +44,8 @@ import { UserService } from '../../../service/user.service';
     NzSpinModule,
     NzModalModule,
     NzBadgeModule,
-    DirectivesModule
+    DirectivesModule,
+    NzToolTipModule
   ],
   templateUrl: './user-permissions.component.html',
   styleUrls: ['./user-permissions.component.scss']
@@ -86,7 +100,6 @@ export class UserPermissionsComponent implements OnInit {
   }
 
   selectUser(user: User): void {
-    console.log('Utilisateur sélectionné:', user);
     this.selectedUser = user;
     this.selectedRoles = user.roles || [];
   }
@@ -97,9 +110,7 @@ export class UserPermissionsComponent implements OnInit {
       return;
     }
 
-    console.log('Mise à jour des rôles pour:', this.selectedUser);
-    console.log('ID utilisateur:', this.selectedUser.userId || this.selectedUser.id);
-    console.log('Rôles sélectionnés:', this.selectedRoles);
+   
 
     const userId = this.selectedUser.userId || this.selectedUser.id;
 
@@ -130,6 +141,7 @@ export class UserPermissionsComponent implements OnInit {
     return role ? role.permissions : [];
   }
 
+
   getAllPermissionsForUser(user: User): Permission[] {
     if (!user.roles || user.roles.length === 0) {
       return [];
@@ -156,5 +168,23 @@ export class UserPermissionsComponent implements OnInit {
   cancelEdit(): void {
     this.selectedUser = null;
     this.selectedRoles = [];
+  }
+
+   getRoleColor(role: string): string {
+    const colorMap: { [key: string]: string } = {
+      'admin': 'red',
+      'administrator': 'red',
+      'manager': 'blue',
+      'editor': 'green',
+      'viewer': 'geekblue',
+      'user': 'cyan'
+    };
+
+    const lowerRole = role.toLowerCase();
+    return colorMap[lowerRole] || 'default';
+  }
+
+   rolePermissionsCount(role: string): number {
+    return this.getRolePermissions(role).length;
   }
 }

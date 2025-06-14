@@ -181,7 +181,7 @@ export class CreateRdvComponent implements OnInit {
     this.rdvService.createRdv(newRdv).subscribe({
       next: () => {
         this.message.success('Rendez-vous créé avec succès');
-        this.router.navigate(['/rdv/list']);
+        this.router.navigate(['/doc/patients/list']);
       },
       error: (err) => {
         console.error('Erreur création RDV:', err);

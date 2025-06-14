@@ -45,6 +45,7 @@ import {NzAvatarComponent} from 'ng-zorro-antd/avatar';
 import {NzTagComponent} from 'ng-zorro-antd/tag';
 import {NzInputNumberComponent} from 'ng-zorro-antd/input-number';
 import {NzDividerComponent} from 'ng-zorro-antd/divider';
+import { NzI18nService, fr_FR } from 'ng-zorro-antd/i18n';
 
 @Component({
   selector: 'app-edit-rdv',
@@ -111,8 +112,10 @@ export class EditRdvComponent implements OnInit {
     private medicamentService: MedicamentService,
     private message: NzMessageService,
     private location: Location,
-    private donneesPhysioService: DonneesPhysiologiquesService
+    private donneesPhysioService: DonneesPhysiologiquesService,
+    private i18n: NzI18nService
   ) {
+    this.i18n.setLocale(fr_FR);
   }
 
   initForm(): void {
@@ -369,9 +372,6 @@ export class EditRdvComponent implements OnInit {
       }),
       finalize(() => this.loading = false)
     ).subscribe({
-      next: () => {
-        this.message.success('Rendez-vous chargé avec succès');
-      },
       error: () => {}
     });
   }
@@ -456,7 +456,6 @@ export class EditRdvComponent implements OnInit {
             });
         }
       } else {
-        // Ajout d'un nouveau médicament
         this.ordonnaceMedicamentService.ajouterMedicament(this.ordonnanceId, medicamentDto)
           .subscribe({
             next: (newMedicament) => {
@@ -666,24 +665,10 @@ export class EditRdvComponent implements OnInit {
           );
         }
 
-        let donneesPhysioAction: Observable<any> = of(null);
-        if (donneesPhysioData) {
-          if (this.donneesPhysio) {
-            donneesPhysioAction = this.donneesPhysioService.updateDonneesPhysiologiques(
-              this.donneesPhysio.id,
-              donneesPhysioData
-            );
-          } else {
-            donneesPhysioAction = this.donneesPhysioService.saveDonneesPhysiologiques(
-              donneesPhysioData,
-              this.rdvId
-            );
-          }
-        }
 
         return forkJoin([
-          ordonnanceAction,
-          donneesPhysioAction
+          ordonnanceAction
+          //donneesPhysioAction
         ]);
       })
     ).subscribe({
@@ -942,5 +927,40 @@ export class EditRdvComponent implements OnInit {
       queryParams: { returnUrl: currentUrl }
     });
   }
+
+  clearOrdonnanceContent(event: Event): void {
+    event.stopPropagation(); 
+    event.preventDefault(); 
+    
+    const contenuControl = this.ordonnaceForm.get('contenu');
+    if (contenuControl) {
+      contenuControl.setValue('');
+      contenuControl.markAsDirty();
+    
+    }
+  }
+
+  clearRemarques(event: Event): void {
+    event.stopPropagation();
+    event.preventDefault();
+    
+    const remarquesControl = this.ordonnaceForm.get('remarques');
+    if (remarquesControl) {
+      remarquesControl.setValue('');
+      remarquesControl.markAsDirty();
+    }
+  }
+
+  clearPhysioRemarques(event: Event): void {
+  event.stopPropagation();
+  event.preventDefault();
+  
+  const remarquesControl = this.donneesPhysioForm.get('remarques');
+  if (remarquesControl) {
+    remarquesControl.setValue('');
+    remarquesControl.markAsDirty();
+  }
+}
+  
 }
 

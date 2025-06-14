@@ -1,95 +1,99 @@
 <ng-container *ngIf="isAuthenticated">
-  <app-main-layout></app-main-layout>
+  <router-outlet></router-outlet>
 
-<div class="fab-container" [class.open]="fabMenuOpen">
-  <button nz-button
-          nzType="primary"
-          nzShape="circle"
-          nzSize="large"
-          class="fab-main"
-          (click)="toggleFabMenu()"
-          [attr.aria-label]="fabMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu d\'accès rapide'">
-    <i nz-icon nzType="heart" [nzTheme]="fabMenuOpen ? 'fill' : 'outline'"></i>
-  </button>
-
-  <div class="fab-menu" [class.visible]="fabMenuOpen">
+  <!-- FAB Menu existant -->
+  <div class="fab-container" [class.open]="fabMenuOpen">
     <button nz-button
-            nzType="default"
+            nzType="primary"
             nzShape="circle"
-            class="fab-item secretary-fab"
-            title="Nouveau patient"
-            (click)="navigateAndCloseFab('/doc/patients/create')"
-            [disabled]="false">
-      <i nz-icon nzType="user-add" nzTheme="outline"></i>
+            nzSize="large"
+            class="fab-main"
+            (click)="toggleFabMenu()"
+            [attr.aria-label]="fabMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu d\'accès rapide'">
+      <i nz-icon nzType="medicine-box" [nzTheme]="fabMenuOpen ? 'fill' : 'outline'"></i>
     </button>
 
-    <button nz-button
-            nzType="default"
-            nzShape="circle"
-            class="fab-item secretary-fab"
-            title="Nouveau rendez-vous"
-            (click)="navigateAndCloseFab('/doc/rdv/create')"
-            [disabled]="false">
-      <i nz-icon nzType="calendar" nzTheme="outline"></i>
-    </button>
-
-    <button nz-button
-            nzType="default"
-            nzShape="circle"
-            class="fab-item secretary-fab"
-            title="Liste médecins"
-            (click)="navigateAndCloseFab('/doc/medecin/list')"
-            [disabled]="false">
-      <i nz-icon nzType="medicine-box" nzTheme="outline"></i>
-    </button>
-
-    <button nz-button
-            nzType="default"
-            nzShape="circle"
-            class="fab-item secretary-fab"
-            title="Liste patients"
-            (click)="navigateAndCloseFab('/doc/patients/list')"
-            [disabled]="false">
-      <i nz-icon nzType="team" nzTheme="outline"></i>
-    </button>
-
-    <button nz-button
-            nzType="default"
-            nzShape="circle"
-            class="fab-item secretary-fab"
-            title="Envoyer notification"
-            (click)="navigateAndCloseFab('/doc/notification/create')"
-            [disabled]="false">
-      <i nz-icon nzType="notification" nzTheme="outline"></i>
-    </button>
-
-    <ng-container *ngIf="hasPermission(['ADMIN'])">
+    <div class="fab-menu" [class.visible]="fabMenuOpen">
       <button nz-button
               nzType="default"
               nzShape="circle"
-              class="fab-item admin-fab"
-              title="Gestion des rôles"
-              (click)="navigateAndCloseFab('/doc/admin/roles')"
+              class="fab-item secretary-fab"
+              title="Nouveau patient"
+              (click)="navigateAndCloseFab('/doc/patients/create')"
               [disabled]="false">
-        <i nz-icon nzType="safety-certificate" nzTheme="outline"></i>
+        <i nz-icon nzType="user-add" nzTheme="outline"></i>
       </button>
 
       <button nz-button
               nzType="default"
               nzShape="circle"
-              class="fab-item admin-fab"
-              title="Gestion des permissions"
-              (click)="navigateAndCloseFab('/doc/admin/permissions')"
+              class="fab-item secretary-fab"
+              title="Nouveau rendez-vous"
+              (click)="navigateAndCloseFab('/doc/rdv/create')"
               [disabled]="false">
-        <i nz-icon nzType="lock" nzTheme="outline"></i>
+        <i nz-icon nzType="calendar" nzTheme="outline"></i>
       </button>
-    </ng-container>
+
+      <button nz-button
+              nzType="default"
+              nzShape="circle"
+              class="fab-item secretary-fab"
+              title="Liste médecins"
+              (click)="navigateAndCloseFab('/doc/medecin/list')"
+              [disabled]="false">
+        <i nz-icon nzType="medicine-box" nzTheme="outline"></i>
+      </button>
+
+      <button nz-button
+              nzType="default"
+              nzShape="circle"
+              class="fab-item secretary-fab"
+              title="Liste patients"
+              (click)="navigateAndCloseFab('/doc/patients/list')"
+              [disabled]="false">
+        <i nz-icon nzType="team" nzTheme="outline"></i>
+      </button>
+
+      <button nz-button
+              nzType="default"
+              nzShape="circle"
+              class="fab-item secretary-fab"
+              title="Envoyer notification"
+              (click)="navigateAndCloseFab('/doc/notification/create')"
+              [disabled]="false">
+        <i nz-icon nzType="notification" nzTheme="outline"></i>
+      </button>
+
+      <ng-container *ngIf="hasPermission(['ADMIN'])">
+        <button nz-button
+                nzType="default"
+                nzShape="circle"
+                class="fab-item admin-fab"
+                title="Gestion des rôles"
+                (click)="navigateAndCloseFab('/doc/admin/roles')"
+                [disabled]="false">
+          <i nz-icon nzType="safety-certificate" nzTheme="outline"></i>
+        </button>
+
+        <button nz-button
+                nzType="default"
+                nzShape="circle"
+                class="fab-item admin-fab"
+                title="Gestion des permissions"
+                (click)="navigateAndCloseFab('/doc/admin/permissions')"
+                [disabled]="false">
+          <i nz-icon nzType="lock" nzTheme="outline"></i>
+        </button>
+      </ng-container>
+    </div>
+
+    <div class="fab-overlay"
+         [class.visible]="fabMenuOpen"
+         (click)="toggleFabMenu()"></div>
   </div>
-
-  <div class="fab-overlay"
-       [class.visible]="fabMenuOpen"
-       (click)="toggleFabMenu()"></div>
-</div>
 </ng-container>
 
-<router-outlet></router-outlet>
+<ng-container *ngIf="!isAuthenticated">
+  <router-outlet></router-outlet>
+</ng-container>
+
