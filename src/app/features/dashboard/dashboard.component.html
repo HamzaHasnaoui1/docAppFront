@@ -263,7 +263,9 @@
               </tr>
               </thead>
               <tbody>
-              <tr *ngFor="let rdv of todayAppointmentsTable.data">
+              <tr *ngFor="let rdv of todayAppointmentsTable.data"
+                (click)="viewDetails(rdv)"
+                class="clickable-row">
                 <td>
                   <span class="time-badge">{{ rdv.date | date:'HH:mm' }}</span>
                 </td>
@@ -280,7 +282,7 @@
                 </td>
                 <td>
                   <div class="action-buttons">
-                    <a [routerLink]="['/doc/rdv/edit', rdv.id]" nz-tooltip nzTooltipTitle="Modifier">
+                    <a [routerLink]="['/doc/rdv/edit', rdv.id]" nz-tooltip nzTooltipTitle="Modifier Rendez-vous">
                       <i nz-icon nzType="edit" nzTheme="outline"></i>
                     </a>
                     <a [routerLink]="['/doc/patients/detail', rdv.patient?.id]" nz-tooltip nzTooltipTitle="Dossier">

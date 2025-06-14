@@ -216,7 +216,7 @@ export class CreateRdvComponent implements OnInit {
         this.loading = false;
         this.rdvForm.reset();
         setTimeout(() => {
-          this.router.navigate(['/rdv/list']);
+          this.router.navigate(['/doc/patients/list']);
         }, 2000);
       });
   }

@@ -1,50 +1,3 @@
-.container {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-}
-
-.card {
-  margin-bottom: 1.5rem;
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-}
-
-.card-header {
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.list-group-item {
-  cursor: pointer;
-  transition: all 0.2s;
-  
-  &:hover {
-    background-color: #f8f9fa;
-  }
-  
-  &.active {
-    background-color: #007bff;
-    border-color: #007bff;
-    
-    h5, p, small {
-      color: white;
-    }
-  }
-}
-
-.accordion-button:not(.collapsed) {
-  background-color: #e7f1ff;
-  color: #0c63e4;
-}
-
-.form-check {
-  margin-bottom: 0.5rem;
-}
-
-.btn-danger {
-  padding: 0.25rem 0.5rem;
-}
-
-// Styles pour la section admin
 .admin-container {
   padding: 24px;
   background: #f5f7fa;
@@ -80,26 +33,31 @@
 }
 
 .admin-content {
-  animation: fadeIn 0.5s ease;
+  animation: fadeIn 0.3s ease;
 }
 
-// Styles pour la carte de liste des rôles
 .role-list-card {
   height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
 
   ::ng-deep .ant-card-head {
     border-bottom: 1px solid #f0f0f0;
     background: #fafafa;
+    border-radius: 8px 8px 0 0;
   }
 
   ::ng-deep .ant-list-item {
     transition: all 0.3s ease;
     cursor: pointer;
-    padding: 12px;
+    padding: 12px 16px;
     border-radius: 4px;
+    margin-bottom: 8px;
+    border: 1px solid #f0f0f0;
 
     &:hover {
       background: #f5f5f5;
+      border-color: #d9d9d9;
     }
 
     &.selected {
@@ -107,28 +65,29 @@
       border-left: 3px solid #1890ff;
     }
   }
+
+  .role-count-tag {
+    margin-left: 8px;
+    font-size: 12px;
+  }
 }
 
-.role-count-tag {
-  margin-left: 8px;
-  font-size: 12px;
-  line-height: 1;
-  vertical-align: middle;
-}
-
-// Styles pour le formulaire de rôle
 .role-form-card {
   height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
   
   ::ng-deep .ant-card-head {
     border-bottom: 1px solid #f0f0f0;
     background: #fafafa;
+    border-radius: 8px 8px 0 0;
   }
 }
 
 .form-card-title {
   display: flex;
   align-items: center;
+  font-weight: 500;
   
   i {
     margin-right: 8px;
@@ -138,24 +97,33 @@
 
 .form-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
 
   .cancel-btn {
     margin-right: 8px;
   }
 }
 
-// Styles pour les permissions
 .permissions-collapse {
+  ::ng-deep .ant-collapse-item {
+    margin-bottom: 16px;
+    border: 1px solid #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
   ::ng-deep .ant-collapse-header {
     background: #fafafa;
-    border-radius: 4px;
-    padding: 12px !important;
+    padding: 12px 16px !important;
+    font-weight: 500;
   }
   
   ::ng-deep .ant-collapse-content-box {
     padding: 16px !important;
+    background: white;
   }
 }
 
@@ -179,17 +147,18 @@
 
 .permissions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
 }
 
 .permission-item {
-  padding: 8px;
-  transition: background-color 0.3s;
+  padding: 12px;
+  transition: all 0.3s;
   border-radius: 4px;
+  background: #fafafa;
   
   &:hover {
-    background-color: #f5f5f5;
+    background: #f0f0f0;
   }
 }
 
@@ -206,11 +175,11 @@
   .permission-description {
     font-size: 12px;
     color: #8c8c8c;
-    margin-left: 24px; // align with checkbox
+    margin-top: 4px;
+    margin-left: 24px;
   }
 }
 
-// Animation
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -220,4 +189,4 @@
     opacity: 1;
     transform: translateY(0);
   }
-} 
+}

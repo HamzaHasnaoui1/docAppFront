@@ -561,4 +561,8 @@ export class DashboardComponent implements OnInit {
   get currentUser(): User | null {
     return this.authService.currentUserValue;
   }
+
+  viewDetails(rdv: RendezVous): void {
+    this.router.navigate(['/doc/rdv/edit/', rdv.id]);
+  }
 }

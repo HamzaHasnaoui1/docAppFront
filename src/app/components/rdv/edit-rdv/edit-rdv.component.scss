@@ -213,3 +213,393 @@ button[nz-button] {
     margin-right: 8px;
   }
 }
+
+.container {
+  padding: 24px;
+  background: #f5f7fa;
+  min-height: 100vh;
+
+  // Carte d'en-tête
+  .header-card {
+    margin-bottom: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .rdv-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        .patient-avatar {
+          width: 64px;
+          height: 64px;
+          background: #1890ff;
+          font-size: 32px;
+        }
+
+        .rdv-info {
+          h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a237e;
+          }
+
+          .rdv-details {
+            margin: 8px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            color: #64748b;
+
+            span {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+
+              i {
+                font-size: 16px;
+                color: #2563eb;
+              }
+            }
+          }
+        }
+      }
+
+      .quick-actions {
+        button {
+          height: 40px;
+          padding: 0 24px;
+          font-weight: 500;
+
+          i {
+            margin-right: 8px;
+          }
+        }
+      }
+    }
+  }
+
+  // Style des onglets
+  .main-tabs {
+    ::ng-deep {
+      .ant-tabs-nav {
+        margin-bottom: 24px;
+        background: white;
+        padding: 8px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+        .ant-tabs-tab {
+          padding: 12px 24px;
+          margin: 0 4px;
+          border-radius: 8px;
+          transition: all 0.3s;
+
+          &.ant-tabs-tab-active {
+            background: #eef2ff;
+
+            .ant-tabs-tab-btn {
+              color: #2563eb;
+            }
+          }
+
+          .tab-icon {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+
+            i {
+              font-size: 16px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Style des cartes de contenu
+  .tab-content {
+    nz-card {
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      margin-bottom: 24px;
+
+      ::ng-deep {
+        .ant-card-head {
+          padding: 0 24px;
+          min-height: 60px;
+          border-bottom: 1px solid #e5e7eb;
+
+          .ant-card-head-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+          }
+        }
+
+        .ant-card-body {
+          padding: 24px;
+        }
+
+        // Style des formulaires
+        .ant-form-item-label {
+          font-weight: 500;
+          color: #475569;
+        }
+
+        .ant-input,
+        .ant-input-number,
+        .ant-select-selector {
+          border-radius: 8px;
+        }
+
+        // Style des dividers
+        .ant-divider {
+          margin: 24px 0 16px;
+
+          .ant-divider-inner-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4b5563;
+          }
+        }
+      }
+    }
+
+    .angular-editor {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+
+      ::ng-deep {
+        .angular-editor-wrapper {
+          background-color: white !important;
+
+          .angular-editor-toolbar {
+            background-color: #f9fafb !important;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 8px;
+          }
+
+          .angular-editor-wrapper {
+            height: 120px !important;
+            min-height: 120px !important;
+            padding: 16px !important;
+            background-color: white !important;
+          }
+          .angular-editor-textarea {
+            background-color: white !important;
+            padding: 24px !important;
+            min-height: 400px !important; 
+            color: #1e293b !important;
+
+            &:focus {
+              background-color: white !important;
+            }
+
+            p,
+            div {
+              background-color: white !important;
+            }
+          }
+
+          .angular-editor-wrapper show-placeholder {
+            color: #94a3b8 !important;
+            padding: 16px !important;
+            background-color: white !important;
+          }
+        }
+      }
+
+      &:focus-within {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+  }
+
+  ::ng-deep {
+    // Style uniforme pour tous les inputs et contrôles de formulaire
+    .ant-input,
+    .ant-input-number,
+    .ant-select-selector,
+    .ant-picker,
+    .ant-input-group-wrapper,
+    .ant-input-group,
+    .angular-editor-textarea,
+    textarea.ant-input {
+      border-radius: 8px !important;
+      overflow: hidden;
+    }
+
+    // Style spécifique pour les groupes d'inputs
+    .ant-input-group-compact {
+      .ant-input-number,
+      .ant-input {
+        &:first-child {
+          border-top-right-radius: 0 !important;
+          border-bottom-right-radius: 0 !important;
+        }
+        &:last-child {
+          border-top-left-radius: 0 !important;
+          border-bottom-left-radius: 0 !important;
+        }
+      }
+    }
+
+    // Style pour l'éditeur de texte
+    .angular-editor {
+      .angular-editor-toolbar {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+      }
+      .angular-editor-textarea {
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+      }
+    }
+
+    // Style pour les textarea
+    textarea.ant-input {
+      min-height: 100px;
+    }
+  }
+}
+
+// Style des tags et badges
+nz-tag {
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-weight: 500;
+}
+
+// Style des boutons
+nz-button-group {
+  button {
+    &:not(:first-child) {
+      margin-left: 8px;
+    }
+  }
+}
+
+
+
+.editor-wrapper {
+  position: relative;
+
+  .clear-editor-button {
+    position: absolute;
+    top: 90px;
+    right: 18px;
+    z-index: 1000;
+    background: white;
+    border-radius: 50%;
+    width: 32px; 
+    height: 32px; 
+    padding: 0;
+    display: inline-flex; 
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: all 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    line-height: 1; 
+
+    &:hover {
+      opacity: 1;
+      color: #ff4d4f;
+      background: #fff1f0;
+    }
+
+    i {
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 16px; 
+      width: 16px;
+      margin: 0; 
+    }
+  }
+}
+
+
+nz-form-label {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+
+  .clear-button {
+    opacity: 0.6;
+    transition: all 0.3s;
+    padding: 0 4px;
+    height: 22px;
+    line-height: 22px;
+
+    &:hover {
+      opacity: 1;
+      color: #ff4d4f;
+    }
+
+    i {
+      font-size: 14px;
+    }
+  }
+}
+
+// Style commun pour tous les boutons de suppression
+.clear-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1000;
+  background: white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: all 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  line-height: 1;
+
+  &:hover {
+    opacity: 1;
+    color: #ff4d4f;
+    background: #fff1f0;
+  }
+
+  i {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 16px;
+    width: 16px;
+    margin: 0;
+  }
+}
+
+// Application aux conteneurs existants
+.editor-wrapper, .textarea-wrapper {
+  position: relative;
+
+  .clear-button {
+    @extend .clear-button;
+  }
+}

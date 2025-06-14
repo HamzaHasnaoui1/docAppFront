@@ -18,7 +18,7 @@
             </button>
           </ng-template>
           
-          <nz-list [nzDataSource]="roles" [nzRenderItem]="roleItem" [nzLoading]="roles.length === 0">
+          <nz-list [nzDataSource]="roles" [nzRenderItem]="roleItem" [nzLoading]="loading">
             <ng-template #roleItem let-role>
               <nz-list-item 
                 class="role-item" 
@@ -26,23 +26,20 @@
                 (click)="selectRole(role)">
                 <nz-list-item-meta
                   [nzAvatar]="roleAvatar"
-                  [nzTitle]="roleTitle"
+                  [nzTitle]="role.roleName"
                   [nzDescription]="role.description || 'Aucune description'">
                   <ng-template #roleAvatar>
                     <nz-avatar nzIcon="user" [ngStyle]="{ backgroundColor: selectedRole?.roleId === role.roleId ? '#1890ff' : '#d9d9d9' }"></nz-avatar>
                   </ng-template>
-                  <ng-template #roleTitle>
-                    <span>{{ role.roleName }}</span>
-                    <nz-tag [nzColor]="'blue'" class="role-count-tag">
-                      {{ role.permissions.length }} permissions
-                    </nz-tag>
-                  </ng-template>
                 </nz-list-item-meta>
                 <ul nz-list-item-actions>
                   <nz-list-item-action>
+                    <nz-tag [nzColor]="'blue'">{{ role.permissions.length }} permissions</nz-tag>
+                  </nz-list-item-action>
+                  <nz-list-item-action>
                     <button 
                       nz-button 
-                      nzType="primary" 
+                      nzType="text" 
                       nzDanger 
                       nzShape="circle" 
                       nzSize="small"
@@ -53,7 +50,9 @@
                 </ul>
               </nz-list-item>
             </ng-template>
-            <nz-list-empty *ngIf="roles.length === 0"></nz-list-empty>
+            <nz-list-empty *ngIf="roles.length === 0 && !loading">
+              Aucun rôle disponible
+            </nz-list-empty>
           </nz-list>
         </nz-card>
       </div>
@@ -77,10 +76,13 @@
           <form [formGroup]="roleForm" (ngSubmit)="saveRole()" nz-form nzLayout="vertical">
             <nz-form-item>
               <nz-form-label nzFor="roleName" nzRequired>Nom du rôle</nz-form-label>
-              <nz-form-control nzErrorTip="Le nom du rôle est requis">
-                <nz-input-group nzPrefixIcon="user">
-                  <input nz-input id="roleName" formControlName="roleName" placeholder="Entrez le nom du rôle">
-                </nz-input-group>
+              <nz-form-control [nzErrorTip]="roleNameErrorTpl">
+                <input nz-input id="roleName" formControlName="roleName" placeholder="Entrez le nom du rôle">
+                <ng-template #roleNameErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    Le nom du rôle est requis
+                  </ng-container>
+                </ng-template>
               </nz-form-control>
             </nz-form-item>
 
@@ -99,7 +101,7 @@
 
             <!-- Permissions par catégorie -->
             <nz-form-item>
-              <nz-form-label>Permissions associées</nz-form-label>
+              <nz-form-label >Permissions associées</nz-form-label>
               <nz-form-control>
                 <nz-collapse [nzBordered]="false" class="permissions-collapse">
                   <nz-collapse-panel *ngFor="let category of categories; let i = index" 
@@ -108,7 +110,7 @@
                     <ng-template #categoryHeader>
                       <div class="category-header">
                         <i nz-icon nzType="folder" nzTheme="outline"></i> 
-                        <span>{{ category }}</span>
+                        {{ category }}
                         <nz-badge 
                           [nzCount]="permissionsByCategory[category].length"
                           [nzStyle]="{ backgroundColor: '#1890ff' }"
@@ -136,11 +138,16 @@
             <div class="form-actions">
               <button nz-button nzType="default" (click)="clearForm()" class="cancel-btn">
                 <i nz-icon nzType="close-circle" nzTheme="outline"></i>
-                {{ selectedRole ? 'Annuler les modifications' : 'Effacer' }}
+                {{ selectedRole ? 'Annuler' : 'Effacer' }}
               </button>
-              <button nz-button nzType="primary" [disabled]="roleForm.invalid" type="submit">
+              <button 
+                nz-button 
+                nzType="primary" 
+                [disabled]="roleForm.invalid || loading" 
+                [nzLoading]="loading"
+                type="submit">
                 <i nz-icon [nzType]="selectedRole ? 'save' : 'plus-circle'" nzTheme="outline"></i>
-                {{ selectedRole ? 'Mettre à jour' : 'Créer le rôle' }}
+                {{ selectedRole ? 'Mettre à jour' : 'Créer' }}
               </button>
             </div>
           </form>
@@ -148,4 +155,4 @@
       </div>
     </div>
   </div>
-</div> 
+</div>

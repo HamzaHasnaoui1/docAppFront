@@ -22,8 +22,7 @@
              (click)="viewDetails(rdv)">
           <div class="rdv-time">{{ formatTime(rdv.date) }}</div>
           <div class="rdv-details">
-            <div class="patient">{{ rdv.patient?.nom || 'N/A' }}</div>
-            <div class="doctor">{{ rdv.medecin?.specialite || 'Spécialité inconnue' }}</div>
+            <div class="patient">{{ rdv.patient.nom }}</div>
           </div>
           <nz-tag [nzColor]="getStatusColor(rdv.statusRDV)">
             {{ getStatusLabel(rdv.statusRDV) }}

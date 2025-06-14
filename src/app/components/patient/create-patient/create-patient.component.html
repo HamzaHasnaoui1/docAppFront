@@ -1,6 +1,5 @@
 <nz-card nzTitle="Créer Patient" nzHoverable class="form-card">
   <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" nz-form nzLayout="vertical">
-
     <div nz-row [nzGutter]="16">
       <div nz-col [nzSpan]="12">
         <nz-form-item>
@@ -15,10 +14,15 @@
       </div>
 
       <div nz-col [nzSpan]="12">
-        <nz-form-item >
+        <nz-form-item>
           <nz-form-label nzFor="nom" nzRequired>Nom</nz-form-label>
-          <nz-form-control [nzErrorTip]="'Le nom est requis'">
+          <nz-form-control [nzErrorTip]="nomErrorTpl">
             <input nz-input id="nom" formControlName="nom" placeholder="Nom du patient" />
+            <ng-template #nomErrorTpl let-control>
+              <nz-typography nzType="danger" *ngIf="control.hasError('required')">
+                Le nom est requis
+              </nz-typography>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
       </div>
@@ -28,8 +32,13 @@
       <div nz-col [nzSpan]="12">
         <nz-form-item>
           <nz-form-label nzFor="cin" nzRequired>CIN</nz-form-label>
-          <nz-form-control [nzErrorTip]="'La CIN est requis'">
-            <input nz-input  id="cin" formControlName="cin" placeholder="CIN"/>
+          <nz-form-control [nzErrorTip]="cinErrorTpl">
+            <input nz-input id="cin" formControlName="cin" placeholder="CIN"/>
+            <ng-template #cinErrorTpl let-control>
+              <nz-typography nzType="danger" *ngIf="control.hasError('required')">
+                La CIN est requise
+              </nz-typography>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
       </div>
@@ -37,20 +46,35 @@
       <div nz-col [nzSpan]="12">
         <nz-form-item>
           <nz-form-label nzFor="email">Email</nz-form-label>
-          <nz-form-control [nzErrorTip]="'Email'">
+          <nz-form-control [nzErrorTip]="emailErrorTpl">
             <input nz-input type="email" id="email" formControlName="email" placeholder="Email" />
+            <ng-template #emailErrorTpl let-control>
+              <nz-typography nzType="danger" *ngIf="control.hasError('email')">
+                Email invalide
+              </nz-typography>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
       </div>
     </div>
 
-
     <div nz-row [nzGutter]="16">
       <div nz-col [nzSpan]="12">
         <nz-form-item>
           <nz-form-label nzFor="dateNaissance" nzRequired>Date de naissance</nz-form-label>
-          <nz-form-control [nzErrorTip]="'La date du naissance est requis'">
-            <input nz-input type="date" id="dateNaissance" formControlName="dateNaissance" />
+          <nz-form-control [nzErrorTip]="dateErrorTpl">
+            <nz-date-picker 
+              formControlName="dateNaissance" 
+              id="dateNaissance"
+              [nzFormat]="dateFormat"
+              nzPlaceHolder="JJ/MM/AAAA"
+              style="width: 100%">
+            </nz-date-picker>
+            <ng-template #dateErrorTpl let-control>
+              <nz-typography nzType="danger" *ngIf="control.hasError('required')">
+                La date de naissance est requise
+              </nz-typography>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
       </div>
@@ -58,8 +82,18 @@
       <div nz-col [nzSpan]="12">
         <nz-form-item>
           <nz-form-label nzFor="numeroTelephone" nzRequired>Téléphone</nz-form-label>
-          <nz-form-control [nzErrorTip]="'Le numero est requis'">
-            <input nz-input type="number" id="numeroTelephone" formControlName="numeroTelephone" placeholder="Numéro de téléphone" />
+          <nz-form-control [nzErrorTip]="telErrorTpl">
+            <nz-input-number 
+              formControlName="numeroTelephone" 
+              id="numeroTelephone"
+              style="width: 100%"
+              [nzMin]="1"
+              placeholder="Numéro de téléphone"></nz-input-number>
+            <ng-template #telErrorTpl let-control>
+              <nz-typography nzType="danger" *ngIf="control.hasError('required')">
+                Le numéro est requis
+              </nz-typography>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
       </div>
@@ -69,8 +103,13 @@
       <div nz-col [nzSpan]="12">
         <nz-form-item>
           <nz-form-label nzFor="adresse" nzRequired>Adresse</nz-form-label>
-          <nz-form-control [nzErrorTip]="'L adresse est obligatoire'">
+          <nz-form-control [nzErrorTip]="adresseErrorTpl">
             <input nz-input id="adresse" formControlName="adresse" placeholder="Adresse du patient" />
+            <ng-template #adresseErrorTpl let-control>
+              <nz-typography nzType="danger" *ngIf="control.hasError('required')">
+                L'adresse est obligatoire
+              </nz-typography>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
       </div>
@@ -99,8 +138,7 @@
       </div>
     </div>
 
-    <!-- Dossier Médical Section -->
-    <nz-divider nzText="Dossier Médical"></nz-divider>
+    <nz-divider nzText="Dossier Médical" nzOrientation="left"></nz-divider>
 
     <div formGroupName="dossierMedical">
       <div nz-row [nzGutter]="16">
@@ -109,7 +147,8 @@
             <nz-form-label nzFor="traitementsChroniques">Traitements Chroniques</nz-form-label>
             <nz-form-control>
               <textarea nz-input id="traitementsChroniques" formControlName="traitementsChroniques"
-                        placeholder="Veuillez décrire les traitements chroniques du patient" [nzAutosize]="{ minRows: 0.5, maxRows: 5 }"></textarea>
+                        placeholder="Veuillez décrire les traitements chroniques du patient" 
+                        [nzAutosize]="{ minRows: 2, maxRows: 5 }"></textarea>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -118,7 +157,8 @@
             <nz-form-label nzFor="allergies">Allergies</nz-form-label>
             <nz-form-control>
               <textarea nz-input id="allergies" formControlName="allergies"
-                        placeholder="Veuillez décrire les allergies du patient" [nzAutosize]="{ minRows: 0.5, maxRows: 5 }"></textarea>
+                        placeholder="Veuillez décrire les allergies du patient" 
+                        [nzAutosize]="{ minRows: 2, maxRows: 5 }"></textarea>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -130,7 +170,8 @@
             <nz-form-label nzFor="antecedents">Antécédents Médicaux</nz-form-label>
             <nz-form-control>
               <textarea nz-input id="antecedents" formControlName="antecedents"
-                        placeholder="Veuillez décrire les antécédents médicaux du patient" [nzAutosize]="{ minRows: 0.5, maxRows: 5 }"></textarea>
+                        placeholder="Veuillez décrire les antécédents médicaux du patient" 
+                        [nzAutosize]="{ minRows: 2, maxRows: 5 }"></textarea>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -140,11 +181,15 @@
     <div nz-col [nzSpan]="24" class="text-area-container">
       <nz-form-item>
         <nz-form-label nzFor="rapport" nzRequired>Rapport</nz-form-label>
-        <nz-form-control [nzErrorTip]="'Le rapport est requis'">
+        <nz-form-control [nzErrorTip]="rapportErrorTpl">
           <angular-editor formControlName="rapport" [config]="editorConfig"
                           placeholder="Écrivez le rapport du patient ici..."
-                          class="custom-angular-editor"
-          ></angular-editor>
+                          class="custom-angular-editor"></angular-editor>
+          <ng-template #rapportErrorTpl let-control>
+            <nz-typography nzType="danger" *ngIf="control.hasError('required')">
+              Le rapport est requis
+            </nz-typography>
+          </ng-template>
         </nz-form-control>
       </nz-form-item>
     </div>
@@ -153,12 +198,14 @@
       <button nz-button nzType="default" class="clear-btn"
               [disabled]="!patientForm.get('rapport')?.value"
               (click)="clearReport()">
-        Clear
+        <i nz-icon nzType="delete"></i> Effacer
       </button>
       <div class="right-buttons">
-        <button nz-button type="button" (click)="onCancel()" style="margin-right: 8px">Annuler</button>
-        <button nz-button nzType="primary" [disabled]="patientForm.invalid">
-          Enregistrer
+        <button nz-button nzType="default" (click)="onCancel()">
+          <i nz-icon nzType="close"></i> Annuler
+        </button>
+        <button nz-button nzType="primary" [disabled]="patientForm.invalid" [nzLoading]="loading">
+          <i nz-icon nzType="save"></i> Enregistrer
         </button>
       </div>
     </div>

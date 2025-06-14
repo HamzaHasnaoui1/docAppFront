@@ -1,4 +1,4 @@
-<nz-card nzHoverable>
+<nz-card nzHoverable [nzLoading]="loading">
   <nz-spin [nzSpinning]="loading" [nzTip]="'Chargement des données...'">
     <ng-container *ngIf="patients$ | async as patients; else error">
       <div class="search-add-container">
