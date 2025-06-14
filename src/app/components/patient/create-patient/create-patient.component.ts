@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { PatientService } from '../../../service/patient.service';
 import { Patient } from '../../../models/patient.model';
 import { AngularEditorConfig, AngularEditorModule } from '@kolkov/angular-editor';
-import { AuthService } from '../../../components/auth/auth.service';
+import { AuthService } from '../../auth/auth.service';
 
 // NG-ZORRO imports
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -21,8 +21,6 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
-import {AngularEditorConfig, AngularEditorModule} from '@kolkov/angular-editor';
-import {NzDividerComponent} from 'ng-zorro-antd/divider';
 
 @Component({
   selector: 'app-create-patient',
