@@ -39,7 +39,6 @@
     resize: vertical;
   }
 
-  // Styles spécifiques pour les médicaments
   .medicaments-section {
     margin-bottom: 20px;
     padding-top: 16px;
@@ -59,7 +58,6 @@
       border-radius: 4px;
     }
 
-    // Style pour les cartes de médicaments
     .medicament-card {
       margin-bottom: 16px;
       background: #fff;
@@ -84,7 +82,6 @@
       }
     }
 
-    // Amélioration pour le select de médicament
     nz-select {
       width: 100%;
 
@@ -110,7 +107,6 @@
     }
   }
 
-  // Styles pour les actions de formulaire
   .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -128,7 +124,6 @@
     }
   }
 
-  // Améliorer l'apparence des onglets
   ::ng-deep {
     .ant-tabs-nav {
       margin-bottom: 24px;
@@ -140,7 +135,6 @@
       font-weight: 500;
     }
 
-    // Style pour tous les selects
     .ant-select {
       &.ant-select-lg {
         .ant-select-selector {
@@ -157,7 +151,6 @@
       }
     }
 
-    // Style pour les inputs number
     .ant-input-number {
       width: 100%;
 
@@ -170,7 +163,6 @@
       }
     }
 
-    // Style for required fields
     .ant-form-item-required::before {
       display: inline-block;
       margin-right: 4px;
@@ -183,7 +175,6 @@
   }
 }
 
-// Responsive adjustments
 @media (max-width: 768px) {
   .form-card {
     padding: 16px;
@@ -207,7 +198,6 @@
   }
 }
 
-/* Style for the generate prescription button */
 button[nz-button] {
   i {
     margin-right: 8px;
@@ -219,7 +209,6 @@ button[nz-button] {
   background: #f5f7fa;
   min-height: 100vh;
 
-  // Carte d'en-tête
   .header-card {
     margin-bottom: 24px;
     border-radius: 12px;
@@ -285,7 +274,6 @@ button[nz-button] {
     }
   }
 
-  // Style des onglets
   .main-tabs {
     ::ng-deep {
       .ant-tabs-nav {
@@ -324,7 +312,6 @@ button[nz-button] {
     }
   }
 
-  // Style des cartes de contenu
   .tab-content {
     nz-card {
       border-radius: 12px;
@@ -348,7 +335,6 @@ button[nz-button] {
           padding: 24px;
         }
 
-        // Style des formulaires
         .ant-form-item-label {
           font-weight: 500;
           color: #475569;
@@ -360,7 +346,6 @@ button[nz-button] {
           border-radius: 8px;
         }
 
-        // Style des dividers
         .ant-divider {
           margin: 24px 0 16px;
 
@@ -397,7 +382,7 @@ button[nz-button] {
           .angular-editor-textarea {
             background-color: white !important;
             padding: 24px !important;
-            min-height: 400px !important; 
+            min-height: 400px !important;
             color: #1e293b !important;
 
             &:focus {
@@ -431,7 +416,6 @@ button[nz-button] {
   }
 
   ::ng-deep {
-    // Style uniforme pour tous les inputs et contrôles de formulaire
     .ant-input,
     .ant-input-number,
     .ant-select-selector,
@@ -444,7 +428,6 @@ button[nz-button] {
       overflow: hidden;
     }
 
-    // Style spécifique pour les groupes d'inputs
     .ant-input-group-compact {
       .ant-input-number,
       .ant-input {
@@ -459,7 +442,6 @@ button[nz-button] {
       }
     }
 
-    // Style pour l'éditeur de texte
     .angular-editor {
       .angular-editor-toolbar {
         border-top-left-radius: 8px;
@@ -471,21 +453,18 @@ button[nz-button] {
       }
     }
 
-    // Style pour les textarea
     textarea.ant-input {
       min-height: 100px;
     }
   }
 }
 
-// Style des tags et badges
 nz-tag {
   border-radius: 6px;
   padding: 4px 12px;
   font-weight: 500;
 }
 
-// Style des boutons
 nz-button-group {
   button {
     &:not(:first-child) {
@@ -506,16 +485,16 @@ nz-button-group {
     z-index: 1000;
     background: white;
     border-radius: 50%;
-    width: 32px; 
-    height: 32px; 
+    width: 32px;
+    height: 32px;
     padding: 0;
-    display: inline-flex; 
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     opacity: 0.7;
     transition: all 0.3s;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    line-height: 1; 
+    line-height: 1;
 
     &:hover {
       opacity: 1;
@@ -528,9 +507,9 @@ nz-button-group {
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 16px; 
+      height: 16px;
       width: 16px;
-      margin: 0; 
+      margin: 0;
     }
   }
 }
@@ -559,7 +538,6 @@ nz-form-label {
   }
 }
 
-// Style commun pour tous les boutons de suppression
 .clear-button {
   position: absolute;
   top: 8px;
@@ -595,7 +573,6 @@ nz-form-label {
   }
 }
 
-// Application aux conteneurs existants
 .editor-wrapper, .textarea-wrapper {
   position: relative;
 

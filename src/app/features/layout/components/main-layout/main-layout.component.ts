@@ -36,7 +36,7 @@ import {AuthService} from '../../../../components/auth/auth.service';
 export class MainLayoutComponent {
   isCollapsed = false;
   currentPageTitle = 'Dashboard';
-childTitle: string | null = null; // Nouvelle propriété pour le sous-titre
+childTitle: string | null = null;
 
   constructor(
     public authService: AuthService,
@@ -59,11 +59,11 @@ childTitle: string | null = null; // Nouvelle propriété pour le sous-titre
 
     while (route.firstChild) {
       route = route.firstChild;
-      
+
       if (route.snapshot.data['title']) {
         mainTitle = route.snapshot.data['title'];
       }
-      
+
       if (route.snapshot.data['childTitle']) {
         childTitle = route.snapshot.data['childTitle'];
       }
@@ -84,9 +84,17 @@ childTitle: string | null = null; // Nouvelle propriété pour le sous-titre
     this.router.navigate(['/doc/user/edit-profile']);
   }
 
+  get user() {
+    return this.authService.currentUserValue;
+  }
+
+  hasPermission(roles: string[]): boolean {
+    return roles.some(role => this.authService.hasRole(role));
+  }
+
   getBreadcrumbIcon(): string {
     switch (this.currentPageTitle?.toLowerCase()) {
-      case 'dashboard':  
+      case 'dashboard':
         return 'dashboard';
       case 'patients':
         return 'user';
