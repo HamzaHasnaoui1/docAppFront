@@ -46,6 +46,7 @@ import {NzTagComponent} from 'ng-zorro-antd/tag';
 import {NzInputNumberComponent} from 'ng-zorro-antd/input-number';
 import {NzDividerComponent} from 'ng-zorro-antd/divider';
 import { NzI18nService, fr_FR } from 'ng-zorro-antd/i18n';
+import {NzTooltipDirective} from 'ng-zorro-antd/tooltip';
 
 @Component({
   selector: 'app-edit-rdv',
@@ -77,6 +78,7 @@ import { NzI18nService, fr_FR } from 'ng-zorro-antd/i18n';
     NzTagComponent,
     NzInputNumberComponent,
     NzDividerComponent,
+    NzTooltipDirective,
   ]
 })
 export class EditRdvComponent implements OnInit {
@@ -101,6 +103,32 @@ export class EditRdvComponent implements OnInit {
   donneesPhysioForm!: FormGroup;
   donneesPhysio: DonneesPhysiologiques | null = null;
 
+  editorConfig: AngularEditorConfig = {
+    height: '120px',
+    editable: true,
+    spellcheck: true,
+    translate: 'yes',
+    toolbarPosition: 'top',
+    toolbarHiddenButtons: [
+      ['insertImage', 'insertVideo'],
+      ['fontSize', 'toggleEditorMode']
+    ],
+    customClasses: [
+      {
+        name: 'quote',
+        class: 'quote',
+      },
+      {
+        name: 'redText',
+        class: 'redText'
+      },
+      {
+        name: 'titleText',
+        class: 'titleText',
+        tag: 'h1',
+      },
+    ]
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -929,21 +957,21 @@ export class EditRdvComponent implements OnInit {
   }
 
   clearOrdonnanceContent(event: Event): void {
-    event.stopPropagation(); 
-    event.preventDefault(); 
-    
+    event.stopPropagation();
+    event.preventDefault();
+
     const contenuControl = this.ordonnaceForm.get('contenu');
     if (contenuControl) {
       contenuControl.setValue('');
       contenuControl.markAsDirty();
-    
+
     }
   }
 
   clearRemarques(event: Event): void {
     event.stopPropagation();
     event.preventDefault();
-    
+
     const remarquesControl = this.ordonnaceForm.get('remarques');
     if (remarquesControl) {
       remarquesControl.setValue('');
@@ -954,13 +982,13 @@ export class EditRdvComponent implements OnInit {
   clearPhysioRemarques(event: Event): void {
   event.stopPropagation();
   event.preventDefault();
-  
+
   const remarquesControl = this.donneesPhysioForm.get('remarques');
   if (remarquesControl) {
     remarquesControl.setValue('');
     remarquesControl.markAsDirty();
   }
 }
-  
+
 }
 

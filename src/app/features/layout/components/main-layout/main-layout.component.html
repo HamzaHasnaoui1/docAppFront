@@ -105,14 +105,24 @@
     </div>
   </div>
   <nz-dropdown-menu #menu="nzDropdownMenu">
+
     <ul nz-menu class="custom-dropdown">
+     <!-- <li nz-menu-item *ngIf="user" class="user-info">
+        <div class="user-details">
+          <div class="user-name">{{ user.username }} </div>
+          <div class="user-email">{{ user.email }}</div>
+        </div>
+      </li>-->
+
+      <li nz-menu-divider></li>
+
       <li nz-menu-item>
         <a (click)="edit()">
           <nz-icon nzType="user"></nz-icon>
           <span>Mon Profil</span>
         </a>
       </li>
-    
+
       <li nz-menu-divider></li>
       <li nz-menu-item class="danger-item">
         <a (click)="logout()">

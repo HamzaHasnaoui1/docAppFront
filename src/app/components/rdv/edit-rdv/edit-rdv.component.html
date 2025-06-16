@@ -127,16 +127,16 @@
   <nz-form-label>Remarques</nz-form-label>
   <nz-form-control>
     <div class="textarea-wrapper">
-      <textarea 
-        nz-input 
-        formControlName="remarques" 
-        rows="3" 
+      <textarea
+        nz-input
+        formControlName="remarques"
+        rows="3"
         placeholder="Observations particulières..."
       ></textarea>
-      <button 
-        nz-button 
-        nzType="text" 
-        nzSize="small" 
+      <button
+        nz-button
+        nzType="text"
+        nzSize="small"
         class="clear-button"
         (click)="clearPhysioRemarques($event)"
         nz-tooltip
@@ -275,16 +275,16 @@
   <nz-form-label>Remarques</nz-form-label>
   <nz-form-control>
     <div class="textarea-wrapper">
-      <textarea 
-        nz-input 
-        formControlName="remarques" 
-        rows="3" 
+      <textarea
+        nz-input
+        formControlName="remarques"
+        rows="3"
         placeholder="Observations particulières..."
       ></textarea>
-      <button 
-        nz-button 
-        nzType="text" 
-        nzSize="small" 
+      <button
+        nz-button
+        nzType="text"
+        nzSize="small"
         class="clear-button"
         (click)="clearPhysioRemarques($event)"
         nz-tooltip
@@ -327,7 +327,7 @@
           <form nz-form [formGroup]="ordonnaceForm" (ngSubmit)="onSubmitOrdonnance()">
             <!-- Informations principales -->
             <nz-divider nzText="Informations Générales" nzOrientation="left"></nz-divider>
-            
+
             <div nz-row nzGutter="24">
               <div nz-col nzSpan="8">
                 <nz-form-item>
@@ -345,29 +345,24 @@
 
             <!-- Contenu principal -->
             <nz-divider nzText="Prescription" nzOrientation="left"></nz-divider>
-            
+
             <div nz-row nzGutter="24">
               <div nz-col nzSpan="24">
                 <nz-form-item>
                   <nz-form-label nzRequired>
-                    Contenu de l'ordonnance                
+                    Contenu de l'ordonnance
                   </nz-form-label>
                   <nz-form-control>
                     <div class="editor-wrapper">
                       <angular-editor
                         formControlName="contenu"
                         [placeholder]="'Détails de la prescription...'"
-                        [config]="{
-                          height: '120px',
-                          editable: true,
-                          spellcheck: true,
-                          translate: 'yes'
-                        }"
+                        [config]="editorConfig"
                       ></angular-editor>
-                      <button 
-                        nz-button 
-                        nzType="text" 
-                        nzSize="small" 
+                      <button
+                        nz-button
+                        nzType="text"
+                        nzSize="small"
                         class="clear-editor-button"
                         (click)="clearOrdonnanceContent($event)"
                         nz-tooltip
@@ -383,7 +378,7 @@
 
             <!-- Informations complémentaires -->
             <nz-divider nzText="Informations Complémentaires" nzOrientation="left"></nz-divider>
-            
+
             <div nz-row nzGutter="24">
               <div nz-col nzSpan="24">
                 <nz-form-item>
@@ -396,10 +391,10 @@
                         rows="4"
                         placeholder="Remarques supplémentaires, contre-indications, précautions..."
                       ></textarea>
-                      <button 
-                        nz-button 
-                        nzType="text" 
-                        nzSize="small" 
+                      <button
+                        nz-button
+                        nzType="text"
+                        nzSize="small"
                         class="clear-button"
                         (click)="clearRemarques($event)"
                         nz-tooltip

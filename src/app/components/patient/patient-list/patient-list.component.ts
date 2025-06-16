@@ -30,45 +30,47 @@ import {PatientWithRdvs} from '../../../models/PatientWithRdvs.model';
 import {NzListComponent, NzListItemComponent, NzListItemMetaComponent, NzListModule} from 'ng-zorro-antd/list';
 import {NzAvatarComponent} from 'ng-zorro-antd/avatar';
 import {NzSpinComponent} from "ng-zorro-antd/spin";
+import {NzSkeletonComponent} from 'ng-zorro-antd/skeleton';
 
 @Component({
   selector: 'app-patient-list',
   templateUrl: './patient-list.component.html',
   styleUrl: './patient-list.component.scss',
   standalone: true,
-    imports: [
-        AsyncPipe,
-        CommonModule,
-        DatePipe,
-        NzTableModule,
-        NzTagModule,
-        NzButtonModule,
-        NzIconModule,
-        NzCardModule,
-        NzAlertModule,
-        NzSpaceModule,
-        NzPopconfirmDirective,
-        NzModalModule,
-        NzToolTipModule,
-        NzInputGroupComponent,
-        FormsModule,
-        ReactiveFormsModule,
-        SearchAddActionsComponent,
-        NzModalModule,
-        NzCollapsePanelComponent,
-        NzCollapseComponent,
-        NzEmptyComponent,
-        NzDescriptionsItemComponent,
-        NzDescriptionsComponent,
-        NzSelectComponent,
-        NzOptionComponent,
-        NzListComponent,
-        NzListItemComponent,
-        NzListItemMetaComponent,
-        NzListModule,
-        NzAvatarComponent,
-        NzSpinComponent
-    ],
+  imports: [
+    AsyncPipe,
+    CommonModule,
+    DatePipe,
+    NzTableModule,
+    NzTagModule,
+    NzButtonModule,
+    NzIconModule,
+    NzCardModule,
+    NzAlertModule,
+    NzSpaceModule,
+    NzPopconfirmDirective,
+    NzModalModule,
+    NzToolTipModule,
+    NzInputGroupComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    SearchAddActionsComponent,
+    NzModalModule,
+    NzCollapsePanelComponent,
+    NzCollapseComponent,
+    NzEmptyComponent,
+    NzDescriptionsItemComponent,
+    NzDescriptionsComponent,
+    NzSelectComponent,
+    NzOptionComponent,
+    NzListComponent,
+    NzListItemComponent,
+    NzListItemMetaComponent,
+    NzListModule,
+    NzAvatarComponent,
+    NzSpinComponent,
+    NzSkeletonComponent
+  ],
   animations: [
     trigger('listAnimation', [
       transition('* => *', [
@@ -92,8 +94,6 @@ import {NzSpinComponent} from "ng-zorro-antd/spin";
   ]
 })
 export class PatientListComponent implements OnInit {
-  patients$!: Observable<Patient[]>;
-  errorMessage = '';
   currentPage = 0;
   totalPages = 0;
   pageSize = 10;
@@ -102,6 +102,10 @@ export class PatientListComponent implements OnInit {
   totalPagesArray: number[] = [];
   loading: boolean = true;
   searchKeyword: string = '';
+  initialLoading: boolean = true;
+  addingPatient: boolean = false;
+  errorMessage: string = '';
+  patients: Patient[] = [];
 
   constructor(
     private patientService: PatientService,
@@ -113,7 +117,6 @@ export class PatientListComponent implements OnInit {
   ngOnInit(): void {
     this.setupSearch();
     this.loadPage(0);
-    this.loading = false;
   }
 
   private setupSearch(): void {
@@ -132,15 +135,25 @@ export class PatientListComponent implements OnInit {
 
     this.patientService.getPatients(page, keyword, this.pageSize).pipe(
       catchError(err => {
-        this.errorMessage = err.message;
+        this.loading = false;
+        this.initialLoading = false;
+        this.errorMessage = 'Échec du chargement des patients. Veuillez réessayer.';
         return of({ patients: [], totalPages: 0, currentPage: 0 });
       })
     ).subscribe(response => {
-      this.patients$ = of(response.patients);
+      this.patients = response.patients;
       this.totalPages = response.totalPages;
       this.currentPage = response.currentPage;
       this.initPagesArray();
       this.loading = false;
+      this.initialLoading = false;
+    });
+  }
+
+  onAdd(): void {
+    this.addingPatient = true;
+    this.router.navigate(['/doc/patients/create']).finally(() => {
+      this.addingPatient = false;
     });
   }
 
@@ -189,9 +202,6 @@ export class PatientListComponent implements OnInit {
     this.goToPage(this.currentPage + 1);
   }
 
-  onAdd(): void {
-    this.router.navigate(['/doc/patients/create']);
-  }
 
   initPagesArray(): void {
     this.totalPagesArray = Array.from({ length: this.totalPages }, (_, i) => i + 1);

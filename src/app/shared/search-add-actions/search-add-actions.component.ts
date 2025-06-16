@@ -35,6 +35,7 @@ export class SearchAddActionsComponent {
   @Output() addClick = new EventEmitter<void>();
 
   searchForm: FormGroup;
+  @Input() addButtonLoading!: boolean;
 
   constructor(private fb: FormBuilder) {
     this.searchForm = this.fb.group({
