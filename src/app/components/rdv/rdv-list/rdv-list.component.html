@@ -1,35 +1,55 @@
-
 <nz-card nzTitle="Calendrier Hebdomadaire">
-  <div class="controls">
-    <button nz-button nzType="default" (click)="previousWeek()">
-      <i nz-icon nzType="left"></i> Semaine précédente
-    </button>
-    <h3>{{ weekStart | date:'d MMMM yyyy' }} - {{ weekEnd | date:'d MMMM yyyy' }}</h3>
-    <button nz-button nzType="default" (click)="nextWeek()">
-      Semaine suivante <i nz-icon nzType="right"></i>
-    </button>
-  </div>
+  <nz-spin
+    [nzSpinning]="loading"
+    [nzTip]="'Chargement des rendez-vous...'"
+    nzSize="default"
+    nzDelay="500">
 
-  <div class="week-view">
-    <div *ngFor="let day of weekDays" class="day-column">
-      <div class="day-header">
-        {{ day | date:'EEEE d' | titlecase }}
+    <div class="controls">
+      <button nz-button nzType="default" (click)="previousWeek()" [nzLoading]="navigating">
+        <i nz-icon nzType="left"></i> Semaine précédente
+      </button>
+      <h3>{{ weekStart | date:'d MMMM yyyy' }} - {{ weekEnd | date:'d MMMM yyyy' }}</h3>
+      <button nz-button nzType="default" (click)="nextWeek()" [nzLoading]="navigating">
+        Semaine suivante <i nz-icon nzType="right"></i>
+      </button>
+    </div>
+
+    <!-- Skeleton pendant le chargement initial -->
+    <ng-container *ngIf="initialLoading; else contentBlock">
+      <div class="skeleton-container">
+        <nz-skeleton [nzActive]="true" [nzParagraph]="{ rows: 8 }"></nz-skeleton>
       </div>
-      <div class="rdv-container">
-        <div *ngFor="let rdv of getDayRdvs(day)"
-             class="rdv-card"
-             [style.border-left]="'4px solid ' + getStatusColor(rdv.statusRDV)"
-             (click)="viewDetails(rdv)">
-          <div class="rdv-time">{{ formatTime(rdv.date) }}</div>
-          <div class="rdv-details">
-            <div class="patient">{{ rdv.patient.nom }}</div>
+    </ng-container>
+
+    <!-- Contenu principal -->
+    <ng-template #contentBlock>
+      <div class="week-view">
+        <div *ngFor="let day of weekDays" class="day-column">
+          <div class="day-header">
+            {{ day | date:'EEEE d' | titlecase }}
           </div>
-          <nz-tag [nzColor]="getStatusColor(rdv.statusRDV)">
-            {{ getStatusLabel(rdv.statusRDV) }}
-          </nz-tag>
+          <div class="rdv-container">
+            <div *ngFor="let rdv of getDayRdvs(day)"
+                 class="rdv-card"
+                 [style.border-left]="'4px solid ' + getStatusColor(rdv.statusRDV)"
+                 (click)="viewDetails(rdv)">
+              <div class="rdv-time">{{ formatTime(rdv.date) }}</div>
+              <div class="rdv-details">
+                <div class="patient">{{ rdv.patient.nom }}</div>
+              </div>
+              <nz-tag [nzColor]="getStatusColor(rdv.statusRDV)">
+                {{ getStatusLabel(rdv.statusRDV) }}
+              </nz-tag>
+            </div>
+
+            <!-- Placeholder pour les jours sans rendez-vous -->
+            <nz-empty *ngIf="getDayRdvs(day).length === 0 && !loading"
+                      [nzNotFoundContent]="'Aucun rendez-vous'"
+                      class="empty-day"></nz-empty>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-
+    </ng-template>
+  </nz-spin>
 </nz-card>

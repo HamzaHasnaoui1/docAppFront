@@ -1,3 +1,18 @@
+.skeleton-container {
+  padding: 24px;
+  background: white;
+  border-radius: 8px;
+  margin: 16px 0;
+}
+
+.empty-day {
+  padding: 16px;
+  text-align: center;
+  background: #fafafa;
+  border-radius: 4px;
+  margin: 8px 0;
+}
+
 .controls {
   display: flex;
   justify-content: space-between;
@@ -31,27 +46,27 @@
 
 .rdv-container {
   padding: 0;
-  min-height: calc(100vh - 350px); 
+  min-height: calc(100vh - 350px);
   min-width: calc(100vw - 240px);
    height: 100%;
   overflow-y: auto;
   overflow-x: auto;
   display: flex;
   flex-direction: column;
-  margin: 16px 0; 
-  
+  margin: 16px 0;
+
   &::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   &::-webkit-scrollbar-track {
     background: #f0f0f0;
   }
-  
+
   &::-webkit-scrollbar-thumb {
     background: #d9d9d9;
     border-radius: 3px;
-    
+
     &:hover {
       background: #bfbfbf;
     }

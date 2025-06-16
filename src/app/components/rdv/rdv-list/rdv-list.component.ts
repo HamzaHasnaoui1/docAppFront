@@ -9,6 +9,9 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { catchError, map, Observable, of } from 'rxjs';
 import { RDV_STATUS_CONFIG, RendezVous } from '../../../models/rdv.model';
 import { RdvService } from '../../../service/rdv.service';
+import {NzEmptyComponent} from 'ng-zorro-antd/empty';
+import {NzSpinComponent} from 'ng-zorro-antd/spin';
+import {NzSkeletonComponent} from 'ng-zorro-antd/skeleton';
 
 @Component({
   selector: 'app-list-calendar',
@@ -19,7 +22,10 @@ import { RdvService } from '../../../service/rdv.service';
     NzIconModule,
     NzCardModule,
     NzTagModule,
-    DatePipe
+    DatePipe,
+    NzEmptyComponent,
+    NzSpinComponent,
+    NzSkeletonComponent
   ],
   templateUrl: './rdv-list.component.html',
   styleUrl: './rdv-list.component.scss'
@@ -29,6 +35,9 @@ export class RdvListComponent implements OnInit {
   weekDays: Date[] = [];
   weekStart: Date = new Date();
   weekEnd: Date = new Date();
+  loading: boolean = true;
+  initialLoading: boolean = true;
+  navigating: boolean = false;
 
   constructor(
     private rdvService: RdvService,
@@ -42,14 +51,19 @@ export class RdvListComponent implements OnInit {
   }
 
   loadAllRdvs(): void {
+    this.loading = true;
     this.rdvService.getAllRdvs().pipe(
       map((response: RendezVous[]) => response),
       catchError(err => {
+        this.loading = false;
+        this.initialLoading = false;
         this.message.error('Erreur de chargement des rendez-vous');
         return of([]);
       })
     ).subscribe(rdvs => {
       this.allRdvs = rdvs;
+      this.loading = false;
+      this.initialLoading = false;
       console.log('Rendez-vous chargés:', this.allRdvs);
     });
   }
@@ -57,41 +71,40 @@ export class RdvListComponent implements OnInit {
   initWeekDays(): void {
     const today = new Date();
     const dayOfWeek = today.getDay();
-    const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-
-    this.weekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1));
+    this.weekStart = new Date(today);
+    this.weekStart.setDate(today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1));
     this.weekEnd = new Date(this.weekStart);
     this.weekEnd.setDate(this.weekStart.getDate() + 6);
-
     this.generateWeekDays();
-    console.log('Semaine initialisée:', this.weekStart, 'à', this.weekEnd);
   }
 
   generateWeekDays(): void {
     this.weekDays = [];
-
     for (let i = 0; i < 7; i++) {
       const day = new Date(this.weekStart);
       day.setDate(this.weekStart.getDate() + i);
       this.weekDays.push(day);
     }
-    console.log('Jours de la semaine générés:', this.weekDays);
   }
 
   previousWeek(): void {
-    this.weekStart = new Date(this.weekStart.getTime() - 7 * 24 * 60 * 60 * 1000);
-    this.weekEnd = new Date(this.weekEnd.getTime() - 7 * 24 * 60 * 60 * 1000);
-
-    this.generateWeekDays();
-    console.log('Semaine précédente:', this.weekStart, 'à', this.weekEnd);
+    this.navigating = true;
+    setTimeout(() => {
+      this.weekStart = new Date(this.weekStart.getTime() - 7 * 24 * 60 * 60 * 1000);
+      this.weekEnd = new Date(this.weekEnd.getTime() - 7 * 24 * 60 * 60 * 1000);
+      this.generateWeekDays();
+      this.navigating = false;
+    }, 0);
   }
 
   nextWeek(): void {
-    this.weekStart = new Date(this.weekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
-    this.weekEnd = new Date(this.weekEnd.getTime() + 7 * 24 * 60 * 60 * 1000);
-
-    this.generateWeekDays();
-    console.log('Semaine suivante:', this.weekStart, 'à', this.weekEnd);
+    this.navigating = true;
+    setTimeout(() => {
+      this.weekStart = new Date(this.weekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
+      this.weekEnd = new Date(this.weekEnd.getTime() + 7 * 24 * 60 * 60 * 1000);
+      this.generateWeekDays();
+      this.navigating = false;
+    }, 0);
   }
 
   getDayRdvs(day: Date): RendezVous[] {
