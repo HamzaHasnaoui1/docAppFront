@@ -29,16 +29,18 @@
         <nz-icon nzType="user"></nz-icon>
         <span>Gestion des Patients</span>
       </div>
-      <li nz-menu-item [routerLinkActive]="['active']">
-        <a [routerLink]="['/doc/patients/list']" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Liste des Patients' : null">
-          <nz-icon nzType="profile"></nz-icon>
-          <span>Liste des Patients</span>
-        </a>
-      </li>
+
       <li nz-menu-item [routerLinkActive]="['active']">
         <a [routerLink]="['/doc/patients/create']" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Ajouter un Patient' : null">
           <nz-icon nzType="plus"></nz-icon>
           <span>Ajouter un Patient</span>
+        </a>
+      </li>
+
+      <li nz-menu-item [routerLinkActive]="['active']">
+        <a [routerLink]="['/doc/patients/list']" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Liste des Patients' : null">
+          <nz-icon nzType="profile"></nz-icon>
+          <span>Liste des Patients</span>
         </a>
       </li>
 
@@ -48,20 +50,22 @@
         <span>Gestion des RDV</span>
       </div>
       <li nz-menu-item [routerLinkActive]="['active']">
-        <a [routerLink]="['/doc/rdv/list']" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Liste des RDV' : null">
-          <nz-icon nzType="unordered-list"></nz-icon>
-          <span>Liste des RDV</span>
-        </a>
-      </li>
-      <li nz-menu-item [routerLinkActive]="['active']">
         <a [routerLink]="['/doc/rdv/create']" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Ajouter un RDV' : null">
           <nz-icon nzType="plus"></nz-icon>
           <span>Ajouter un RDV</span>
         </a>
       </li>
+      <li nz-menu-item [routerLinkActive]="['active']">
+        <a [routerLink]="['/doc/rdv/list']" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Liste des RDV' : null">
+          <nz-icon nzType="unordered-list"></nz-icon>
+          <span>Liste des RDV</span>
+        </a>
+      </li>
 
-      <!-- Section Administration (visible uniquement pour les admins) -->
-        <div class="menu-section-title" *ngIf="!isCollapsed">
+           <!-- Section Administration (visible uniquement pour les admins) -->
+      <ng-container *ngIf="hasPermission(['ADMIN'])">
+
+        <div class="menu-section-title" *ngIf="!isCollapsed" >
           <nz-icon nzType="setting"></nz-icon>
           <span>Administration</span>
         </div>
@@ -77,6 +81,7 @@
             <span>Gestion des permissions</span>
           </a>
         </li>
+      </ng-container>
     </ul>
   </nz-sider>
   <nz-layout class="white-layout">

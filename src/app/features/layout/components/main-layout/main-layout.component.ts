@@ -88,6 +88,9 @@ childTitle: string | null = null;
     return this.authService.currentUserValue;
   }
 
+  hasPermission(roles: string[]): boolean {
+    return roles.some(role => this.authService.hasRole(role));
+  }
 
   getBreadcrumbIcon(): string {
     switch (this.currentPageTitle?.toLowerCase()) {
